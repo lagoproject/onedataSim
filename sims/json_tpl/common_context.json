@@ -1,0 +1,16 @@
+{
+  "@context" : {
+    "@base" : "HANDLEtoJSONAPIrepositoryURL", 
+    "lago" : "https://github.com/lagoproject/DMP/blob/0.0.1/schema/lagoSchema.jsonld",
+    "prov" : "http://www.w3.org/ns/prov#",
+    "dct" : "http://purl.org/dc/terms/",
+    "@vocab" : "https://github.com/SEMICeu/DCAT-AP/blob/2.0.0/releases/2.0.0/dcat-ap_2.0.0.jsonld",
+    "_dcatap" : "https://github.com/SEMICeu/DCAT-AP/blob/2.0.0/releases/2.0.0/dcat-ap_2.0.0.jsonld",
+    "_dcatap_landing_page" : "http://data.europa.eu/r5r/"
+  },
+  "publisher" :  { "@id" : "https://github.com/lagoproject/DMP/blob/0.0.1/defs/lagocollaboration.jsonld" , "@type" : "lago:Organization" },
+  "creator" : { "@id" : "https://orcid.org/ORCID" , "@type" : "lago:Person" },
+  "license" : "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "rights" : "https://github.com/lagoproject/DMP/blob/0.0.1/rights/lagoCommonRights.jsonld",
+  "accessRigths" : "http://publications.europa.eu/resource/authority/access-right/RESTRICTED"
+}
