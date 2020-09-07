@@ -1,0 +1,8 @@
+{
+  "@id" : "/CATCODENAME",   
+  "@type" : "Catalog",
+  "description" : "A Complete Corsika Simulation",
+  "title" : "CATCODENAME",
+  "wasGeneratedBy" : "/CATCODENAME#activity",
+  "_landing_page" : "https://datahub.egi.eu/xxxxxx"
+}

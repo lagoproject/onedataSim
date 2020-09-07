@@ -1,0 +1,13 @@
+{
+  "@graph" : [
+    {
+     "@id" : "/CATCODENAME#activity",
+     "@type" : "prov:Activity",
+     "prov:wasAssociatedWith" : { "@id" : "https://github.com/lagoproject/arti/archive/master.zip" , "@type" : "lago:Software", "name" : "LAGO Arti v.3",
+                                  "lago:runtimePlatform" : { "@id:" : "https://github.com/lagoproject/onedataSim/archive/release/0.0.1.zip" , "@type" : "lago:Software", "name" : "Arti Simulator integrated in OneData v.0.0.1" } },
+     "prov:used" : "/CATCODENAME#artiParams",
+     "prov:startedAtTime" : "STARTDATE",
+     "prov:endedAtTime" : "ENDDATE"
+    }
+  ]
+}

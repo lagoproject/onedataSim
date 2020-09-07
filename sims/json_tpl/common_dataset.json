@@ -1,0 +1,19 @@
+{
+  "@id" : "/CATCODENAME/FILENAME",   
+  "@type" : "DataSet",
+  "description" : "CORSIKA FILENAME",
+  "title" : "CATCODENAME_FILENAME",
+  "wasGeneratedBy" : "/CATCODENAME/FILENAME#activity",
+  "qualifiedAttribution" : { "@id" : "https://orcid.org/ORCIDCODE" , "@type" : "lago:Person" },
+  "distribution" : "/CATCODENAME/FILENAME#distribution",
+  "@graph" : [
+    {
+     "@id" : "/CATCODENAME/FILENAME#dataservice",
+     "@type" : "DataService",   
+     "endpointURL"  : "HANDLECDMI/CATCODENAME/FILENAME",
+     "title" : "CATCODENAME_FILENAME_CDMI",
+     "servesDataset" : "/CATCODENAME/FILENAME",
+     "conformsTo" : "https://www.iana.org/assignments/media-types/application/cdmi-object"
+    }
+  ]
+}
