@@ -82,8 +82,8 @@ def _add_json (j, j_new):
 
 def get_first_catalog_metadata_json (catcodename,orcid):
 
-    with open('onedataSimPath/json_tpl/common_context.json', 'r') as file1: 
-        with open('onedataSimPath/json_tpl/catalog_corsika.json', 'r') as file2:
+    with open(onedataSimPath+'/json_tpl/common_context.json', 'r') as file1: 
+        with open(onedataSimPath+'/json_tpl/catalog_corsika.json', 'r') as file2:
                 j=json.loads(file1.read())
                 j=_add_json(j,json.loads(file2.read()))
                 s=json.dumps(j)
@@ -95,7 +95,7 @@ def get_first_catalog_metadata_json (catcodename,orcid):
 
 def get_catalog_metadata_activity (startdate, enddate):
 
-    with open('onedataSimPath/json_tpl/catalog_corsika_activity.json', 'r') as file1: 
+    with open(onedataSimPath+'/json_tpl/catalog_corsika_activity.json', 'r') as file1: 
         j=json.loads(file1.read())
         s=json.dumps(j)
         s=s.replace('CATCODENAME', catcodename)
@@ -109,8 +109,8 @@ def get_catalog_metadata_activity (startdate, enddate):
 
 def _get_common_metadata_aux ():
 
-    with open('onedataSimPath/json_tpl/common_context.json', 'r') as file1: 
-        with open('onedataSimPath/json_tpl/common_dataset.json', 'r') as file2:
+    with open(onedataSimPath+'/json_tpl/common_context.json', 'r') as file1: 
+        with open(onedataSimPath+'/json_tpl/common_dataset.json', 'r') as file2:
                 j=json.loads(file1.read())
                 j=_add_json(j,json.loads(file2.read()))
                 return j
@@ -118,7 +118,7 @@ def _get_common_metadata_aux ():
                 
 def _get_input_metadata (filecode):
 
-    with open('onedataSimPath/json_tpl/dataset_corsika_input.json', 'r') as file1: 
+    with open(onedataSimPath+'/json_tpl/dataset_corsika_input.json', 'r') as file1: 
         j=_get_common_metadata_aux()
         j=_add_json(j,json.loads(file1.read()))
         s=json.dumps(j)
@@ -127,8 +127,8 @@ def _get_input_metadata (filecode):
         return s;
     
 def _get_bin_output_metadata (filecode):
-    with open('onedataSimPath/json_tpl/common_dataset_corsika_output.json', 'r') as file1: 
-        with open('onedataSimPath/json_tpl/dataset_corsika_bin_output.json', 'r') as file2: 
+    with open(onedataSimPath+'/json_tpl/common_dataset_corsika_output.json', 'r') as file1: 
+        with open(onedataSimPath+'/json_tpl/dataset_corsika_bin_output.json', 'r') as file2: 
             j=_get_common_metadata_aux()
             j=_add_json(j,json.loads(file1.read()))
             j=_add_json(j,json.loads(file2.read()))
@@ -140,8 +140,8 @@ def _get_bin_output_metadata (filecode):
  
 def _get_lst_output_metadata (filecode):
 
-    with open('onedataSimPath/json_tpl/common_dataset_corsika_output.json', 'r') as file1:
-        with open('onedataSimPath/json_tpl/dataset_corsika_lst_output.json', 'r') as file2: 
+    with open(onedataSimPath+'/json_tpl/common_dataset_corsika_output.json', 'r') as file1:
+        with open(onedataSimPath+'/json_tpl/dataset_corsika_lst_output.json', 'r') as file2: 
             j=_get_common_metadata_aux()
             j=_add_json(j,json.loads(file1.read()))
             j=_add_json(j,json.loads(file2.read()))
@@ -192,7 +192,7 @@ q = Queue()
 
 def _producer (catcodename, arti_params):
         
-    cmd='/opt/arti/sims/do_sims.sh '+ arti_params
+    cmd = 'do_sims.sh '+ arti_params
     _run_Popen_interactive(cmd)
     
     #WARNING, I HAD TO PATCH rain.pl FOR AVOID SCREEN !!!!
@@ -244,8 +244,8 @@ def _consumer (catcodename, onedata_path):
 
 (arti_params, arti_params_dict, arti_params_json_md) = get_sys_args()
 catcodename = arti_params_dict["p"] 
-onedata_path = '/mnt/LAGOsim'
-#onedata_path = '/mnt/test4/LAGOSIM'
+#onedata_path = '/mnt/LAGOsim'
+onedata_path = '/mnt/test4/LAGOSIM'
 catalog_path = onedata_path + '/' +catcodename
 
 print (arti_params, arti_params_dict, arti_params_json_md)
