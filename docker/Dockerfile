@@ -35,11 +35,16 @@ RUN cd /opt/corsika-75600-lago && ./coconut -b
 ## ./corsika75600Linux_QGSII_gheisha < all-inputs > output.txt
 
 
-#dowload and compile LAGO crktools
+#dowload and compile ARTI LAGO crktools
 RUN yum -y install bzip2
-RUN cd /opt && git clone https://github.com/lagoproject/arti.git 
-RUN cd /opt/arti && make
+# we use the ones tested with onedataSim package
+# RUN cd /opt && git clone https://github.com/lagoproject/arti.git 
+RUN cd /opt && git clone --recursive https://github.com/AJRubio-Montero/onedataSim.git
+RUN cd /opt/onedataSim/arti && make
+#set paths and permissions for onedataSim
+RUN cd /opt/onedataSim && bash install.sh 
 
+#Onedata and tools needed by onedataSim
 
 #download and install oneclient
 #We did not use oneclient for downloading corsika-lago to isolate from its compiling 
