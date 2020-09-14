@@ -1,4 +1,4 @@
 [submodule "arti"]
 	path = arti
-	url = https://github.com/lagoproject/arti/tree/arti-v1r1
-	branch = master
+	url = https://github.com/lagoproject/arti/arti.git
+	branch = arti-v1r1
