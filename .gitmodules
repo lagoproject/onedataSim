@@ -1,4 +1,4 @@
 [submodule "arti"]
 	path = arti
 	url = https://github.com/lagoproject/arti.git
-	branch = arti-v1r0
+	branch = master
