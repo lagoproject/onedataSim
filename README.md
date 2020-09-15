@@ -6,11 +6,11 @@ LAGO onedataSim packets all requeriments for runnig [ARTI](https://github.com/la
 
 However, the main objective of onedataSim is to standardise the simulation and its analisys in [LAGO Collaboration](http://lagoproject.net) in order to curate, re-use and publish the results, following the [Data Management Plant (DPM)](https://github.com/lagoproject/arti) established. For this purpose, onedataSim includes two main programs:
 
-1. do_sims_onedata.py that:
+1. **do_sims_onedata.py** that:
   - executes simulations as do_sims.sh, exactly with same parameters;
   - caches partial results as local scratch and then copies them to the official LAGO repository based on [OneData](https://github.com/onedata);
   - makes standardised metadata for every inputs and results and includes them as extended attributes in OneData filesystem. 
-2. do_analysis_onedata.py that:
+2. **do_analysis_onedata.py** that:
   - executes analysis as do_analysis.sh does.
   - caches the selected simulation to be analisyed in local and then store results at the official LAGO repository on [OneData](https://github.com/onedata);
   - makes also standardised metadata for these results and updates the corresponding catalog on OneData.
@@ -27,8 +27,19 @@ Therefore, we encourage LAGO researchers to use these programs for their simulat
 
 1. Be acredited in LAGO Virtual Organisation to obtain a OneData personal token.
 
-2. Had Docker (or Singularity) installed on your PC (or HPC/HTC facility) 
+2. Had [Docker](https://www.docker.com/) (or [Singularity](https://singularity.lbl.gov/) or [udocker](https://pypi.org/project/udocker/)) installed on your PC (or HPC/HTC facility) 
 
+It is only needed [Docker Engine](https://docs.docker.com/engine/install/) to run onedataSim container, this is, the *SERVER* mode. However, the *DESKTOP* mode is the only available for Windows and MacOs, it includes the Docker Engine but also more functionalities.  
+
+On linux, the recommended way is to remove all docker packages included by default in your distro and to make use of Docker repositories.
+
+For example, for a Debian based distribution such as Ubuntu:
+```
+sudo apt-get remove docker wmdocker docker-registry [...etc...]
+curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
+sudo add-apt-repository    "deb [arch=amd64] https://download.docker.com/linux/debian"
+sudo apt-get install docker-ce docker-ce-cli containerd.io
+```
 
 
 ## Building the onedataSim container
@@ -46,7 +57,7 @@ sudo docker build --no-cache --build-arg ONECLIENT_ACCESS_TOKEN_TO_BUILD="MDAxY2
 
 This automatised execution is the preferred one in LAGO collaboration.
 
-You can execute do_sims_onedata.py or do_analysis_onedata.py in a single command, without the needed of log into the container. If there is a lack of paramenters, it promps you for them, if not this starts and the current progress is shown while the results are automatically stored in OneData. 
+You can execute do_sims_onedata.py or do_analysis_onedata.py in a single command, without the needed of log into the container. If there is a lack of paramenters, it prompts you for them, if not this starts and the current progress is shown while the results are automatically stored in OneData. 
 
 1. Simple command example:
 
@@ -60,7 +71,7 @@ sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN="MDAxY2xvYwF00aW9uIGRhd
 
 2. Executing on a multi-processor server
 
-If you count on an standalone server for computing or a virtual machine instantiated with enough procesors memory and disk, you only need add the "-j <procs>" param to enable multi-processing:
+If you count on an standalone server for computing or a virtual machine instantiated with enough procesors memory and disk, you only need add the **-j \<procs\>** param to enable multi-processing:
 
 ```
 sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN="<personal onedata token>" -e ONECLIENT_PROVIDER_HOST="<nearest onedata provider>" -it <container name> bash -lc "do_sims_onedata.py -j <procs> <other ARTI do_* params>"
