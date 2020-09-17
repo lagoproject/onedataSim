@@ -72,7 +72,7 @@ sudo docker build --no-cache --build-arg ONECLIENT_ACCESS_TOKEN_TO_BUILD="<perso
 If not, you should download first the Dockerfile
 
 ```sh
-wget https://github.com/lagoproject/onedataSim/blob/master/Dockerfile
+wget https://raw.githubusercontent.com/lagoproject/onedataSim/master/Dockerfile
 sudo docker build --no-cache --build-arg ONECLIENT_ACCESS_TOKEN_TO_BUILD="<personal OneData token>" \ 
                   --build-arg ONECLIENT_PROVIDER_HOST_TO_BUILD="<nearest OneData provider>" \
                   -t  <container name> - < ./Dockerfile
