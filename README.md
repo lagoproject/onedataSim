@@ -82,7 +82,9 @@ sudo docker build --no-cache --build-arg ONECLIENT_ACCESS_TOKEN_TO_BUILD="<perso
 As an example:
 
 ```sh
-sudo docker build --no-cache --build-arg ONECLIENT_ACCESS_TOKEN_TO_BUILD="MDAxY2xvYwF00aW9uIGRhdG6odWIuZWdpLmV1CjAwMzZpZGVudGlmaWVyIDdiY2IwZGQzY2I00MmFjY2FmOGZiOTBmZjkzMTUxNTkyY2gyYzVlCjAwMWFjaWQgdGltZSA8IDE2MjMzMjA4MzAKMDAyZnNpZ25hdHVyZSAvZQrzvw2OtjS8bOtDgoOaRRvv18ZhXE4PTG2tcsgwYgo" --build-arg ONECLIENT_PROVIDER_HOST_TO_BUILD="https://mon01-tic.ciemat.es" -t lagocontainer:0.0.1  https://github.com/lagoproject/onedataSim.git
+sudo docker build --no-cache --build-arg ONECLIENT_ACCESS_TOKEN_TO_BUILD="MDAxY2xv...iXm8jowGgo" \
+                  --build-arg ONECLIENT_PROVIDER_HOST_TO_BUILD="https://mon01-tic.ciemat.es" \
+                  -t lagocontainer:0.0.1  https://github.com/lagoproject/onedataSim.git
 ```
 
 
@@ -103,7 +105,9 @@ sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN="<personal onedata toke
 ```
 
 ```sh
-sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN="MDAxY2xvYwF00aW9uIGRhdG6odWIuZWdpLmV1CjAwMzZpZGVudGlmaWVyIDdiY2IwZGQzY2I00MmFjY2FmOGZiOTBmZjkzMTUxNTkyY2gyYzVlCjAwMWFjaWQgdGltZSA8IDE2MjMzMjA4MzAKMDAyZnNpZ25hdHVyZSAvZQrzvw2OtjS8bOtDgoOaRRvv18ZhXE4PTG2tcsgwYgo" -e ONECLIENT_PROVIDER_HOST="mon01-tic.ciemat.es" -it lagocontainer:0.0.1  bash -lc "do_sims_onedata.py -t 10 -u 0000-0001-6497-753X -s sac -k 2.0e2 -h QGSII"
+sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN="MDAxY2xv...iXm8jowGgo" \
+                -e ONECLIENT_PROVIDER_HOST="mon01-tic.ciemat.es" \
+                -it lagocontainer:0.0.1  bash -lc "do_sims_onedata.py -t 10 -u 0000-0001-6497-753X -s sac -k 2.0e2 -h QGSII"
 ```
 
 2. Executing on a multi-processor server
@@ -128,11 +132,54 @@ sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN="<personal onedata toke
 
 ## Logging into container for developing purposes
 
-1. Run scripts.
+1. Runing scripts & attaching a local directory at login.
 
-2. Attach a local directory
+To log into the container only has to run bash without parameters, positioned alwasy at the end of the command. Additionally, You can mount a local directory inside the container the with the parameter **--volume \<local path\>:\<container path\>**. For example:
 
-3. Explore OneData reposotory
+```sh
+ [pepe@mypc tmp]# ls /home/pepe/workspace
+ onedataSim  samples geant4-dev
+ [pepe@mypc tmp]# sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN="MDAxY2xv...iXm8jowGgo" \ 
+           -e ONECLIENT_PROVIDER_HOST="mon01-tic.ciemat.es" \
+           --volume /home/pepe/workspace:/root -it lagocontainer:0.0.1  bash
+ [root@c42dc622f7eb run]# ls /root
+ onedataSim  samples geant4-dev
+```
+
+2. Explore OneData repository within the container.
+
+```sh
+[root@c42dc622f7eb run]# oneclient /mnt
+Connecting to provider 'mon01-tic.ciemat.es:443' using session ID: '4998286443844254461'...
+Getting configuration...
+Oneclient has been successfully mounted in '/mnt'.
+[root@c42dc622f7eb run]# ls -alh /mnt/
+total 0
+drwxr-xr-x 1 root root  0 Sep 15 08:46 .
+drwxr-xr-x 1 root root 29 Sep 17 15:10 ..
+drwxrwxr-x 1 root root  0 Jun 16 13:23 PLAYGROUND
+drwxrwxr-x 1 root root  0 Jun 16 13:23 notebooks-training
+drwxrwxr-x 1 root root  0 Sep 15 08:47 LAGOsim
+[root@c42dc622f7eb run]# ls -alh /mnt/LAGOsim
+total 0
+drwxrwxr-x 1 1034995 638198 0 Sep 17 13:52 .
+drwxrwxr-x 1 root    root   0 Sep 15 08:47 ..
+drwxr-xr-x 1 1034995 638198 0 Sep  7 18:41 sac_10_100.0_75600_QGSII_flat
+drwxr-xr-x 1 1034995 638198 0 Sep 13 12:59 sac_10_110.0_75600_QGSII_flat
+drwxr-xr-x 1 1034995 638198 0 Sep 13 13:04 sac_10_120.0_75600_QGSII_flat
+drwxr-xr-x 1 1034995 638198 0 Sep 13 13:05 sac_10_130.0_75600_QGSII_flat
+drwxr-xr-x 1 1034995 638198 0 Sep 13 13:06 sac_10_140.0_75600_QGSII_flat
+drwxr-xr-x 1 1034995 638198 0 Sep 13 13:11 sac_10_150.0_75600_QGSII_flat
+drwxr-xr-x 1 1034995 638198 0 Sep 13 16:21 sac_10_200.0_75600_QGSII_flat
+drwxr-xr-x 1 1034995 638198 0 Sep 14 15:28 sac_10_300.0_75600_QGSII_flat
+drwxr-xr-x 1  398931 638198 0 Sep 17 13:41 sac_10_500.0_75600_QGSII_flat
+drwxr-xr-x 1  398931 638198 0 Sep 17 13:52 sac_10_600.0_75600_QGSII_flat
+drwxr-xr-x 1 1034995 638198 0 Sep  8 12:30 sac_1_100.0_75600_QGSII_flat
+drwxr-xr-x 1 1034995 638198 0 Sep 13 16:17 sac_60_200.0_75600_QGSII_flat
+...
+...
+```
+
 
 
 ## Acknowledgment 
