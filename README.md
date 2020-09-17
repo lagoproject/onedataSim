@@ -34,7 +34,7 @@ It is only needed [Docker Engine](https://docs.docker.com/engine/install/) to ru
 On linux, the recommended way is to remove all docker packages included by default in your distro and to make use of Docker repositories.
 
 For example, for a Debian based distribution such as Ubuntu:
-```bash
+```sh
   sudo apt-get remove docker wmdocker docker-registry [...etc...]
   curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
   sudo add-apt-repository    "deb [arch=amd64] https://download.docker.com/linux/debian"
@@ -43,7 +43,7 @@ For example, for a Debian based distribution such as Ubuntu:
 
 On CentOS 7 with root:
 
-```bash 
+```sh 
   # check first if centos7-extras is enabled
   yum update
   yum install -y yum-utils 
@@ -61,10 +61,10 @@ On CentOS 7 with root:
 To build the container is needed had a OneData token and to indicate any provider enroled as LAGO repository. This is so because ARTI currently calls [CORSIKA 7](https://www.ikp.kit.edu/corsika/79.php), which is licensed only for internal use of LAGO collaborators. As this software is stored at LAGO repository with closed permisions, its download requires to previously check if the user belogns to LAGO Virtual Organisation. 
 
 
-```
+```sh
 sudo docker build --no-cache --build-arg ONECLIENT_ACCESS_TOKEN_TO_BUILD="<personal OneData token>" --build-arg ONECLIENT_PROVIDER_HOST_TO_BUILD="<nearest OneData provider>" -t  <container name> https://github.com/lagoproject/onedataSim.git
 ```
-```
+```sh
 sudo docker build --no-cache --build-arg ONECLIENT_ACCESS_TOKEN_TO_BUILD="MDAxY2xvYwF00aW9uIGRhdG6odWIuZWdpLmV1CjAwMzZpZGVudGlmaWVyIDdiY2IwZGQzY2I00MmFjY2FmOGZiOTBmZjkzMTUxNTkyY2gyYzVlCjAwMWFjaWQgdGltZSA8IDE2MjMzMjA4MzAKMDAyZnNpZ25hdHVyZSAvZQrzvw2OtjS8bOtDgoOaRRvv18ZhXE4PTG2tcsgwYgo" --build-arg ONECLIENT_PROVIDER_HOST_TO_BUILD="https://mon01-tic.ciemat.es" -t lagocontainer:0.0.1  https://github.com/lagoproject/onedataSim.git
 ```
 ## Executing a stardandised simulation & analisys to be stored in OneData repositories for LAGO
@@ -75,11 +75,11 @@ You can execute do_sims_onedata.py or do_analysis_onedata.py in a single command
 
 1. Simple command example:
 
-```
+```sh
 sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN="<personal onedata token>" -e ONECLIENT_PROVIDER_HOST="<nearest onedata provider>" -it <container name> bash -lc "do_sims_onedata.py <ARTI do_* params>"
 ```
 
-```
+```sh
 sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN="MDAxY2xvYwF00aW9uIGRhdG6odWIuZWdpLmV1CjAwMzZpZGVudGlmaWVyIDdiY2IwZGQzY2I00MmFjY2FmOGZiOTBmZjkzMTUxNTkyY2gyYzVlCjAwMWFjaWQgdGltZSA8IDE2MjMzMjA4MzAKMDAyZnNpZ25hdHVyZSAvZQrzvw2OtjS8bOtDgoOaRRvv18ZhXE4PTG2tcsgwYgo" -e ONECLIENT_PROVIDER_HOST="mon01-tic.ciemat.es" -it lagocontainer:0.0.1  bash -lc "do_sims_onedata.py -t 10 -u 0000-0001-6497-753X -s sac -k 2.0e2 -h QGSII"
 ```
 
@@ -87,7 +87,7 @@ sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN="MDAxY2xvYwF00aW9uIGRhd
 
 If you count on an standalone server for computing or a virtual machine instantiated with enough procesors memory and disk, you only need add the **-j \<procs\>** param to enable multi-processing:
 
-```
+```sh
 sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN="<personal onedata token>" -e ONECLIENT_PROVIDER_HOST="<nearest onedata provider>" -it <container name> bash -lc "do_sims_onedata.py -j <procs> <other ARTI do_* params>"
 ```
 
