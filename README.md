@@ -34,12 +34,26 @@ It is only needed [Docker Engine](https://docs.docker.com/engine/install/) to ru
 On linux, the recommended way is to remove all docker packages included by default in your distro and to make use of Docker repositories.
 
 For example, for a Debian based distribution such as Ubuntu:
+```bash
+  sudo apt-get remove docker wmdocker docker-registry [...etc...]
+  curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
+  sudo add-apt-repository    "deb [arch=amd64] https://download.docker.com/linux/debian"
+  sudo apt-get install docker-ce docker-ce-cli containerd.io
 ```
-sudo apt-get remove docker wmdocker docker-registry [...etc...]
-curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
-sudo add-apt-repository    "deb [arch=amd64] https://download.docker.com/linux/debian"
-sudo apt-get install docker-ce docker-ce-cli containerd.io
+
+On CentOS 7 with root:
+
+```bash 
+  # check first if centos7-extras is enabled
+  yum update
+  yum install -y yum-utils 
+  yum-config-manager  --add-repo     https://download.docker.com/linux/centos/docker-ce.repo
+  yum update
+  yum install docker-ce docker-ce-cli containerd.io
+  systemctl enable docker
+  systemctl start docker
 ```
+
 
 
 ## Building the onedataSim container
