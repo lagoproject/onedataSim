@@ -44,6 +44,7 @@ For example, for a Debian based distribution such as Ubuntu:
 On CentOS 7 with root:
 
 ```sh 
+  yum remove docker docker-client docker-[...etc...] 
   # check first if centos7-extras is enabled
   yum update
   yum install -y yum-utils 
@@ -58,15 +59,35 @@ On CentOS 7 with root:
 
 ## Building the onedataSim container
 
-To build the container is needed had a OneData token and to indicate any provider enroled as LAGO repository. This is so because ARTI currently calls [CORSIKA 7](https://www.ikp.kit.edu/corsika/79.php), which is licensed only for internal use of LAGO collaborators. As this software is stored at LAGO repository with closed permisions, its download requires to previously check if the user belogns to LAGO Virtual Organisation. 
+To build the container is needed had a OneData token and to indicate any provider enroled as LAGO repository. This is so because ARTI currently calls [CORSIKA 7](https://www.ikp.kit.edu/corsika/79.php), which is licensed only for internal use of LAGO collaborators. As this software is stored at LAGO repository with closed permisions, its download requires to previously check if the user belongs to LAGO Virtual Organisation. 
 
+If you have the newer releases of *git*, you can build the container with one command:
 
 ```sh
-sudo docker build --no-cache --build-arg ONECLIENT_ACCESS_TOKEN_TO_BUILD="<personal OneData token>" --build-arg ONECLIENT_PROVIDER_HOST_TO_BUILD="<nearest OneData provider>" -t  <container name> https://github.com/lagoproject/onedataSim.git
+sudo docker build --no-cache --build-arg ONECLIENT_ACCESS_TOKEN_TO_BUILD="<personal OneData token>" \ 
+                  --build-arg ONECLIENT_PROVIDER_HOST_TO_BUILD="<nearest OneData provider>" \
+                  -t  <container name> https://github.com/lagoproject/onedataSim.git
 ```
+
+If not, you should download first the Dockerfile
+
+```sh
+wget https://github.com/lagoproject/onedataSim/blob/master/Dockerfile
+sudo docker build --no-cache --build-arg ONECLIENT_ACCESS_TOKEN_TO_BUILD="<personal OneData token>" \ 
+                  --build-arg ONECLIENT_PROVIDER_HOST_TO_BUILD="<nearest OneData provider>" \
+                  -t  <container name> - < ./Dockerfile
+```
+
+
+As an example:
+
 ```sh
 sudo docker build --no-cache --build-arg ONECLIENT_ACCESS_TOKEN_TO_BUILD="MDAxY2xvYwF00aW9uIGRhdG6odWIuZWdpLmV1CjAwMzZpZGVudGlmaWVyIDdiY2IwZGQzY2I00MmFjY2FmOGZiOTBmZjkzMTUxNTkyY2gyYzVlCjAwMWFjaWQgdGltZSA8IDE2MjMzMjA4MzAKMDAyZnNpZ25hdHVyZSAvZQrzvw2OtjS8bOtDgoOaRRvv18ZhXE4PTG2tcsgwYgo" --build-arg ONECLIENT_PROVIDER_HOST_TO_BUILD="https://mon01-tic.ciemat.es" -t lagocontainer:0.0.1  https://github.com/lagoproject/onedataSim.git
 ```
+
+
+
+
 ## Executing a stardandised simulation & analisys to be stored in OneData repositories for LAGO
 
 This automatised execution is the preferred one in LAGO collaboration.
@@ -76,7 +97,9 @@ You can execute do_sims_onedata.py or do_analysis_onedata.py in a single command
 1. Simple command example:
 
 ```sh
-sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN="<personal onedata token>" -e ONECLIENT_PROVIDER_HOST="<nearest onedata provider>" -it <container name> bash -lc "do_sims_onedata.py <ARTI do_* params>"
+sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN="<personal onedata token>" \
+                -e ONECLIENT_PROVIDER_HOST="<nearest onedata provider>" \ 
+                -it <container name> bash -lc "do_sims_onedata.py <ARTI do_* params>"
 ```
 
 ```sh
@@ -88,7 +111,9 @@ sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN="MDAxY2xvYwF00aW9uIGRhd
 If you count on an standalone server for computing or a virtual machine instantiated with enough procesors memory and disk, you only need add the **-j \<procs\>** param to enable multi-processing:
 
 ```sh
-sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN="<personal onedata token>" -e ONECLIENT_PROVIDER_HOST="<nearest onedata provider>" -it <container name> bash -lc "do_sims_onedata.py -j <procs> <other ARTI do_* params>"
+sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN="<personal onedata token>" \
+                -e ONECLIENT_PROVIDER_HOST="<nearest onedata provider>" \
+                -it <container name> bash -lc "do_sims_onedata.py -j <procs> <other ARTI do_* params>"
 ```
 
 
