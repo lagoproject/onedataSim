@@ -21,7 +21,7 @@ Storing results on the official repository with standardised metadata enables:
   - properly citing scientific data and diseminating results through internet; 
   - building new results based on data minig or big data techniques thanks to linked metadata.
 
-Therefore, we encourage LAGO researchers to use these programs for their simulations, but 
+Therefore, we encourage LAGO researchers to use these programs for their simulations. 
 
 ## Pre-requisites
 
