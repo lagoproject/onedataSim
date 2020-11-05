@@ -39,7 +39,7 @@ RUN cd /opt/corsika-75600-lago && ./coconut -b
 RUN yum -y install bzip2
 # we use the ones tested with onedataSim package
 # RUN cd /opt && git clone https://github.com/lagoproject/arti.git 
-RUN cd /opt && git clone --recursive https://github.com/AJRubio-Montero/onedataSim.git
+RUN cd /opt && git clone --recursive https://github.com/lagoproject/onedataSim.git
 RUN cd /opt/onedataSim/arti && make
 #set paths and permissions for onedataSim
 RUN cd /opt/onedataSim && bash install.sh 
