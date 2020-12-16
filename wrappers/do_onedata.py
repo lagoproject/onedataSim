@@ -33,14 +33,15 @@ def _run_Popen_interactive(command):
     p.wait()
 
 
-def _run_Popen(command):  
+def _run_Popen(command, timeout=None):  
     print (command+'\n')      
     p = subprocess.Popen(command + ' 2>&1', shell = True, env=os.environ, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-    p.wait()
-    res = p.communicate()[0]
+    p.wait(timeout)
+    res = ""
     if p.returncode != 0:
-        print (str(res)+'\n')
-        res=""
+        print ("Return code: "+str(res)+'\n')
+    else:
+        res = p.communicate()[0]
     return res
 
 def _xsd_dateTime ():
@@ -176,7 +177,10 @@ def _run_check_and_copy_results (catcodename, filecode, task, onedata_path):
         metadatalist=get_dataset_metadata(catcodename, filecode, start_date, _xsd_dateTime())
         for md in metadatalist:
             id=json.loads(md)['@id']
-            shutil.move('.' + id, onedata_path + id) 
+            ## oneclient change the filename owner when you move it to onedata and this action raise exceptions with shutil.move()
+            ## shutil.move('.' + id, onedata_path + id)
+            cmd = "mv ." + id + " " + onedata_path + id
+            _run_Popen(cmd)
             xattr.setxattr(onedata_path + id, 'onedata_json', md)
     except Exception as inst:
         raise inst
@@ -253,7 +257,7 @@ print (arti_params, arti_params_dict, arti_params_json_md)
 try: 
     #mount OneData
     cmd="oneclient /mnt"
-    _run_Popen(cmd)
+    _run_Popen(cmd, timeout=10)
     if os.path.exists(onedata_path): 
         if not os.path.exists(catalog_path):
             os.mkdir(catalog_path)
