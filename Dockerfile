@@ -25,9 +25,14 @@ RUN yum -y install gcc gcc-c++ gcc-gfortran \
         git perl-Switch
 
 # CORSIKA autorished copy for internal distribution on the LAGO Collaboration (CDMI private link)
-RUN curl -k -H "X-Auth-Token: $ONECLIENT_ACCESS_TOKEN_TO_BUILD" \
-               "$ONECLIENT_PROVIDER_HOST_TO_BUILD/cdmi/test4/corsika/corsika-75600-lago.tar.gz" \
-               | tar xvz -C /opt
+#RUN curl -k -H "X-Auth-Token: $ONECLIENT_ACCESS_TOKEN_TO_BUILD" \
+#               "$ONECLIENT_PROVIDER_HOST_TO_BUILD/cdmi/test4/corsika/corsika-75600-lago.tar.gz" \
+#               | tar xvz -C /opt              
+RUN while ! curl -O -C- -k -H "X-Auth-Token: $ONECLIENT_ACCESS_TOKEN_TO_BUILD" \
+                 "$ONECLIENT_PROVIDER_HOST_TO_BUILD/cdmi/test4/corsika/corsika-75600-lago.tar.gz" ; \ 
+                 do true ; done
+RUN tar -xvz -C /opt  corsika-75600-lago.tar.gz 
+RUN rm -f corsika-75600-lago.tar.gz
 
 RUN cd /opt/corsika-75600-lago && ./coconut -b
 
@@ -49,7 +54,7 @@ RUN cd /opt/onedataSim && bash install.sh
 #download and install oneclient
 #We did not use oneclient for downloading corsika-lago to isolate from its compiling 
 # and because it were need use privileged mode.
-RUN curl -sS http://get.onedata.org/oneclient-1902.sh | bash
+RUN curl -sS http://get.onedata.org/oneclient-2002.sh | bash
 
 #getfacl getfattr 
 RUN yum -y install acl attr 
