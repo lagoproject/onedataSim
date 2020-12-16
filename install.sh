@@ -21,5 +21,5 @@ export PATH=\"\${LAGO_ONEDATASIM}/wrappers/:\$PATH\"
 " >> ${HOME}/.bashrc
 
 #add execution permissions:
-chmod +x $LAGO_ONEDATASIM/wrappers/do_onedata.py
+chmod +x $LAGO_ONEDATASIM/wrappers/do_sims_onedata.py
 
