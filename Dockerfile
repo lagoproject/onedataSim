@@ -11,6 +11,7 @@ FROM centos:7.8.2003
 # 
 ARG ONECLIENT_ACCESS_TOKEN_TO_BUILD
 ARG ONECLIENT_PROVIDER_HOST_TO_BUILD
+ARG ONEDATA_SIM_BRANCH="master"
 
 # user credentials when the container were used
 ENV ONECLIENT_ACCESS_TOKEN=""
@@ -44,7 +45,7 @@ RUN cd /opt/corsika-75600-lago && ./coconut -b
 RUN yum -y install bzip2
 # we use the ones tested with onedataSim package
 # RUN cd /opt && git clone https://github.com/lagoproject/arti.git 
-RUN cd /opt && git clone --recursive https://github.com/lagoproject/onedataSim.git
+RUN cd /opt && git clone --branch $ONEDATA_SIM_BRANCH --recursive https://github.com/lagoproject/onedataSim.git
 RUN cd /opt/onedataSim/arti && make
 #set paths and permissions for onedataSim
 RUN cd /opt/onedataSim && bash install.sh 
