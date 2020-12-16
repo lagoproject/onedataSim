@@ -31,7 +31,7 @@ RUN yum -y install gcc gcc-c++ gcc-gfortran \
 RUN while ! curl -O -C- -k -H "X-Auth-Token: $ONECLIENT_ACCESS_TOKEN_TO_BUILD" \
                  "$ONECLIENT_PROVIDER_HOST_TO_BUILD/cdmi/test4/corsika/corsika-75600-lago.tar.gz" ; \ 
                  do true ; done
-RUN tar -xvz -C /opt  corsika-75600-lago.tar.gz 
+RUN tar -xvzf ./corsika-75600-lago.tar.gz --directory /opt 
 RUN rm -f corsika-75600-lago.tar.gz
 
 RUN cd /opt/corsika-75600-lago && ./coconut -b
