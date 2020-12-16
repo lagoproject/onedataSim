@@ -68,7 +68,8 @@ RUN yum -y install acl attr
 
 # xattr (this is  python2 but I had found the command only in python2)
 RUN yum -y install  python2-pip python-devel libffi-devel 
-RUN pip install --upgrade pip
+# sometimes pip's upgrade fails
+#RUN pip install --upgrade pip
 RUN pip install xattr
 
 #python3 and libraries for Lago processing with onedata
