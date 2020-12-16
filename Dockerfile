@@ -18,7 +18,12 @@ ENV ONECLIENT_ACCESS_TOKEN=""
 ENV ONECLIENT_PROVIDER_HOST=""
 
 #to limit to this minor SO release
-#RUN echo '7.8.2003' > /etc/yum/vars/releasever
+RUN echo '7.8.2003' > /etc/yum/vars/releasever
+RUN sed -e '/mirrorlist=.*/d' \
+    -e 's/#baseurl=/baseurl=/' \
+    -e "s/\$releasever/7.8.2003/g" \
+    -e "s/mirror.centos.org\\/centos/vault.centos.org/g" \
+    -i /etc/yum.repos.d/CentOS-*
 RUN yum -y update
 
 # CORSIKA pre-requisites
