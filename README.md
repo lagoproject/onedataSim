@@ -25,7 +25,7 @@ Therefore, we encourage LAGO researchers to use these programs for their simulat
 
 ## Pre-requisites
 
-1. Be acredited in LAGO Virtual Organisation to obtain a OneData personal token.
+1. Be acredited in [LAGO Virtual Organisation](https://lagoproject.github.io/DMP/docs/howtos/how_to_join_LAGO_VO/) to obtain a OneData personal [token.](https://lagoproject.github.io/DMP/docs/howtos/how_to_login_into_OneData/) 
 
 2. Had [Docker](https://www.docker.com/) (or [Singularity](https://singularity.lbl.gov/) or [udocker](https://pypi.org/project/udocker/)) installed on your PC (or HPC/HTC facility) 
 
@@ -61,7 +61,9 @@ On CentOS 7 with root:
 
 To build the container is needed had a OneData token and to indicate any provider enroled as LAGO repository. This is so because ARTI currently calls [CORSIKA 7](https://www.ikp.kit.edu/corsika/79.php), which is licensed only for internal use of LAGO collaborators. As this software is stored at LAGO repository with closed permisions, its download requires to previously check if the user belongs to LAGO Virtual Organisation. 
 
-If you have the newer releases of *git*, you can build the container with one command:
+### Building from **master** branch
+
+If you have the newer releases of *git* installed in your machine, you can build the container with one command:  
 
 ```sh
 sudo docker build --no-cache --build-arg ONECLIENT_ACCESS_TOKEN_TO_BUILD="<personal OneData token>" \ 
@@ -78,7 +80,6 @@ sudo docker build --no-cache --build-arg ONECLIENT_ACCESS_TOKEN_TO_BUILD="<perso
                   -t  <container name> - < ./Dockerfile
 ```
 
-
 As an example:
 
 ```sh
@@ -87,6 +88,18 @@ sudo docker build --no-cache --build-arg ONECLIENT_ACCESS_TOKEN_TO_BUILD="MDAxY2
                   -t lagocontainer:0.0.1  https://github.com/lagoproject/onedataSim.git
 ```
 
+### Building from **develop** branch
+
+You can also create a container with the developing release (unstable) of onedataSim software. For this task,
+you must add ``--build-arg ONEDATASIM_BRANCH="develop"`` as argument and to append ``#develop`` at the end of 
+the repository link. For example:
+
+```sh
+sudo docker build --no-cache --build-arg ONEDATASIM_BRANCH="develop" \
+                  --build-arg ONECLIENT_ACCESS_TOKEN_TO_BUILD="MDV...o" \ 
+                  --build-arg ONECLIENT_PROVIDER_HOST_TO_BUILD="https://mon01-tic.ciemat.es" \ 
+                  -t lagocontainer:0.0.1  https://github.com/lagoproject/onedataSim.git#develop
+```
 
 
 
