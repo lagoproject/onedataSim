@@ -138,9 +138,29 @@ sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN="<personal onedata toke
 
 1. Executing on HTC clusters
 
-2. Executing on resurces instantiated by IaaS public/private cloud providers
+If you has enough permissions (sudo) to run Docker in privileged mode on a cluster and get the computing nodes in exclusive mode, you can run many simulations at time.
 
-3. Executing on Kubernettes
+For example on the Slurm batch systems, you can submit the `docker build` and the `docker run` operations in the same command line. (Note that removing `--no-cache`, the Docker image will not be rebuilt, except for changes in the GitHub repository).
+
+```sh
+export TOKEN="MDAxY...LAo"
+export ONEPROVIDER="https://mon01-tic.ciemat.es"
+
+srun -o %j.out --exclusive sudo docker build \
+                             --build-arg ONECLIENT_ACCESS_TOKEN_TO_BUILD=$TOKEN \
+                             --build-arg ONECLIENT_PROVIDER_HOST_TO_BUILD=$ONEPROVIDER \
+                              -t lagocontainer:0.0.1  https://github.com/lagoproject/onedataSim.git \ 
+                           && sudo docker run --privileged \
+                              -e ONECLIENT_ACCESS_TOKEN=$TOKEN 
+                              -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \
+                              -it lagocontainer:0.0.1  \
+                              bash -lc "do_sims_onedata.py -t 10 -u 0000-0001-6497-753X -s sac -k 1.5e2 -h QGSII" \
+                           &
+```
+
+2. Executing on resurces instantiated by IaaS cloud providers
+
+TBD.
 
 
 ## Logging into container for developing purposes
