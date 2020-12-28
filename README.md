@@ -144,11 +144,11 @@ For example on the Slurm batch systems, you can submit the `docker build` and th
 
 ```sh
 export TOKEN="MDAxY...LAo"
-export ONEPROVIDER="https://mon01-tic.ciemat.es"
+export ONEPROVIDER="mon02-tic.ciemat.es"
 
 srun -o %j.out --exclusive sudo docker build \
                              --build-arg ONECLIENT_ACCESS_TOKEN_TO_BUILD=$TOKEN \
-                             --build-arg ONECLIENT_PROVIDER_HOST_TO_BUILD=$ONEPROVIDER \
+                             --build-arg ONECLIENT_PROVIDER_HOST_TO_BUILD=https://$ONEPROVIDER \
                               -t lagocontainer:0.0.1  https://github.com/lagoproject/onedataSim.git \ 
                            && sudo docker run --privileged \
                               -e ONECLIENT_ACCESS_TOKEN=$TOKEN 
