@@ -144,7 +144,7 @@ For example on the Slurm batch systems, you can submit the `docker build` and th
 
 ```sh
 export TOKEN="MDAxY...LAo"
-export ONEPROVIDER="mon02-tic.ciemat.es"
+export ONEPROVIDER="mon01-tic.ciemat.es"
 
 srun -o %j.out --exclusive sudo docker build \
                              --build-arg ONECLIENT_ACCESS_TOKEN_TO_BUILD=$TOKEN \
