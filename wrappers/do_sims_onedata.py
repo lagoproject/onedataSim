@@ -256,7 +256,7 @@ print (arti_params, arti_params_dict, arti_params_json_md)
 
 try: 
     #mount OneData
-    cmd="oneclient /mnt"
+    cmd="oneclient --force-proxy-io /mnt"
     _run_Popen(cmd, timeout=10)
     if os.path.exists(onedata_path): 
         if not os.path.exists(catalog_path):
