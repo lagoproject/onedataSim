@@ -30,7 +30,7 @@ def _get_arti_params_json_md(arti_dict):
      "lago:flatArray" : not arti_dict['y'],                      
      "lago:cherenkov" : arti_dict['e'],
      "lago:debug" : arti_dict['d'],
-     "lago:otherDefaultValue" : arti_dict['x'],
+     "lago:defaults" : arti_dict['x'],
      "lago:highEnergyCutsSecondaries" : arti_dict['a']
     }
     ]}
@@ -125,7 +125,7 @@ def get_sys_args():
         codename+='_HEcuts'
         
     if args_dict['x'] is True:
-        codename+='_otherDefault'
+        codename+='_defaults'
         
     args_dict.update({'p': codename})
     
