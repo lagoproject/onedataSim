@@ -62,6 +62,7 @@ RUN cd /opt/onedataSim && bash install.sh
 #We did not use oneclient for downloading corsika-lago to isolate from its compiling 
 # and because it were need use privileged mode.
 RUN curl -sS http://get.onedata.org/oneclient-2002.sh | bash
+RUN mkdir -p /mnt/datahub.egi.eu && echo 'oneclient --force-proxy-io /mnt/datahub.egi.eu/' >> /root/.bashrc
 
 #getfacl getfattr 
 RUN yum -y install acl attr 
@@ -74,9 +75,6 @@ RUN pip install xattr
 
 #python3 and libraries for Lago processing with onedata
 RUN yum -y install python3 python36-pyxattr
-
-## testing mount...
-## oneclient /mnt
 
 WORKDIR /opt/corsika-75600-lago/run
 #ENTRYPOINT /opt/arti/sims/do_datahub.sh
