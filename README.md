@@ -120,7 +120,7 @@ sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN="<personal onedata toke
 ```sh
 sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN="MDAxY2xv...iXm8jowGgo" \
                 -e ONECLIENT_PROVIDER_HOST="mon01-tic.ciemat.es" \
-                -it lagocontainer:0.0.1  bash -lc "do_sims_onedata.py -t 10 -u 0000-0001-6497-753X -s sac -k 2.0e2 -h QGSII"
+                -it lagocontainer:0.0.1  bash -lc "do_sims_onedata.py -t 10 -u 0000-0001-6497-753X -s sac -k 2.0e2 -h QGSII -x"
 ```
 
 2. Executing on a multi-processor server
@@ -154,7 +154,7 @@ srun -o %j.out --exclusive sudo docker build \
                               -e ONECLIENT_ACCESS_TOKEN=$TOKEN 
                               -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \
                               -it lagocontainer:0.0.1  \
-                              bash -lc "do_sims_onedata.py -t 10 -u 0000-0001-6497-753X -s sac -k 1.5e2 -h QGSII" \
+                              bash -lc "do_sims_onedata.py -t 10 -u 0000-0001-6497-753X -s sac -k 1.5e2 -h QGSII -x" \
                            &
 ```
 
