@@ -248,16 +248,16 @@ def _consumer (catcodename, onedata_path):
 
 (arti_params, arti_params_dict, arti_params_json_md) = get_sys_args()
 catcodename = arti_params_dict["p"] 
-#onedata_path = '/mnt/LAGOsim'
-onedata_path = '/mnt/test4/LAGOSIM'
+#onedata_path = '/mnt/datahub.egi.eu/LAGOsim'
+onedata_path = '/mnt/datahub.egi.eu/test4/LAGOSIM'
 catalog_path = onedata_path + '/' +catcodename
 
 print (arti_params, arti_params_dict, arti_params_json_md)
 
 try: 
-    #mount OneData
-    cmd="oneclient --force-proxy-io /mnt"
-    _run_Popen(cmd, timeout=10)
+    ## mount OneData (fails in python although you wait forever) : removed, currently in Dockerfile.
+    ## cmd="oneclient --force-proxy-io /mnt"
+    ## _run_Popen(cmd, timeout=10)
     if os.path.exists(onedata_path): 
         if not os.path.exists(catalog_path):
             os.mkdir(catalog_path)
