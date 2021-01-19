@@ -29,7 +29,8 @@ def _get_arti_params_json_md(arti_dict):
      "lago:obsLev" : arti_dict['k'],     
      "lago:flatArray" : not arti_dict['y'],                      
      "lago:cherenkov" : arti_dict['e'],
-     "lago:debug" : arti_dict['k'], 
+     "lago:debug" : arti_dict['d'],
+     "lago:otherDefaultValue" : arti_dict['x'],
      "lago:highEnergyCutsSecondaries" : arti_dict['a']
     }
     ]}
@@ -92,6 +93,9 @@ def get_sys_args():
     #  echo -e "  -k <altitude, in cm>           : Fix altitude, even for predefined sites"
     parser.add_argument('-k', dest='k', required=True, type=float,
                        help='Fix altitude, even for predefined sites, in cm, float and scientific notation allowed')
+    #  echo -e "  -x                             : Enable other defaults (It doesn't prompt user for unset parameters)"
+    parser.add_argument('-x', action='store_true', default=None,
+                       help="Enable other defaults (It doesn\'t prompt user for unset parameters)")    
     #  echo -e "  -?                             : Shows this help and exit."
     parser.add_argument('-?', action='help', help='Shows this help and exit.')
     #  echo
@@ -119,7 +123,9 @@ def get_sys_args():
         
     if args_dict['a'] is True:
         codename+='_HEcuts'
-    
+        
+    if args_dict['x'] is True:
+        codename+='_otherDefault'
         
     args_dict.update({'p': codename})
     
