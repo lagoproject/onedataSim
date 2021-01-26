@@ -1,1 +1,18 @@
+version: "3.6"
 
+services:
+  onedataSim-testing:
+    image: "indigodatacloud/ci-images:python3.6"
+    container_name: "onedataSim-testing"
+    volumes:
+     - type: bind
+       source: ./onedataSim
+       target: /onedataSim-repo
+    #command: sleep 3600
+
+  onedataSim:
+     build:
+        context: "."
+        dockerfile: "./Dockerfile"
+     #image: "lagoproject/onedataSim:latest" # image at DockerHub (under consideration)
+     #command: sleep 3600
