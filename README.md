@@ -1,5 +1,8 @@
 # LAGO onedataSim : packed tools for [ARTI](https://github.com/lagoproject/arti) simulation and analisys on [OneData](https://github.com/onedata)
 
+[![Build status devel branch](https://jenkins.eosc-synergy.eu/buildStatus/icon?job=eosc-synergy-org%2FonedataSim%2Fdevel)](https://jenkins.eosc-synergy.eu/job/eosc-synergy-org/job/o3api/job/devel/)
+[![Build Status master branch](https://jenkins.eosc-synergy.eu/buildStatus/icon?job=eosc-synergy-org%2FonedataSim%2Fmaster)](https://jenkins.eosc-synergy.eu/job/eosc-synergy-org/job/o3api/job/master/)
+
 ## Description
 
 LAGO onedataSim packets all requeriments for runnig [ARTI](https://github.com/lagoproject/arti) into a Docker container, giving researcher the advantage of obtaining results on any plataform that supports Docker (Linux, Windows and MacOs on personal computers, HTC/HPC clusters or cloud plublic/private providers).
