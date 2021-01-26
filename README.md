@@ -1,6 +1,6 @@
 # LAGO onedataSim : packed tools for [ARTI](https://github.com/lagoproject/arti) simulation and analisys on [OneData](https://github.com/onedata)
 
-[![Build status devel branch](https://jenkins.eosc-synergy.eu/buildStatus/icon?job=eosc-synergy-org%2FonedataSim%2Fdevel)](https://jenkins.eosc-synergy.eu/job/eosc-synergy-org/job/o3api/job/devel/)
+[![Build status develop branch](https://jenkins.eosc-synergy.eu/buildStatus/icon?job=eosc-synergy-org%2FonedataSim%2Fdevelop)](https://jenkins.eosc-synergy.eu/job/eosc-synergy-org/job/o3api/job/develop/)
 [![Build Status master branch](https://jenkins.eosc-synergy.eu/buildStatus/icon?job=eosc-synergy-org%2FonedataSim%2Fmaster)](https://jenkins.eosc-synergy.eu/job/eosc-synergy-org/job/o3api/job/master/)
 
 ## Description
