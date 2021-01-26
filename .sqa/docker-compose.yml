@@ -1,1 +1,45 @@
 
+config:
+  project_repos:
+    o3api:
+      repo: 'https://github.com/lagoproject/onedataSim.git'
+      branch: develop  # I'd like to be a variable i.e GIT_BRANCH
+# I'd like to use DOCKERPASS as ONEDATA token...
+#  credentials:
+#    - id: onedataSim-dockerhub-xxx
+#      username_var: JPL_DOCKERUSER
+#      password_var: JPL_DOCKERPASS
+# environment:
+# #  JPL_DOCKERSERVER: "hub.docker.com"
+#   JPL_DOCKERPUSH: "onedataSim"
+#   JPL_DOCKERFORCEBUILD: "True"
+# #  LANG: C.UTF-8
+
+sqa_criteria:
+  qc_style:
+    repos:
+      o3api:
+        container: onedataSim-testing
+        tox:
+          tox_file: /onedataSim-repo/tox.ini
+          testenv:
+            - pep8
+  qc_coverage:
+    repos:
+      o3api:
+        container: onedataSim-testing
+        tox:
+          tox_file: /onedataSim-repo/tox.ini
+          testenv: 
+            - cover
+            - cobertura
+  qc_security:
+    repos:
+      o3api:
+        container: onedataSim-testing
+        tox:
+          tox_file: /onedataSim-repo/tox.ini
+          testenv:
+            - bandit
+
+timeout: 900
