@@ -3,8 +3,8 @@
     {
      "@id" : "/CATCODENAME/FILENAME#activity",
      "@type" : "prov:Activity",
-     "prov:wasAssociatedWith" : { "@id" : "HANDLETOCDMI/LAGOsoft/corsika/corsika-75600-lago.tar.gz" , "@type" : "lago:Software", "name" : "CORSIKA 75600 for LAGO Collaboration", 
-                                  "lago:runtimePlatform" : { "@id:" : "https://github.com/lagoproject/onedataSim/archive/release/0.0.1.zip" , "@type" : "lago:Software", "name" : "Arti Simulator integrated in OneData v.0.0.1" } },
+     "prov:wasAssociatedWith":{ "@id" : "HANDLETOCDMI/LAGOsoft/corsika/corsika-75600-lago.tar.gz", "@type" : "lago:Software", "name" : "CORSIKA 75600 for LAGO Collaboration",
+                                "lago:runtimePlatform" : { "@id:" : "https://api.github.com/repos/lagoproject/onedataSim/git/commits/COMMITSHAODSIM", "@type" : "lago:Software", "name" : "onedataSim", "sdo:codeRepository" : "https://github.com/lagoproject/onedataSim/tree/COMMITSHAODSIM" } },
      "prov:used" : "/CATCODENAME/DATNRUN.input",
      "prov:startedAtTime" : "STARTDATE",
      "prov:endedAtTime" : "ENDDATE"
