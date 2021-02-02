@@ -4,8 +4,8 @@
     {
      "@id" : "/CATCODENAME/FILENAME#activity",
      "@type" : "prov:Activity",
-     "prov:wasAssociatedWith" : { "@id" : "https://github.com/lagoproject/arti/archive/master.zip" , "@type" : "lago:Software", "name" : "LAGO Arti v.3",
-                                  "lago:runtimePlatform" : { "@id:" : "https://github.com/lagoproject/onedataSim/archive/release/0.0.1.zip" , "@type" : "lago:Software", "name" : "Arti Simulator integrated in OneData v.0.0.1" } },
+     "prov:wasAssociatedWith" : { "@id" : "https://api.github.com/repos/lagoproject/arti/git/commits/COMMITSHAARTI", "@type" : "lago:Software", "name" : "arti", "sdo:codeRepository" : "https://github.com/lagoproject/arti/tree/COMMITSHAARTI",
+                                "lago:runtimePlatform" : { "@id:" : "https://api.github.com/repos/lagoproject/onedataSim/git/commits/COMMITSHAODSIM", "@type" : "lago:Software", "name" : "onedataSim", "sdo:codeRepository" : "https://github.com/lagoproject/onedataSim/tree/COMMITSHAODSIM" } },
      "prov:used" : "/CATCODENAME#artiParams",
      "prov:startedAtTime" : "STARTDATE",
      "prov:endedAtTime" : "ENDDATE"
