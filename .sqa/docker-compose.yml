@@ -16,7 +16,7 @@ services:
       context: "."
       dockerfile: "./Dockerfile"
     environment:
-     - ONECLIENT_ACCESS_TOKEN_TO_BUILD=$JPL_SECRET
+     - ONECLIENT_ACCESS_TOKEN_TO_BUILD=${ONECLIENT_TOKEN}
      - ONECLIENT_PROVIDER_HOST_TO_BUILD="https://mon01-tic.ciemat.es"
 #    #image: "lagoproject/onedatasim:latest" # image could be at DockerHub (under consideration)
 #    #command: sleep 3600
