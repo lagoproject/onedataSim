@@ -39,11 +39,16 @@ sqa_criteria:
       onedatasim:
         # we need a complete build to test simulations
         container: onedatasim-build
-        environment:
-          - ONECLIENT_ACCESS_TOKEN=${ONECLIENT_TOKEN}
-          - ONECLIENT_PROVIDER_HOST="mon01-tic.ciemat.es"
+        #environment:
+        #  - ONECLIENT_ACCESS_TOKEN=${ONECLIENT_TOKEN}
+        #  - ONECLIENT_PROVIDER_HOST="mon01-tic.ciemat.es"
         commands:
-          - unittest
+          - >
+            env ONECLIENT_ACCESS_TOKEN=${ONECLIENT_TOKEN}
+            env ONECLIENT_PROVIDER_HOST="mon01-tic.ciemat.es"
+            ls /mnt
+          #- unittest
+          
   qc_security:
     repos:
       onedatasim:
