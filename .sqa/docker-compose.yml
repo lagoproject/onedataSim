@@ -14,5 +14,5 @@ services:
     build:
       context: "."
       dockerfile: "./Dockerfile"
-    #image: "lagoproject/onedataSim:latest" # image at DockerHub (under consideration)
+    image: "lagoproject/onedataSim:latest" # image could be at DockerHub (under consideration)
     #command: sleep 3600
