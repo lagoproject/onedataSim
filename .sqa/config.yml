@@ -7,8 +7,8 @@ config:
     - id: onedata-token-test4-ajrm
       variable: JPL_ONECLIENT_ACCESS_TOKEN_TO_BUILD
       #secret_var: JPL_ONECLIENT_ACCESS_TOKEN
-  #environment:
-  #  JPL_ONECLIENT_PROVIDER_HOST_TO_BUILD: "https://mon01-tic.ciemat.es"
+  environment:
+    JPL_ONECLIENT_PROVIDER_HOST_TO_BUILD: "https://mon01-tic.ciemat.es"
   #  ONECLIENT_PROVIDER_HOST: "mon01-tic.ciemat.es"
 #
 # I'd like to use DOCKERPASS as ONEDATA token...
