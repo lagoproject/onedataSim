@@ -10,9 +10,9 @@ services:
        target: /onedataSim-repo
     #command: sleep 3600
 
-  onedataSim:
-     onedataSim-build:
-        context: "."
-        dockerfile: "./Dockerfile"
+  onedataSim-build:
+     container_name: "onedataSim-build"
+     context: "."
+     dockerfile: "./Dockerfile"
      #image: "lagoproject/onedataSim:latest" # image at DockerHub (under consideration)
      #command: sleep 3600
