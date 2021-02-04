@@ -38,7 +38,10 @@ sqa_criteria:
     repos:
       onedatasim:
         # we need a complete build to test simulations
-        container: onedatasim-build   
+        container: onedatasim-build
+        environment:
+          - ONECLIENT_ACCESS_TOKEN=$JPL_SECRET
+          - ONECLIENT_PROVIDER_HOST="mon01-tic.ciemat.es"
         commands:
           - unittest
   qc_security:
