@@ -1,8 +1,8 @@
 config:
   project_repos:
-    o3api:
-      repo: 'https://github.com/lagoproject/onedataSim.git'
-      branch: develop  # I'd like to be a variable i.e GIT_BRANCH
+    onedataSim:
+      repo: 'https://github.com/lagoproject/onedataSim'
+      branch: dev  # I'd like to be a variable i.e GIT_BRANCH
 # I'd like to use DOCKERPASS as ONEDATA token...
 #  credentials:
 #    - id: onedataSim-dockerhub-xxx
