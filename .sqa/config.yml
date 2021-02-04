@@ -34,13 +34,13 @@ sqa_criteria:
         container: onedatasim-testing
         commands: 
           - cover
-#  qc_functional:
-#    repos:
-#      onedatasim:
-#        # we need a complete build to test simulations
-#        container: onedatasim-build   
-#        commands:
-#          - unittest
+  qc_functional:
+    repos:
+      onedatasim:
+        # we need a complete build to test simulations
+        container: onedatasim-build   
+        commands:
+          - unittest
   qc_security:
     repos:
       onedatasim:
