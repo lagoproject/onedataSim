@@ -1,7 +1,7 @@
 config:
   project_repos:
     onedataSim:
-      repo: 'https://github.com/lagoproject/onedataSim'
+      repo: 'https://github.com/EOSC-synergy/onedataSim'
       branch: dev  # I'd like to be a variable i.e GIT_BRANCH
 # I'd like to use DOCKERPASS as ONEDATA token...
 #  credentials:
