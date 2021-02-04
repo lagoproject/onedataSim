@@ -1,6 +1,6 @@
 config:
   project_repos:
-    onedataSim:
+    onedatasim:
       repo: 'https://github.com/EOSC-synergy/onedataSim'
       branch: dev  # I'd like to be a variable i.e GIT_BRANCH
 # I'd like to use DOCKERPASS as ONEDATA token...
@@ -17,8 +17,8 @@ config:
 sqa_criteria:
   qc_style:
     repos:
-      onedataSim:
-        container: onedataSim-testing
+      onedatasim:
+        container: onedatasim-testing
         commands:
           # "Flake 8 is the wrapper which verifies pep8, pyflakes and circular complexity"
           # "The error code of flake8 are E***, W*** used in pep8 and F*** and C9**"   
@@ -27,27 +27,27 @@ sqa_criteria:
           - flake8
   qc_coverage:
     repos:
-      onedataSim:
-        container: onedataSim-testing
+      onedatasim:
+        container: onedatasim-testing
         commands: 
           - cover
   qc_functional:
     repos:
-      onedataSim:
+      onedatasim:
         # we need a complete build to test simulations
-        container: onedataSim-build   
+        container: onedatasim-build   
         commands:
           - unittest
   qc_security:
     repos:
-      onedataSim:
-        container: onedataSim-testing
+      onedatasim:
+        container: onedatasim-testing
         commands: 
           - bandit
   qc_doc:
     repos:
-      onedataSim:
-        container: onedataSim-testing
+      onedatasim:
+        container: onedatasim-testing
         commands:
           - python setup.py build_sphinx
 
