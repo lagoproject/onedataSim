@@ -1,5 +1,4 @@
 version: "3.6"
-
 services:
   onedatasim-testing:
     image: "indigodatacloud/ci-images:python3.6"
@@ -9,8 +8,6 @@ services:
        source: ./onedatasim
        target: /onedatasim-repo
     #command: sleep 3600
-
-# Temporaly disabled due to onedata token
   onedatasim-build:
     build:
       context: "."
