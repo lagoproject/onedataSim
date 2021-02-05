@@ -1,18 +1,21 @@
 version: "3.6"
-
 services:
-  onedataSim-testing:
+  onedatasim-testing:
     image: "indigodatacloud/ci-images:python3.6"
-    container_name: "onedataSim-testing"
+    container_name: "onedatasim-testing"
     volumes:
      - type: bind
-       source: ./onedataSim
-       target: /onedataSim-repo
+       source: ./onedatasim
+       target: /onedatasim-repo
     #command: sleep 3600
+  onedatasim-build:
+    container_name: "onedatasim-build"
+    build:
+      context: "."
+      dockerfile: "./Dockerfile"
+      args:
+        ONECLIENT_ACCESS_TOKEN_TO_BUILD: ${TOKEN_BUILD}
+        ONECLIENT_PROVIDER_HOST_TO_BUILD: "https://mon01-tic.ciemat.es"
+#   #image: "lagoproject/onedatasim:latest" # image could be at DockerHub (under consideration)
+#   #command: sleep 3600
 
-  onedataSim:
-     onedataSim-build:
-        context: "."
-        dockerfile: "./Dockerfile"
-     #image: "lagoproject/onedataSim:latest" # image at DockerHub (under consideration)
-     #command: sleep 3600
