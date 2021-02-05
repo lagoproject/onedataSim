@@ -6,7 +6,6 @@ config:
   credentials:
     - id: onedata-token-test4-ajrm
       variable: ONECLIENT_TOKEN
-#
 # If we will want a private DockerHub
 #  credentials:
 #    - id: onedataSim-dockerhub-xxx
@@ -47,8 +46,7 @@ sqa_criteria:
             env ONECLIENT_ACCESS_TOKEN=${ONECLIENT_TOKEN}
             env ONECLIENT_PROVIDER_HOST="mon01-tic.ciemat.es"
             ls /mnt
-          #- unittest
-          
+          #- unittest       
   qc_security:
     repos:
       onedatasim:
@@ -61,5 +59,4 @@ sqa_criteria:
         container: onedatasim-testing
         commands:
           - python setup.py build_sphinx
-
 timeout: 900
