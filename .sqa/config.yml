@@ -3,9 +3,9 @@ config:
     onedatasim:
       repo: 'https://github.com/EOSC-synergy/onedataSim'
       branch: dev  # I'd like to be a variable i.e GIT_BRANCH
-  credentials:
-    - id: onedata-token-test4-ajrm
-      variable: ONECLIENT_TOKEN
+#  credentials:
+#    - id: onedata-token-test4-ajrm
+#      variable: ONECLIENT_TOKEN
 #
 # If we will want a private DockerHub
 #  credentials:
