@@ -8,9 +8,11 @@ pipeline {
     stages {
         stage('SQA baseline dynamic stages : code checks') {
             steps {
-                script {
-                    projectConfig = pipelineConfig()
-                    buildStages(projectConfig)
+                catchError {
+                    script {
+                        projectConfig = pipelineConfig()
+                        buildStages(projectConfig)
+                    }
                 }
             }
             post {
