@@ -3,9 +3,9 @@ config:
     onedatasim:
       repo: 'https://github.com/EOSC-synergy/onedataSim'
       branch: dev  # I'd like to be a variable i.e GIT_BRANCH
-#  credentials:
-#    - id: onedata-token-test4-ajrm
-#      variable: ONECLIENT_TOKEN
+  credentials:
+    - id: onedata-token-test4-ajrm
+      variable: ONECLIENT_TOKEN
 #
 # If we will want a private DockerHub
 #  credentials:
@@ -44,8 +44,7 @@ sqa_criteria:
         #  - ONECLIENT_PROVIDER_HOST="mon01-tic.ciemat.es"
         commands:
           - >
-            #env ONECLIENT_ACCESS_TOKEN=${ONECLIENT_TOKEN}
-            env ONECLIENT_ACCESS_TOKEN="MDAxY2xvY2F00aW9uIGRhdGFodWIuZWdpLmV1CjAwNmJpZGVudGlmaWVyIDIvbm1kL3Vzci005NDJiOTYwZTBlN2RkMzhiNzI3M2JiMzVkMDMwNzYxMWNoN2RkMy9hY3QvZmJlYjVhMDY2ZWU5NzE3ZGZhM2EwN2Y4MmU3MDU1MmZjaDU2YzEKMDA00OWNpZCBkYXRhLnBhdGggPSBMelF4TUdNM009URXpOMkkwTTJJeE5qSXdOVGhqWVdGaU5qYzFaRGc00T1RSbFkyaGxaV1EwCjAwMmZzaWduYXR1cmUgWg4lzTJWqfCd5o8zPMrIwc00DzSiJXkuVetrFjpD6xTAK"
+            env ONECLIENT_ACCESS_TOKEN=${ONECLIENT_TOKEN}
             env ONECLIENT_PROVIDER_HOST="mon01-tic.ciemat.es"
             ls /mnt
           #- unittest
