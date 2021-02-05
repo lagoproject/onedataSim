@@ -13,6 +13,6 @@ services:
       context: "."
       dockerfile: "./Dockerfile"
       args:
-        ONECLIENT_ACCESS_TOKEN_TO_BUILD : ${ONECLIENT_TOKEN}
+        ONECLIENT_ACCESS_TOKEN_TO_BUILD : ${TOKEN_BUILD}
 #   #image: "lagoproject/onedatasim:latest" # image could be at DockerHub (under consideration)
 #   #command: sleep 3600
