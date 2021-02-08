@@ -1,24 +1,28 @@
 config:
   project_repos:
-    o3api:
-      repo: 'https://github.com/lagoproject/onedataSim.git'
-      branch: develop  # I'd like to be a variable i.e GIT_BRANCH
-# I'd like to use DOCKERPASS as ONEDATA token...
+    onedatasim:
+      repo: 'https://github.com/EOSC-synergy/onedataSim'
+      branch: dev  # I'd like to be a variable i.e GIT_BRANCH
+#  credentials:
+#    - id: onedata-token-build-ajrm
+#      variable: TOKEN_BUILD
+#    - id: onedata-token-test4-ajrm
+#      variable: TOKEN_RUN
+# If we will want a private DockerHub
 #  credentials:
 #    - id: onedataSim-dockerhub-xxx
 #      username_var: JPL_DOCKERUSER
 #      password_var: JPL_DOCKERPASS
-# environment:
+#  environment:
 # #  JPL_DOCKERSERVER: "hub.docker.com"
 #   JPL_DOCKERPUSH: "onedataSim"
 #   JPL_DOCKERFORCEBUILD: "True"
 # #  LANG: C.UTF-8
-
 sqa_criteria:
   qc_style:
     repos:
-      onedataSim:
-        container: onedataSim-testing
+      onedatasim:
+        container: onedatasim-testing
         commands:
           # "Flake 8 is the wrapper which verifies pep8, pyflakes and circular complexity"
           # "The error code of flake8 are E***, W*** used in pep8 and F*** and C9**"   
@@ -27,28 +31,34 @@ sqa_criteria:
           - flake8
   qc_coverage:
     repos:
-      onedataSim:
-        container: onedataSim-testing
+      onedatasim:
+        container: onedatasim-testing
         commands: 
           - cover
-  qc_functional:
-    repos:
-      onedataSim:
-        # we need a complete build to test simulations
-        container: onedataSim-build   
-        commands:
-          - unittest
+#  qc_functional:
+#    repos:
+#      onedatasim:
+#        # we need a complete build to test simulations
+#        container: onedatasim-build
+#        #environment:
+#        #  - ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN}
+#        #  - ONECLIENT_PROVIDER_HOST="mon01-tic.ciemat.es"
+#        commands:
+#          - >
+#            env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN}
+#            env ONECLIENT_PROVIDER_HOST="mon01-tic.ciemat.es"
+#            ls /mnt
+#          #- unittest       
   qc_security:
     repos:
-      onedataSim:
-        container: onedataSim-testing
+      onedatasim:
+        container: onedatasim-testing
         commands: 
           - bandit
   qc_doc:
     repos:
-      onedataSim:
-        container: onedataSim-testing
+      onedatasim:
+        container: onedatasim-testing
         commands:
           - python setup.py build_sphinx
-
 timeout: 900
