@@ -27,6 +27,14 @@ def _get_arti_params_json_md(arti_dict):
      "lago:highEnergyIntModel" : arti_dict['h'], 
      "lago:detectorSite" : "https://github.com/lagoproject/DMP/blob/0.0.1/defs/sitesLago.jsonld#"+arti_dict['s'],
      "lago:obsLev" : arti_dict['k'],     
+     "lago:atmModel" : arti_dict['c'],     
+     "lago:rigidCutoff" : arti_dict['b'],     
+     "lago:lowZenith" : arti_dict['m'],     
+     "lago:highZenith" : arti_dict['n'],     
+     "lago:lowPenergy" : arti_dict['r'],     
+     "lago:upPenergy" : arti_dict['i'],     
+     "lago:horMag" : arti_dict['o'],     
+     "lago:verMag" : arti_dict['q'],     
      "lago:flatArray" : not arti_dict['y'],                      
      "lago:cherenkov" : arti_dict['e'],
      "lago:debug" : arti_dict['d'],
@@ -93,6 +101,30 @@ def get_sys_args():
     #  echo -e "  -k <altitude, in cm>           : Fix altitude, even for predefined sites"
     parser.add_argument('-k', dest='k', required=True, type=float,
                        help='Fix altitude, even for predefined sites, in cm, float and scientific notation allowed')
+    #  echo -e "  -c <atm_model>           : Atmospheric Model even for predefined sites"
+    parser.add_argument('-c', dest='c', 
+                       help='Atmospheric Model even for predefined sites. Note: Start number with E to use external atmospheres module')
+    #  echo -e "  -b <rigidity cutoff>           : Rigidity cutoff; 0 = disabled; value in GV = enabled"
+    parser.add_argument('-b', dest='b', 
+                       help='Rigidity cutoff; 0 = disabled; value in GV = enabled')
+    #  echo -e "  -m <Low edge zenith angle>           : Low edge of zenith angle (THETAP) [deg]"
+    parser.add_argument('-m', dest='m', type=float,
+                       help='Low edge of zenith angle (THETAP) [deg]')
+    #  echo -e "  -n <High edge zenith angle>           : High edge of zenith angle (THETAP) [deg]"
+    parser.add_argument('-n', dest='n', type=float,
+                       help='High edge of zenith angle (THETAP) [deg]')
+    #  echo -e "  -r<Low primary particle energy>           : Lower limit of the primary particle energy (ERANGE) [GeV]"
+    parser.add_argument('-r', dest='r', type=float,
+                       help='Lower limit of the primary particle energy (ERANGE) [GeV]')
+    #  echo -e "  -i<Upper primary particle energy>           : Upper limit of the primary particle energy (ERANGE) [GeV]"
+    parser.add_argument('-i', dest='i', type=float,
+                       help='Upper limit of the primary particle energy (ERANGE) [GeV]')
+    #  echo -e "  -o<BX>           : Horizontal comp. of the Earth's mag. field"
+    parser.add_argument('-o', dest='o', type=float,
+                       help='Horizontal comp. of the Earth mag. field')
+    #  echo -e "  -q<BZ>           : Vertical comp. of the Earth's mag. field"
+    parser.add_argument('-q', dest='q', type=float,
+                       help='Vertical comp. of the Earth mag. field')
     #  echo -e "  -x                             : Enable other defaults (It doesn't prompt user for unset parameters)"
     parser.add_argument('-x', action='store_true', default=None,
                        help="Enable other defaults (It doesn\'t prompt user for unset parameters)")    
@@ -110,7 +142,7 @@ def get_sys_args():
     args_dict.update({'v':CORSIKA_VER})
     
     #project a.k.a codename
-    #it shoulds describe a simulation 
+    #it should describe a simulation 
     
     codename=args_dict['s'] +'_'+ str(args_dict['t']) +'_'+ str(args_dict['k']) +'_'+ args_dict['v'] +'_'+ args_dict['h']
     if args_dict['y'] is True:
