@@ -26,15 +26,15 @@ def _get_arti_params_json_md(arti_dict):
      "lago:fluxTime" : "P"+str(arti_dict['p'])+"S", 
      "lago:highEnergyIntModel" : arti_dict['h'], 
      "lago:detectorSite" : "https://github.com/lagoproject/DMP/blob/0.0.1/defs/sitesLago.jsonld#"+arti_dict['s'],
-     "lago:obsLev" : arti_dict['k'],     
-     "lago:atmModel" : arti_dict['c'],     
-     "lago:rigidCutoff" : arti_dict['b'],     
-     "lago:lowZenith" : arti_dict['m'],     
-     "lago:highZenith" : arti_dict['n'],     
-     "lago:lowPenergy" : arti_dict['r'],     
-     "lago:upPenergy" : arti_dict['i'],     
-     "lago:horMag" : arti_dict['o'],     
-     "lago:verMag" : arti_dict['q'],     
+     "lago:altitude" : arti_dict['k'],     
+     "lago:modatm" : arti_dict['c'],     
+     "lago:rigidity" : arti_dict['b'],     
+     "lago:tMin" : arti_dict['m'],     
+     "lago:tMax" : arti_dict['n'],     
+     "lago:llimit" : arti_dict['r'],     
+     "lago:ulimit" : arti_dict['i'],     
+     "lago:bx" : arti_dict['o'],     
+     "lago:bz" : arti_dict['q'],     
      "lago:flatArray" : not arti_dict['y'],                      
      "lago:cherenkov" : arti_dict['e'],
      "lago:debug" : arti_dict['d'],
@@ -101,7 +101,7 @@ def get_sys_args():
     #  echo -e "  -k <altitude, in cm>           : Fix altitude, even for predefined sites"
     parser.add_argument('-k', dest='k', required=True, type=float,
                        help='Fix altitude, even for predefined sites, in cm, float and scientific notation allowed')
-    #  echo -e "  -c <atm_model>           : Atmospheric Model even for predefined sites"
+    #  echo -e "  -c <modatm>           : Atmospheric Model even for predefined sites"
     parser.add_argument('-c', dest='c', 
                        help='Atmospheric Model even for predefined sites. Note: Start number with E to use external atmospheres module')
     #  echo -e "  -b <rigidity cutoff>           : Rigidity cutoff; 0 = disabled; value in GV = enabled"
