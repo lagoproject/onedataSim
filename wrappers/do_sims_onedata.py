@@ -90,7 +90,6 @@ def get_first_catalog_metadata_json (catcodename,orcid):
                 s=s.replace('ORCID', orcid)
                 return json.loads(s)
 
-
 def get_catalog_metadata_activity (startdate, enddate):
 
     with open(onedataSimPath+'/json_tpl/catalog_corsika_activity.json', 'r') \
