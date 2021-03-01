@@ -12,7 +12,14 @@
 # additional modules needed
 # apt-get install python3-xattr
 # or yum install -y python36-pyxattr
-import subprocess, os, shutil, xattr, json, datetime, fcntl, sys, shlex
+# import subprocess, os, shutil, xattr, json, datetime, fcntl, sys, shlex
+import subprocess
+import os
+import xattr
+import json
+import datetime
+import sys
+import shlex
 
 from threading import Thread
 from queue import Queue
@@ -84,7 +91,7 @@ def get_first_catalog_metadata_json(catcodename, orcid):
 
     with open(onedataSimPath+'/json_tpl/common_context.json', 'r') as file1:
         with open(onedataSimPath+'/json_tpl/catalog_corsika.json', 'r') \
-            as file2:
+        as file2:
                 j = json.loads(file1.read())
                 j = _add_json(j, json.loads(file2.read()))
                 s = json.dumps(j)
@@ -96,7 +103,7 @@ def get_first_catalog_metadata_json(catcodename, orcid):
 def get_catalog_metadata_activity(startdate, enddate):
 
     with open(onedataSimPath+'/json_tpl/catalog_corsika_activity.json', 'r') \
-        as file1:
+    as file1:
         j = json.loads(file1.read())
         s = json.dumps(j)
         s = s.replace('CATCODENAME', catcodename)
@@ -110,7 +117,7 @@ def _get_common_metadata_aux():
 
     with open(onedataSimPath+'/json_tpl/common_context.json', 'r') as file1:
         with open(onedataSimPath+'/json_tpl/common_dataset.json', 'r') \
-            as file2:
+        as file2:
                 j = json.loads(file1.read())
                 j = _add_json(j, json.loads(file2.read()))
                 return j
@@ -119,7 +126,7 @@ def _get_common_metadata_aux():
 def _get_input_metadata(filecode):
 
     with open(onedataSimPath+'/json_tpl/dataset_corsika_input.json', 'r') \
-        as file1:
+    as file1:
         j = _get_common_metadata_aux()
         j = _add_json(j, json.loads(file1.read()))
         s = json.dumps(j)
@@ -130,10 +137,10 @@ def _get_input_metadata(filecode):
 
 def _get_bin_output_metadata(filecode):
 
-    with open(onedataSimPath+'/json_tpl/common_dataset_corsika_output.json', 
+    with open(onedataSimPath+'/json_tpl/common_dataset_corsika_output.json',
               'r') as file1:
-        with open(onedataSimPath+ 
-                  '/json_tpl/dataset_corsika_bin_output.json', 
+        with open(onedataSimPath +
+                  '/json_tpl/dataset_corsika_bin_output.json',
                   'r') as file2:
             j = _get_common_metadata_aux()
             j = _add_json(j, json.loads(file1.read()))
@@ -146,10 +153,10 @@ def _get_bin_output_metadata(filecode):
 
 def _get_lst_output_metadata(filecode):
 
-    with open(onedataSimPath+'/json_tpl/common_dataset_corsika_output.json', 
+    with open(onedataSimPath+'/json_tpl/common_dataset_corsika_output.json',
               'r') as file1:
-        with open(onedataSimPath+ 
-                  '/json_tpl/dataset_corsika_lst_output.json', 
+        with open(onedataSimPath +
+                  '/json_tpl/dataset_corsika_lst_output.json',
                   'r') as file2:
             j = _get_common_metadata_aux()
             j = _add_json(j, json.loads(file1.read()))
@@ -162,9 +169,9 @@ def _get_lst_output_metadata(filecode):
 
 def get_dataset_metadata(catcodename, filecode, startdate, end_date):
 
-    mdlistaux = [_get_bin_output_metadata(filecode), 
-                 _get_lst_output_metadata(filecode), 
-                     _get_input_metadata(filecode)]
+    mdlistaux = [_get_bin_output_metadata(filecode),
+                 _get_lst_output_metadata(filecode),
+                 _get_input_metadata(filecode)]
     mdlist = []
     for s in mdlistaux:
         s = s.replace('CATCODENAME', catcodename)
@@ -183,7 +190,7 @@ def _run_check_and_copy_results(catcodename, filecode, task, onedata_path):
     try:
         _run_Popen(task)
         metadatalist = \
-            get_dataset_metadata(catcodename, filecode, start_date, 
+            get_dataset_metadata(catcodename, filecode, start_date,
                                  _xsd_dateTime())
         for md in metadatalist:
             id = json.loads(md)['@id']
@@ -242,7 +249,7 @@ def _consumer(catcodename, onedata_path):
     while True:
         (filecode, task) = q.get()
         try:
-            _run_check_and_copy_results(catcodename, filecode, task, 
+            _run_check_and_copy_results(catcodename, filecode, task,
                                         onedata_path)
             print('Completed NRUN: ' + str(filecode) + '  ' + task)
             q.task_done()
@@ -290,8 +297,8 @@ _producer(catcodename, arti_params)
 q.join()
 
 
-md = _add_json(md, {'dataset': ["/" + catcodename + "/" + s for s in 
+md = _add_json(md, {'dataset': ["/" + catcodename + "/" + s for s in
                                 os.listdir(catalog_path)]})
-md = _add_json(md, json.loads(get_catalog_metadata_activity(main_start_date, 
+md = _add_json(md, json.loads(get_catalog_metadata_activity(main_start_date,
                                                             _xsd_dateTime())))
 xattr.setxattr(catalog_path, 'onedata_json', json.dumps(md))
