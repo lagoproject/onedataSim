@@ -96,8 +96,8 @@ def get_sys_args():
     #    Location (several options)"
     parser.add_argument('-s', dest='s', required=True,
                         choices=["hess", "sac", "etn", "ber", "lim", "glr",
-                        "mch", "bga", "mge", "brc", "and", "mpc",
-                        "cha", "cid", "mor", "lsc", "mbo", "ccs"],
+                                 "mch", "bga", "mge", "brc", "and", "mpc",
+                                 "cha", "cid", "mor", "lsc", "mbo", "ccs"],
                         help='Predefined LAGO site')
     #  echo -e "  -j <procs> : \
     #    Number of processors to use"
