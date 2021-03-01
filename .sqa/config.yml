@@ -54,7 +54,7 @@ sqa_criteria:
       onedatasim:
         container: onedatasim-testing
         commands: 
-          - bandit /onedatasim-repo
+          - bandit -r /onedatasim-repo
 #  qc_doc:
 #    repos:
 #      onedatasim:
