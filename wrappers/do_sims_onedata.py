@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 #
-################################################################################
-# Original Author: A.J. Rubio-Montero (http://orcid.org/0000-0001-6497-753X),  #
-#          CIEMAT - Sci-Track Group (http://rdgroups.ciemat.es/web/sci-track), #
-#          for the EOSC-Synergy project (EU H2020 RI Grant No 857647).         #
-# License (SPDX): BSD-3-Clause (https://opensource.org/licenses/BSD-3-Clause)  #
-# Copyright (c): 2020-today, The LAGO Collaboration (http://lagoproject.net)   #
-################################################################################
+###############################################################################
+# Original Author: A.J. Rubio-Montero (http://orcid.org/0000-0001-6497-753X), #
+#          CIEMAT - Sci-Track Group (http://rdgroups.ciemat.es/web/sci-track),#
+#          for the EOSC-Synergy project (EU H2020 RI Grant No 857647).        #
+# License (SPDX): BSD-3-Clause (https://opensource.org/licenses/BSD-3-Clause) #
+# Copyright (c): 2020-today, The LAGO Collaboration (http://lagoproject.net)  #
+###############################################################################
 
 
 # additional modules needed
@@ -20,131 +20,136 @@ from queue import Queue
 #
 from arguments import *
 
-
-
 onedataSimPath = os.path.dirname(os.path.abspath(__file__))
+
 
 # ----- utils -----
 def _run_Popen_interactive(command):
 
-    print (command+'\n')
-    p = subprocess.Popen(shlex.split(command), env=os.environ, \
-                         stdin=sys.stdin, stdout=sys.stdout, \
-                             stderr=sys.stderr)
+    print(command+'\n')
+    p = subprocess.Popen(shlex.split(command), env=os.environ,
+                         stdin=sys.stdin, stdout=sys.stdout,
+                         stderr=sys.stderr)
     p.wait()
 
 
-def _run_Popen(command, timeout=None):  
-    print (command+'\n')      
-    p = subprocess.Popen(command + ' 2>&1', shell = True, env=os.environ, \
+def _run_Popen(command, timeout=None):
+    print(command+'\n')
+    p = subprocess.Popen(command + ' 2>&1', shell=True, env=os.environ,
                          stdin=subprocess.PIPE, stdout=subprocess.PIPE)
     p.wait(timeout)
     res = ""
     if p.returncode != 0:
-        print ("Return code: "+str(res)+'\n')
+        print("Return code: "+str(res)+'\n')
     else:
         res = p.communicate()[0]
     return res
 
-def _xsd_dateTime ():
+
+def _xsd_dateTime():
 
     # xsd:dateTime
     # CCYY-MM-DDThh:mm:ss.sss[Z|(+|-)hh:mm]
-    # The time zone may be specified as Z (UTC) or (+|-)hh:mm. 
-    return str(datetime.datetime.utcnow()).replace(' ','T')+'Z'
+    # The time zone may be specified as Z (UTC) or (+|-)hh:mm.
+    return str(datetime.datetime.utcnow()).replace(' ', 'T')+'Z'
+
 
 # j is adding j_new terms to existing keys or adding keys.
 # j and j_new must have same structure (pruned) tree
 # (dict.update adds only when key not exist, otherwise replace)
-def _add_json (j, j_new):
-    
+def _add_json(j, j_new):
+
     if type(j) is list:
         if type(j_new) is list:
-            j+=j_new
+            j += j_new
             return j
         return j.append(j_new)
-    
+
     if (type(j) is dict) and (type(j_new) is dict):
-        k_old=j.keys()
-        for k,v in j_new.items():
+        k_old = j.keys()
+        for k, v in j_new.items():
             if k in k_old:
-                j[k]=_add_json(j[k],v)
-            else: 
-                j[k]=v
+                j[k] = _add_json(j[k], v)
+            else:
+                j[k] = v
         return j
-    
+
     # is not a list or a dict, is a term.
     # I change to list and call recursiveness
-    return _add_json([j],j_new)
-   
-#####
-def get_first_catalog_metadata_json (catcodename,orcid):
+    return _add_json([j], j_new)
 
-    with open(onedataSimPath+'/json_tpl/common_context.json', 'r') as file1: 
+
+#####
+def get_first_catalog_metadata_json(catcodename, orcid):
+
+    with open(onedataSimPath+'/json_tpl/common_context.json', 'r') as file1:
         with open(onedataSimPath+'/json_tpl/catalog_corsika.json', 'r') \
             as file2:
-                j=json.loads(file1.read())
-                j=_add_json(j,json.loads(file2.read()))
-                s=json.dumps(j)
-                s=s.replace('CATCODENAME', catcodename)
-                s=s.replace('ORCID', orcid)
+                j = json.loads(file1.read())
+                j = _add_json(j, json.loads(file2.read()))
+                s = json.dumps(j)
+                s = s.replace('CATCODENAME', catcodename)
+                s = s.replace('ORCID', orcid)
                 return json.loads(s)
 
 
-def get_catalog_metadata_activity (startdate, enddate):
+def get_catalog_metadata_activity(startdate, enddate):
 
     with open(onedataSimPath+'/json_tpl/catalog_corsika_activity.json', 'r') \
-        as file1: 
-        j=json.loads(file1.read())
-        s=json.dumps(j)
-        s=s.replace('CATCODENAME', catcodename)
-        s=s.replace('STARTDATE', startdate)
-        s=s.replace('ENDDATE', enddate)
+        as file1:
+        j = json.loads(file1.read())
+        s = json.dumps(j)
+        s = s.replace('CATCODENAME', catcodename)
+        s = s.replace('STARTDATE', startdate)
+        s = s.replace('ENDDATE', enddate)
         return s
 
+
 ######
-def _get_common_metadata_aux ():
-    
-    with open(onedataSimPath+'/json_tpl/common_context.json', 'r') as file1: 
+def _get_common_metadata_aux():
+
+    with open(onedataSimPath+'/json_tpl/common_context.json', 'r') as file1:
         with open(onedataSimPath+'/json_tpl/common_dataset.json', 'r') \
             as file2:
-                j=json.loads(file1.read())
-                j=_add_json(j,json.loads(file2.read()))
+                j = json.loads(file1.read())
+                j = _add_json(j, json.loads(file2.read()))
                 return j
-                
-                
-def _get_input_metadata (filecode):
-    
+
+
+def _get_input_metadata(filecode):
+
     with open(onedataSimPath+'/json_tpl/dataset_corsika_input.json', 'r') \
-        as file1: 
-        j=_get_common_metadata_aux()
-        j=_add_json(j,json.loads(file1.read()))
-        s=json.dumps(j)
-        s=s.replace('FILENAME', 'DAT'+filecode+'.input')
-        #warning, corsikainput metadata must be included also...
+        as file1:
+        j = _get_common_metadata_aux()
+        j = _add_json(j, json.loads(file1.read()))
+        s = json.dumps(j)
+        s = s.replace('FILENAME', 'DAT'+filecode+'.input')
+        # warning, corsikainput metadata must be included also...
         return s
-    
-def _get_bin_output_metadata (filecode):
-    
-    with open(onedataSimPath+'/json_tpl/common_dataset_corsika_output.json', \
-              'r') as file1: 
-        with open(onedataSimPath+ \
-                  '/json_tpl/dataset_corsika_bin_output.json', \
-                  'r') as file2: 
-            j=_get_common_metadata_aux()
-            j=_add_json(j,json.loads(file1.read()))
-            j=_add_json(j,json.loads(file2.read()))
-            s=json.dumps(j)
-            runnr=filecode.split('-')[0]
-            s=s.replace('FILENAME', 'DAT'+runnr+'.bz2')
-            return s        
- 
-def _get_lst_output_metadata (filecode):
-    
-    with open(onedataSimPath+'/json_tpl/common_dataset_corsika_output.json', \
+
+
+def _get_bin_output_metadata(filecode):
+
+    with open(onedataSimPath+'/json_tpl/common_dataset_corsika_output.json', 
               'r') as file1:
-        with open(onedataSimPath+ \
-                  '/json_tpl/dataset_corsika_lst_output.json', \
+        with open(onedataSimPath+ 
+                  '/json_tpl/dataset_corsika_bin_output.json', 
+                  'r') as file2:
+            j = _get_common_metadata_aux()
+            j = _add_json(j, json.loads(file1.read()))
+            j = _add_json(j, json.loads(file2.read()))
+            s = json.dumps(j)
+            runnr = filecode.split('-')[0]
+            s = s.replace('FILENAME', 'DAT'+runnr+'.bz2')
+            return s
+
+
+def _get_lst_output_metadata(filecode):
+
+    with open(onedataSimPath+'/json_tpl/common_dataset_corsika_output.json', 
+              'r') as file1:
+        with open(onedataSimPath+ 
+                  '/json_tpl/dataset_corsika_lst_output.json', 
                   'r') as file2:
             j = _get_common_metadata_aux()
             j = _add_json(j, json.loads(file1.read()))
@@ -154,10 +159,11 @@ def _get_lst_output_metadata (filecode):
             # falta comprimir si fuera necesario
             return s
 
+
 def get_dataset_metadata(catcodename, filecode, startdate, end_date):
 
-    mdlistaux = [_get_bin_output_metadata(filecode), \
-                 _get_lst_output_metadata(filecode), \
+    mdlistaux = [_get_bin_output_metadata(filecode), 
+                 _get_lst_output_metadata(filecode), 
                      _get_input_metadata(filecode)]
     mdlist = []
     for s in mdlistaux:
@@ -168,6 +174,7 @@ def get_dataset_metadata(catcodename, filecode, startdate, end_date):
         mdlist.append(s)
     return mdlist
 
+
 #########
 def _run_check_and_copy_results(catcodename, filecode, task, onedata_path):
 
@@ -176,7 +183,7 @@ def _run_check_and_copy_results(catcodename, filecode, task, onedata_path):
     try:
         _run_Popen(task)
         metadatalist = \
-            get_dataset_metadata(catcodename, filecode, start_date, \
+            get_dataset_metadata(catcodename, filecode, start_date, 
                                  _xsd_dateTime())
         for md in metadatalist:
             id = json.loads(md)['@id']
@@ -188,6 +195,7 @@ def _run_check_and_copy_results(catcodename, filecode, task, onedata_path):
             xattr.setxattr(onedata_path + id, 'onedata_json', md)
     except Exception as inst:
         raise inst
+
 
 # ------------ producer/consumer ---------
 main_start_date = _xsd_dateTime()
@@ -234,12 +242,13 @@ def _consumer(catcodename, onedata_path):
     while True:
         (filecode, task) = q.get()
         try:
-            _run_check_and_copy_results(catcodename, filecode, task, \
+            _run_check_and_copy_results(catcodename, filecode, task, 
                                         onedata_path)
             print('Completed NRUN: ' + str(filecode) + '  ' + task)
             q.task_done()
         except Exception as inst:
             q.put((filecode, task))
+
 
 # ------------ main stuff ---------
 (arti_params, arti_params_dict, arti_params_json_md) = get_sys_args()
@@ -281,8 +290,8 @@ _producer(catcodename, arti_params)
 q.join()
 
 
-md = _add_json(md, {'dataset': ["/" + catcodename + "/" + s for s in \
+md = _add_json(md, {'dataset': ["/" + catcodename + "/" + s for s in 
                                 os.listdir(catalog_path)]})
-md = _add_json(md, json.loads(get_catalog_metadata_activity(main_start_date, \
+md = _add_json(md, json.loads(get_catalog_metadata_activity(main_start_date, 
                                                             _xsd_dateTime())))
 xattr.setxattr(catalog_path, 'onedata_json', json.dumps(md))
