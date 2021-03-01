@@ -29,12 +29,12 @@ sqa_criteria:
           #  Alternative: hacking is a flake8' plug-in, based on OpenStack OpenStack Style Guidlines, 
           #               which are based on Google Python Style Guide.
           - flake8 /onedatasim-repo
-  qc_coverage:
-    repos:
-      onedatasim:
-        container: onedatasim-testing
-        commands: 
-          - cover
+#  qc_coverage:
+#    repos:
+#      onedatasim:
+#        container: onedatasim-testing
+#        commands: 
+#          - cover
 #  qc_functional:
 #    repos:
 #      onedatasim:
@@ -54,11 +54,11 @@ sqa_criteria:
       onedatasim:
         container: onedatasim-testing
         commands: 
-          - bandit
-  qc_doc:
-    repos:
-      onedatasim:
-        container: onedatasim-testing
-        commands:
-          - python setup.py build_sphinx
+          - bandit /onedatasim-repo
+#  qc_doc:
+#    repos:
+#      onedatasim:
+#        container: onedatasim-testing
+#        commands:
+#          - python setup.py build_sphinx
 timeout: 900
