@@ -214,9 +214,10 @@ def _producer(catcodename, arti_params):
     _run_Popen_interactive(cmd)
 
     # WARNING, I HAD TO PATCH rain.pl FOR AVOID SCREEN !!!!
-    cmd = "sed 's/screen -d -m -a -S \$name \$script; screen -ls/\$script/' " 
-          + "rain.pl -i"
+    cmd = ("sed 's/screen -d -m -a -S \$name \$script; screen -ls/\$script/' "
+         + " rain.pl -i")
     _run_Popen(cmd)
+    
     # WARNING, I HAD TO PATCH rain.pl FOR AVOID .long files !!!
     cmd = "sed 's/\$llongi /F /' rain.pl -i"
     _run_Popen(cmd)
