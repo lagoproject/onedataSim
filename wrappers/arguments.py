@@ -101,7 +101,7 @@ def get_sys_args():
                         help='Predefined LAGO site')
     #  echo -e "  -j <procs> : \
     #    Number of processors to use"
-    parser.add_argument('-j', dest='j', default=1,
+    parser.add_argument('-j', dest='j', type=int, default=1,
                         help='Number of processors to use')
     #  echo -e "  -y : \
     #    Select volumetric detector mode (default=flat array)"
