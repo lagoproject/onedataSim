@@ -96,12 +96,12 @@ def get_sys_args():
     #    Location (several options)"
     parser.add_argument('-s', dest='s', required=True,
                         choices=["hess", "sac", "etn", "ber", "lim", "glr",
-                        "mch", "bga", "mge", "brc", "and", "mpc",
-                        "cha", "cid", "mor", "lsc", "mbo", "ccs"],
+                                 "mch", "bga", "mge", "brc", "and", "mpc",
+                                 "cha", "cid", "mor", "lsc", "mbo", "ccs"],
                         help='Predefined LAGO site')
     #  echo -e "  -j <procs> : \
     #    Number of processors to use"
-    parser.add_argument('-j', dest='j', default=1,
+    parser.add_argument('-j', dest='j', type=int, default=1,
                         help='Number of processors to use')
     #  echo -e "  -y : \
     #    Select volumetric detector mode (default=flat array)"

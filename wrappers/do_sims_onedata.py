@@ -90,8 +90,8 @@ def _add_json(j, j_new):
 def get_first_catalog_metadata_json(catcodename, orcid):
 
     with open(onedataSimPath+'/json_tpl/common_context.json', 'r') as file1:
-        with open(onedataSimPath+'/json_tpl/catalog_corsika.json', 'r') \
-            as file2:
+        with open(onedataSimPath+'/json_tpl/catalog_corsika.json',
+                  'r') as file2:
             j = json.loads(file1.read())
             j = _add_json(j, json.loads(file2.read()))
             s = json.dumps(j)
@@ -102,8 +102,8 @@ def get_first_catalog_metadata_json(catcodename, orcid):
 
 def get_catalog_metadata_activity(startdate, enddate):
 
-    with open(onedataSimPath+'/json_tpl/catalog_corsika_activity.json', 'r') \
-        as file1:
+    with open(onedataSimPath+'/json_tpl/catalog_corsika_activity.json',
+              'r') as file1:
         j = json.loads(file1.read())
         s = json.dumps(j)
         s = s.replace('CATCODENAME', catcodename)
@@ -116,8 +116,8 @@ def get_catalog_metadata_activity(startdate, enddate):
 def _get_common_metadata_aux():
 
     with open(onedataSimPath+'/json_tpl/common_context.json', 'r') as file1:
-        with open(onedataSimPath+'/json_tpl/common_dataset.json', 'r') \
-            as file2:
+        with open(onedataSimPath+'/json_tpl/common_dataset.json',
+                  'r') as file2:
             j = json.loads(file1.read())
             j = _add_json(j, json.loads(file2.read()))
             return j
@@ -125,8 +125,8 @@ def _get_common_metadata_aux():
 
 def _get_input_metadata(filecode):
 
-    with open(onedataSimPath+'/json_tpl/dataset_corsika_input.json', 'r') \
-        as file1:
+    with open(onedataSimPath+'/json_tpl/dataset_corsika_input.json',
+              'r') as file1:
         j = _get_common_metadata_aux()
         j = _add_json(j, json.loads(file1.read()))
         s = json.dumps(j)
@@ -189,9 +189,8 @@ def _run_check_and_copy_results(catcodename, filecode, task, onedata_path):
 
     try:
         _run_Popen(task)
-        metadatalist = \
-            get_dataset_metadata(catcodename, filecode, start_date,
-                                 _xsd_dateTime())
+        metadatalist = get_dataset_metadata(catcodename, filecode, 
+                                            start_date, _xsd_dateTime())
         for md in metadatalist:
             id = json.loads(md)['@id']
             # oneclient change the filename owner when you move it to onedata
@@ -215,9 +214,10 @@ def _producer(catcodename, arti_params):
     _run_Popen_interactive(cmd)
 
     # WARNING, I HAD TO PATCH rain.pl FOR AVOID SCREEN !!!!
-    cmd = "sed 's/screen -d -m -a -S \$name \$script;" \
-        "screen -ls/\$script/' rain.pl -i"
+    cmd = "sed 's/screen -d -m -a -S \$name \$script; screen -ls/\$script/' " + \
+       " rain.pl -i"
     _run_Popen(cmd)
+    
     # WARNING, I HAD TO PATCH rain.pl FOR AVOID .long files !!!
     cmd = "sed 's/\$llongi /F /' rain.pl -i"
     _run_Popen(cmd)
@@ -288,7 +288,7 @@ md = get_first_catalog_metadata_json(catcodename, arti_params_dict['u'])
 md = _add_json(md, arti_params_json_md)
 xattr.setxattr(catalog_path, 'onedata_json', json.dumps(md))
 
-for i in range(arti_params_dict["j"]):  # processors
+for i in range(int(arti_params_dict["j"])):  # processors
     t = Thread(target=_consumer, args=(catcodename, onedata_path))
     t.daemon = True
     t.start()
