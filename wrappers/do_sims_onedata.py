@@ -288,7 +288,7 @@ md = get_first_catalog_metadata_json(catcodename, arti_params_dict['u'])
 md = _add_json(md, arti_params_json_md)
 xattr.setxattr(catalog_path, 'onedata_json', json.dumps(md))
 
-for i in range(arti_params_dict["j"]):  # processors
+for i in range(int(arti_params_dict["j"])):  # processors
     t = Thread(target=_consumer, args=(catcodename, onedata_path))
     t.daemon = True
     t.start()
