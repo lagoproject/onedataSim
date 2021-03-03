@@ -2,22 +2,7 @@ config:
   project_repos:
     onedatasim:
       repo: 'https://github.com/EOSC-synergy/onedataSim'
-      branch: dev  # I'd like to be a variable i.e GIT_BRANCH
-#  credentials:
-#    - id: onedata-token-build-ajrm
-#      variable: TOKEN_BUILD
-#    - id: onedata-token-test4-ajrm
-#      variable: TOKEN_RUN
-# If we will want a private DockerHub
-#  credentials:
-#    - id: onedataSim-dockerhub-xxx
-#      username_var: JPL_DOCKERUSER
-#      password_var: JPL_DOCKERPASS
-#  environment:
-# #  JPL_DOCKERSERVER: "hub.docker.com"
-#   JPL_DOCKERPUSH: "onedataSim"
-#   JPL_DOCKERFORCEBUILD: "True"
-# #  LANG: C.UTF-8
+      branch: ${GIT_LOCAL_BRANCH##*/} # I'd like to be a variable i.e GIT_BRANCH
 sqa_criteria:
   qc_style:
     repos:
@@ -28,37 +13,18 @@ sqa_criteria:
           # "The error code of flake8 are E***, W*** used in pep8 and F*** and C9**"   
           #  Alternative: hacking is a flake8' plug-in, based on OpenStack OpenStack Style Guidlines, 
           #               which are based on Google Python Style Guide.
-          - flake8
-  qc_coverage:
-    repos:
-      onedatasim:
-        container: onedatasim-testing
-        commands: 
-          - cover
-#  qc_functional:
-#    repos:
-#      onedatasim:
-#        # we need a complete build to test simulations
-#        container: onedatasim-build
-#        #environment:
-#        #  - ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN}
-#        #  - ONECLIENT_PROVIDER_HOST="mon01-tic.ciemat.es"
-#        commands:
-#          - >
-#            env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN}
-#            env ONECLIENT_PROVIDER_HOST="mon01-tic.ciemat.es"
-#            ls /mnt
-#          #- unittest       
+          - flake8 /onedatasim-repo
   qc_security:
     repos:
       onedatasim:
+        # preliminary check of security, only plain code without execution
         container: onedatasim-testing
         commands: 
-          - bandit
-  qc_doc:
-    repos:
-      onedatasim:
-        container: onedatasim-testing
-        commands:
-          - python setup.py build_sphinx
+          - bandit -r /onedatasim-repo
+#  qc_doc:
+#    repos:
+#      onedatasim:
+#        container: onedatasim-testing
+#        commands:
+#          - python setup.py build_sphinx
 timeout: 900
