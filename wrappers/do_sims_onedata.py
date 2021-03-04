@@ -185,22 +185,40 @@ def get_dataset_metadata(catcodename, filecode, startdate, end_date):
 #########
 def _run_check_and_copy_results(catcodename, filecode, task, onedata_path):
 
-    start_date = _xsd_dateTime()
+    # check if the results are already in onedata before running the task
+    runtask = False
+    mdlist_prev = get_dataset_metadata(catcodename, filecode,
+                                       _xsd_dateTime(), _xsd_dateTime())
+    for md in mdlist_prev:
+        id = json.loads(md)['@id']
+        # We should also check if the existent metadata is well formed
+        f = onedata_path + id
+        # print("Check if exist: " + f)  
+        if not os.path.exists(f):
+            print("This result does not exist in onedata: " + f)
+            print("Thus... I will RUN : " + filecode)
+            runtask = True
+            break
 
-    try:
-        _run_Popen(task)
-        metadatalist = get_dataset_metadata(catcodename, filecode, 
-                                            start_date, _xsd_dateTime())
-        for md in metadatalist:
-            id = json.loads(md)['@id']
-            # oneclient change the filename owner when you move it to onedata
-            # and this action raise exceptions with shutil.move()
-            # shutil.move('.' + id, onedata_path + id)
-            cmd = "mv ." + id + " " + onedata_path + id
-            _run_Popen(cmd)
-            xattr.setxattr(onedata_path + id, 'onedata_json', md)
-    except Exception as inst:
-        raise inst
+    if not runtask:
+        print("Results already in OneData, none to do with RUN : " + filecode)
+    else:
+        try:
+            start_date = _xsd_dateTime()
+            _run_Popen(task)
+            metadatalist = get_dataset_metadata(catcodename, filecode, 
+                                                start_date, _xsd_dateTime())
+            
+            for md in metadatalist:
+                id = json.loads(md)['@id']
+                # oneclient change the filename owner when you move it to
+                # onedata and this action raise exceptions with shutil.move()
+                # shutil.move('.' + id, onedata_path + id)
+                cmd = "mv ." + id + " " + onedata_path + id
+                _run_Popen(cmd)
+                xattr.setxattr(onedata_path + id, 'onedata_json', md)
+        except Exception as inst:
+            raise inst
 
 
 # ------------ producer/consumer ---------
@@ -273,20 +291,21 @@ try:
     # _run_Popen(cmd, timeout=10)
     if os.path.exists(onedata_path):
         if not os.path.exists(catalog_path):
-            os.mkdir(catalog_path)
-        else:
-            # It is needed managing this with some kind of versioning
-            # or completion of failed simulations
-            raise Exception("Simulation already in OneData")
+            os.mkdir(catalog_path, mode=0o755) # this should change to 0700
+            md = get_first_catalog_metadata_json(catcodename, 
+                                                 arti_params_dict['u'])
+            md = _add_json(md, arti_params_json_md)
+            xattr.setxattr(catalog_path, 'onedata_json', json.dumps(md))
+        else: 
+            if not os.access(catalog_path, os.W_OK):
+                # It is needed managing this with some kind of versioning
+                # or completion of failed simulations
+                raise Exception("Simulation blocked by other user in OneData: " + \
+                                catalog_path )
     else:
         raise Exception("OneData not mounted")
 except Exception as inst:
     raise inst
-
-
-md = get_first_catalog_metadata_json(catcodename, arti_params_dict['u'])
-md = _add_json(md, arti_params_json_md)
-xattr.setxattr(catalog_path, 'onedata_json', json.dumps(md))
 
 for i in range(int(arti_params_dict["j"])):  # processors
     t = Thread(target=_consumer, args=(catcodename, onedata_path))
@@ -296,6 +315,8 @@ for i in range(int(arti_params_dict["j"])):  # processors
 _producer(catcodename, arti_params)
 q.join()
 
+
+md = xattr.getxattr(catalog_path, 'onedata_json')
 
 md = _add_json(md, {'dataset': ["/" + catcodename + "/" + s for s in
                                 os.listdir(catalog_path)]})
