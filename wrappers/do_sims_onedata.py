@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 #
 ###############################################################################
-# Original Author: A.J. Rubio-Montero (http://orcid.org/0000-0001-6497-753X), #
+# Original Author: A.J. Rubio-Montero (http://.org/0000-0001-6497-753X), #
 #          CIEMAT - Sci-Track Group (http://rdgroups.ciemat.es/web/sci-track),#
 #          for the EOSC-Synergy project (EU H2020 RI Grant No 857647).        #
 # License (SPDX): BSD-3-Clause (https://opensource.org/licenses/BSD-3-Clause) #
@@ -85,9 +85,15 @@ def _add_json(j, j_new):
     # I change to list and call recursiveness
     return _add_json([j], j_new)
 
+def _replace_common_patterns(s, catcodename, arti_params_dict):
+        s = s.replace('CATCODENAME', catcodename)
+        s = s.replace('ORCID', arti_params_dict['u'])
+        # from arguments.py
+        s = s.replace('COMMITSHAARTI', arti_params_dict['priv_articommit'])
+        s = s.replace('COMMITSHAODSIM', arti_params_dict['priv_odsimcommit'])
 
 #####
-def get_first_catalog_metadata_json(catcodename, orcid):
+def get_first_catalog_metadata_json(catcodename, arti_params_dict):
 
     with open(onedataSimPath+'/json_tpl/common_context.json', 'r') as file1:
         with open(onedataSimPath+'/json_tpl/catalog_corsika.json',
@@ -95,20 +101,19 @@ def get_first_catalog_metadata_json(catcodename, orcid):
             j = json.loads(file1.read())
             j = _add_json(j, json.loads(file2.read()))
             s = json.dumps(j)
-            s = s.replace('CATCODENAME', catcodename)
-            s = s.replace('ORCID', orcid)
+            s = _replace_common_patterns(s, catcodename, arti_params_dict)
             return json.loads(s)
 
 
-def get_catalog_metadata_activity(startdate, enddate):
+def get_catalog_metadata_activity(startdate, enddate, arti_params_dict):
 
     with open(onedataSimPath+'/json_tpl/catalog_corsika_activity.json',
               'r') as file1:
         j = json.loads(file1.read())
         s = json.dumps(j)
-        s = s.replace('CATCODENAME', catcodename)
         s = s.replace('STARTDATE', startdate)
         s = s.replace('ENDDATE', enddate)
+        s = _replace_common_patterns(s, catcodename, arti_params_dict)
         return s
 
 
@@ -174,7 +179,7 @@ def get_dataset_metadata(catcodename, filecode, startdate, end_date):
                  _get_input_metadata(filecode)]
     mdlist = []
     for s in mdlistaux:
-        s = s.replace('CATCODENAME', catcodename)
+        s = _replace_common_patterns(s, catcodename, arti_params_dict)
         s = s.replace('NRUN', filecode)
         s = s.replace('STARTDATE', startdate)
         s = s.replace('ENDDATE', end_date)
@@ -293,15 +298,15 @@ try:
         if not os.path.exists(catalog_path):
             os.mkdir(catalog_path, mode=0o755) # this should change to 0700
             md = get_first_catalog_metadata_json(catcodename, 
-                                                 arti_params_dict['u'])
+                                                 arti_params_dict)
             md = _add_json(md, arti_params_json_md)
             xattr.setxattr(catalog_path, 'onedata_json', json.dumps(md))
         else: 
             if not os.access(catalog_path, os.W_OK):
                 # It is needed managing this with some kind of versioning
                 # or completion of failed simulations
-                raise Exception("Simulation blocked by other user in OneData: " + \
-                                catalog_path )
+                raise Exception("Simulation blocked by other user in" + \
+                                " OneData: " + catalog_path)
     else:
         raise Exception("OneData not mounted")
 except Exception as inst:
