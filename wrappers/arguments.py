@@ -14,10 +14,48 @@
 
 # import argparse, sys
 import argparse
+import os
+import subprocess
+import sys
+import shlex
 # from builtins import int
+
 
 CORSIKA_VER = '75600'
 
+
+# --- utils ---
+
+def _run_Popen_interactive(command):
+
+    print(command+'\n')
+    p = subprocess.Popen(shlex.split(command), env=os.environ,
+                         stdin=sys.stdin, stdout=sys.stdout,
+                         stderr=sys.stderr)
+    p.wait()
+
+def _run_Popen(command, timeout=None):
+
+    print(command+'\n')
+    p = subprocess.Popen(command + ' 2>&1', shell=True, env=os.environ,
+                         stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p.wait(timeout)
+    res = ""
+    if p.returncode != 0:
+        print("Return code: "+str(res)+'\n')
+    else:
+        res = p.communicate()[0]
+    return res
+
+def _get_git_commit(repopath):
+
+    cmd = "git --git-dir " + repopath + "/.git rev-parse --verify HEAD"
+    lines = _run_Popen(cmd).decode("utf-8").split('\n')
+    if str(lines[0]) != "":
+        return str(lines[0])
+    else:
+        raise Exception("Git release of software not found")
+    
 
 def _get_arti_params_json_md(arti_dict):
 
@@ -206,18 +244,19 @@ def get_sys_args():
     # args_dict.update({'w': '/opt/corsika-'+CORSIKA_VER+
     #                  '-lago/run/'+str(args_dict['t'])})
     args_dict.update({'w': '/opt/corsika-'+CORSIKA_VER+'-lago/run/'})
-
-    # private arguments
-    args_dict['priv_articommit'] = "000dummy111"
-    args_dict['priv_odsimcommit'] = "222dummy333"
         
     
-    
+    # reconstruct arguments to launch ARTI by command line    
     s = ''
     for (key, value) in args_dict.items():
         if value is not None:
             s += ' -'+key
             if value is not True:
                 s += ' '+str(value)
+
+    # Now I can add extra info (without changing s)
+    args_dict['priv_articommit'] = _get_git_commit(os.environ['LAGO_ARTI'])
+    args_dict['priv_odsimcommit'] = _get_git_commit(os.environ['LAGO_ONEDATASIM'])
+        
 
     return (s, args_dict, _get_arti_params_json_md(args_dict))
