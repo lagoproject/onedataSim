@@ -207,6 +207,12 @@ def get_sys_args():
     #                  '-lago/run/'+str(args_dict['t'])})
     args_dict.update({'w': '/opt/corsika-'+CORSIKA_VER+'-lago/run/'})
 
+    # private arguments
+    args_dict['priv_articommit'] = "000dummy111"
+    args_dict['priv_odsimcommit'] = "222dummy333"
+        
+    
+    
     s = ''
     for (key, value) in args_dict.items():
         if value is not None:
