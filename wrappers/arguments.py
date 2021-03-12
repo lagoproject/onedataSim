@@ -262,5 +262,9 @@ def get_sys_args():
     handle_aux='https://' + os.environ['ONECLIENT_PROVIDER_HOST'])
     args_dict['priv_handlejsonapi'] = handleaux + '/api/v3/oneprovider/metadata/json'
     args_dict['priv_handlecdmi'] = handleaux + '/cdmi'
-
+    
+    # dcat:accessURL corresponds to the landing page and it can only be set when the
+    # data will be officially published, thus temporarily we firstly use a dummy url
+    args_dict['priv_landingpage'] = 'https://datahub.egi.eu/not_published_yet'
+    
     return (s, args_dict, _get_arti_params_json_md(args_dict))
