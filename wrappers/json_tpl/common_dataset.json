@@ -4,7 +4,7 @@
   "description" : "CORSIKA FILENAME",
   "title" : "CATCODENAME_FILENAME",
   "wasGeneratedBy" : "/CATCODENAME/FILENAME#activity",
-  "qualifiedAttribution" : { "@id" : "https://orcid.org/ORCIDCODE" , "@type" : "lago:Person" },
+  "qualifiedAttribution" : { "@id" : "https://orcid.org/ORCID" , "@type" : "lago:Person" },
   "distribution" : "/CATCODENAME/FILENAME#distribution",
   "@graph" : [
     {

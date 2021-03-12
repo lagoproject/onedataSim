@@ -14,23 +14,60 @@
 
 # import argparse, sys
 import argparse
+import os
+import subprocess
+import sys
+import shlex
 # from builtins import int
+
 
 CORSIKA_VER = '75600'
 
 
+# --- utils ---
+
+def _run_Popen_interactive(command):
+
+    print(command+'\n')
+    p = subprocess.Popen(shlex.split(command), env=os.environ,
+                         stdin=sys.stdin, stdout=sys.stdout,
+                         stderr=sys.stderr)
+    p.wait()
+
+def _run_Popen(command, timeout=None):
+
+    print(command+'\n')
+    p = subprocess.Popen(command + ' 2>&1', shell=True, env=os.environ,
+                         stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p.wait(timeout)
+    res = ""
+    if p.returncode != 0:
+        print("Return code: "+str(res)+'\n')
+    else:
+        res = p.communicate()[0]
+    return res
+
+def _get_git_commit(repopath):
+
+    cmd = "git --git-dir " + repopath + "/.git rev-parse --verify HEAD"
+    lines = _run_Popen(cmd).decode("utf-8").split('\n')
+    if str(lines[0]) != "":
+        return str(lines[0])
+    else:
+        raise Exception("Git release of software not found")
+    
+
 def _get_arti_params_json_md(arti_dict):
 
-    j = {"@graph": [
-        {
+    dict_aux = {
          "@id": "/"+arti_dict['p']+"#artiParams",
          "@type": "lago:ArtiParams",
-         "lago:fluxTime": "P"+str(arti_dict['p'])+"S",
+         "lago:fluxTime": "P"+str(arti_dict['t'])+"S",
          "lago:highEnergyIntModel": arti_dict['h'],
          "lago:detectorSite":
-         "https://github.com/lagoproject/DMP/blob/0.0.1/defs/sitesLago.jsonld#"
+         "https://github.com/lagoproject/DMP/blob/1.1/defs/sitesLago.jsonld#"
          + arti_dict['s'],
-         "lago:altitude": arti_dict['k'],
+         "lago:obsLev": arti_dict['k'],
          "lago:modatm": arti_dict['c'],
          "lago:rigidity": arti_dict['b'],
          "lago:tMin": arti_dict['m'],
@@ -45,7 +82,13 @@ def _get_arti_params_json_md(arti_dict):
          "lago:defaults": arti_dict['x'],
          "lago:highEnergyCutsSecondaries": arti_dict['a']
          }
+
+    # create JSON removing empty values
+
+    j = {"@graph": [
+        {k: v for k, v in dict_aux.items() if v is not None}
         ]}
+
     return j
 
 
@@ -184,7 +227,7 @@ def get_sys_args():
     # project a.k.a codename
     # it should describe a simulation
 
-    codename = args_dict['s'] + '_' + str(args_dict['t']) + '_' + \
+    codename = 'S0_' + args_dict['s'] + '_' + str(args_dict['t']) + '_' + \
         str(args_dict['k']) + '_' + args_dict['v'] + '_' + args_dict['h']
     if args_dict['y'] is True:
         codename += '_volu'
@@ -206,7 +249,9 @@ def get_sys_args():
     # args_dict.update({'w': '/opt/corsika-'+CORSIKA_VER+
     #                  '-lago/run/'+str(args_dict['t'])})
     args_dict.update({'w': '/opt/corsika-'+CORSIKA_VER+'-lago/run/'})
-
+        
+    
+    # reconstruct arguments to launch ARTI by command line    
     s = ''
     for (key, value) in args_dict.items():
         if value is not None:
@@ -214,4 +259,17 @@ def get_sys_args():
             if value is not True:
                 s += ' '+str(value)
 
+    # Now I can add extra info (without changing s)
+    args_dict['priv_articommit'] = _get_git_commit(os.environ['LAGO_ARTI'])
+    args_dict['priv_odsimcommit'] = _get_git_commit(os.environ['LAGO_ONEDATASIM'])
+    
+    # WARNING temporarily the main HANDLE ref will be the current OneProvider 
+    handleaux='https://' + os.environ['ONECLIENT_PROVIDER_HOST']
+    args_dict['priv_handlejsonapi'] = handleaux + '/api/v3/oneprovider/metadata/json'
+    args_dict['priv_handlecdmi'] = handleaux + '/cdmi'
+    
+    # dcat:accessURL corresponds to the landing page and it can only be set when the
+    # data will be officially published, thus temporarily we firstly use a dummy url
+    args_dict['priv_landingpage'] = 'https://datahub.egi.eu/not_published_yet'
+    
     return (s, args_dict, _get_arti_params_json_md(args_dict))
