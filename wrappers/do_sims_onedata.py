@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 #
 ###############################################################################
-# Original Author: A.J. Rubio-Montero (http://.org/0000-0001-6497-753X), #
+# Original Author: A.J. Rubio-Montero (http://orcid.org/0000-0001-6497-753X), #
 #          CIEMAT - Sci-Track Group (http://rdgroups.ciemat.es/web/sci-track),#
 #          for the EOSC-Synergy project (EU H2020 RI Grant No 857647).        #
 # License (SPDX): BSD-3-Clause (https://opensource.org/licenses/BSD-3-Clause) #
