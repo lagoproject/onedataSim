@@ -77,6 +77,7 @@ def _replace_common_patterns(s, catcodename, arti_params_dict):
     s = s.replace('COMMITSHAODSIM', arti_params_dict['priv_odsimcommit'])
     s = s.replace('HANDLEJSONAPI', arti_params_dict['priv_handlejsonapi'])
     s = s.replace('HANDLECDMI', arti_params_dict['priv_handlecdmi'])
+    s = s.replace('LANDINGPAGE', arti_params_dict['priv_landingpage'])
     return s
 
 # ----- end utils -----
