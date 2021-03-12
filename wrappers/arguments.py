@@ -259,7 +259,7 @@ def get_sys_args():
     args_dict['priv_odsimcommit'] = _get_git_commit(os.environ['LAGO_ONEDATASIM'])
     
     # WARNING temporarily the main HANDLE ref will be the current OneProvider 
-    handle_aux='https://' + 'os.environ['ONECLIENT_PROVIDER_HOST'])'
+    handle_aux='https://' + os.environ['ONECLIENT_PROVIDER_HOST'])
     args_dict['priv_handleapi'] = handleaux + '/api/v3/oneprovider/metadata/json/'
     args_dict['priv_handlecdmi'] = handleaux + '/cdmi/'
 
