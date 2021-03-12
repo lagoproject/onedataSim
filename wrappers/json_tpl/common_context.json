@@ -1,6 +1,6 @@
 {
   "@context" : {
-    "@base" : "HANDLEtoJSONAPIrepositoryURL", 
+    "@base" : "HANDLEJSONAPI", 
     "lago" : "https://github.com/lagoproject/DMP/blob/0.0.1/schema/lagoSchema.jsonld",
     "prov" : "http://www.w3.org/ns/prov#",
     "dct" : "http://purl.org/dc/terms/",
