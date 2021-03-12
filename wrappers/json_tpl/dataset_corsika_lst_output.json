@@ -3,7 +3,7 @@
    {
      "@id" : "/CATCODENAME/FILENAME#distribution",
      "@type" : "Distribution",
-     "accessURL" : "XXXXdeberiaserlalandingpage",
+     "accessURL" : "LANDINGPAGE",
      "format" : "http://publications.europa.eu/resource/authority/file-type/TXT",
      "accessService" : "/CATCODENAME/FILENAME#dataservice",
      "mediaType" : "http://www.iana.org/assignments/media-types/text",
