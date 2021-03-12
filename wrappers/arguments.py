@@ -59,16 +59,15 @@ def _get_git_commit(repopath):
 
 def _get_arti_params_json_md(arti_dict):
 
-    j = {"@graph": [
-        {
+    dict_aux = {
          "@id": "/"+arti_dict['p']+"#artiParams",
          "@type": "lago:ArtiParams",
-         "lago:fluxTime": "P"+str(arti_dict['p'])+"S",
+         "lago:fluxTime": "P"+str(arti_dict['t'])+"S",
          "lago:highEnergyIntModel": arti_dict['h'],
          "lago:detectorSite":
-         "https://github.com/lagoproject/DMP/blob/0.0.1/defs/sitesLago.jsonld#"
+         "https://github.com/lagoproject/DMP/blob/1.1/defs/sitesLago.jsonld#"
          + arti_dict['s'],
-         "lago:altitude": arti_dict['k'],
+         "lago:obsLev": arti_dict['k'],
          "lago:modatm": arti_dict['c'],
          "lago:rigidity": arti_dict['b'],
          "lago:tMin": arti_dict['m'],
@@ -83,7 +82,13 @@ def _get_arti_params_json_md(arti_dict):
          "lago:defaults": arti_dict['x'],
          "lago:highEnergyCutsSecondaries": arti_dict['a']
          }
+
+    # create JSON removing empty values
+
+    j = {"@graph": [
+        {k: v for k, v in dict_aux.items() if v is not None}
         ]}
+
     return j
 
 
@@ -259,7 +264,7 @@ def get_sys_args():
     args_dict['priv_odsimcommit'] = _get_git_commit(os.environ['LAGO_ONEDATASIM'])
     
     # WARNING temporarily the main HANDLE ref will be the current OneProvider 
-    handle_aux='https://' + os.environ['ONECLIENT_PROVIDER_HOST'])
+    handleaux='https://' + os.environ['ONECLIENT_PROVIDER_HOST']
     args_dict['priv_handlejsonapi'] = handleaux + '/api/v3/oneprovider/metadata/json'
     args_dict['priv_handlecdmi'] = handleaux + '/cdmi'
     

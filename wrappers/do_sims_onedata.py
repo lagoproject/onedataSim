@@ -31,7 +31,7 @@ onedataSimPath = os.path.dirname(os.path.abspath(__file__))
 
 def _write_file(filepath, txt):
     
-    with open(filepath, 'w') as file1:
+    with open(filepath, 'w+') as file1:
         file1.write(txt)
         
         
@@ -214,7 +214,7 @@ def _run_check_and_copy_results(catcodename, filecode, task, onedata_path,
                 # shutil.move('.' + id, onedata_path + id)
                 cmd = "mv ." + id + " " + onedata_path + id
                 _run_Popen(cmd)
-                _write_file('.' + onedata_path + id + '.jsonld', md)
+                _write_file(onedata_path + id + '.jsonld', md)
                 xattr.setxattr(onedata_path + id, 'onedata_json', md)
         except Exception as inst:
             raise inst
@@ -282,7 +282,7 @@ def _consumer(catcodename, onedata_path, arti_params_dict):
 (arti_params, arti_params_dict, arti_params_json_md) = get_sys_args()
 catcodename = arti_params_dict["p"]
 # onedata_path = '/mnt/datahub.egi.eu/LAGOsim'
-onedata_path = '/mnt/datahub.egi.eu/test4/LAGOSIM'
+onedata_path = '/mnt/datahub.egi.eu/test8/LAGOSIM'
 catalog_path = onedata_path + '/' + catcodename
 
 print(arti_params, arti_params_dict, arti_params_json_md)
@@ -298,7 +298,7 @@ try:
             md = get_first_catalog_metadata_json(catcodename, 
                                                  arti_params_dict)
             md = _add_json(md, arti_params_json_md)
-            _write_file('.' + catalog_path + '.jsonld', json.dumps(md))
+            _write_file(catalog_path + '.jsonld', json.dumps(md))
             xattr.setxattr(catalog_path, 'onedata_json', json.dumps(md))
         else: 
             if not os.access(catalog_path, os.W_OK):
@@ -321,11 +321,14 @@ _producer(catcodename, arti_params)
 q.join()
 
 
-md = xattr.getxattr(catalog_path, 'onedata_json')
+md = json.loads(xattr.getxattr(catalog_path, 'onedata_json'))
 
 md = _add_json(md, {'dataset': ["/" + catcodename + "/" + s for s in
                                 os.listdir(catalog_path)]})
+
 md = _add_json(md, json.loads(get_catalog_metadata_activity(main_start_date,
-                                                            _xsd_dateTime())))
-_write_file('.' + catalog_path + '.jsonld', json.dumps(md))
+                                                            _xsd_dateTime(),
+                                                            arti_params_dict)))
+
+_write_file(catalog_path + '.jsonld',  json.dumps(md))
 xattr.setxattr(catalog_path, 'onedata_json', json.dumps(md))
