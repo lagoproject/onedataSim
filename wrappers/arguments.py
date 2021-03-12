@@ -222,7 +222,7 @@ def get_sys_args():
     # project a.k.a codename
     # it should describe a simulation
 
-    codename = args_dict['s'] + '_' + str(args_dict['t']) + '_' + \
+    codename = 'S0_' + args_dict['s'] + '_' + str(args_dict['t']) + '_' + \
         str(args_dict['k']) + '_' + args_dict['v'] + '_' + args_dict['h']
     if args_dict['y'] is True:
         codename += '_volu'
