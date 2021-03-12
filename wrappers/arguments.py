@@ -260,7 +260,7 @@ def get_sys_args():
     
     # WARNING temporarily the main HANDLE ref will be the current OneProvider 
     handle_aux='https://' + os.environ['ONECLIENT_PROVIDER_HOST'])
-    args_dict['priv_handleapi'] = handleaux + '/api/v3/oneprovider/metadata/json/'
+    args_dict['priv_handlejsonapi'] = handleaux + '/api/v3/oneprovider/metadata/json/'
     args_dict['priv_handlecdmi'] = handleaux + '/cdmi/'
 
     return (s, args_dict, _get_arti_params_json_md(args_dict))
