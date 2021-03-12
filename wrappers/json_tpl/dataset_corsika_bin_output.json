@@ -3,7 +3,7 @@
     {
      "@id" : "/CATCODENAME/FILENAME#distribution",
      "@type" : "Distribution",
-     "accessURL" : "XXXXdeberiaserlalandingpage",
+     "accessURL" : "LANDINGPAGE",
      "format" : "http://publications.europa.eu/resource/authority/file-type/BIN",
      "accessService" : "/CATCODENAME/FILENAME#dataservice",
      "mediaType" : "https://www.iana.org/assignments/media-types/application/octet-stream",
