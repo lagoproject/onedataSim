@@ -21,7 +21,7 @@ import shlex
 # from builtins import int
 
 
-CORSIKA_VER = '75600'
+CORSIKA_VER = '77402'
 
 
 # --- utils ---
