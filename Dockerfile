@@ -29,19 +29,20 @@ RUN yum -y update
 # CORSIKA pre-requisites
 RUN yum -y install gcc gcc-c++ gcc-gfortran \
         curl csh make perl perl-Data-Dumper \
-        git perl-Switch
+        git perl-Switch file unzip
 
 # CORSIKA autorished copy for internal distribution on the LAGO Collaboration (CDMI private link)
 #RUN curl -k -H "X-Auth-Token: $ONECLIENT_ACCESS_TOKEN_TO_BUILD" \
 #               "$ONECLIENT_PROVIDER_HOST_TO_BUILD/cdmi/test4/corsika/corsika-75600-lago.tar.gz" \
 #               | tar xvz -C /opt              
 RUN while ! curl -O -C- -k -H "X-Auth-Token: $ONECLIENT_ACCESS_TOKEN_TO_BUILD" \
-                 "$ONECLIENT_PROVIDER_HOST_TO_BUILD/cdmi/LAGOsoft/corsika/corsika-75600-lago.tar.gz" ; \ 
+                 "$ONECLIENT_PROVIDER_HOST_TO_BUILD/cdmi/LAGOsoft/corsika/lago-corsika-8c98bf419940ca7a9c7fd10bef7ad9e090b785d3.zip" ; \ 
                  do true ; done
-RUN tar -xvzf ./corsika-75600-lago.tar.gz --directory /opt 
-RUN rm -f corsika-75600-lago.tar.gz
+RUN unzip ./lago-corsika-8c98bf419940ca7a9c7fd10bef7ad9e090b785d3.zip  
+RUN mv lago-corsika-main/corsika-77402 /opt/corsika-77402-lago
+RUN rm -f lago-corsika-8c98bf419940ca7a9c7fd10bef7ad9e090b785d3.zip
 
-RUN cd /opt/corsika-75600-lago && ./coconut -b
+RUN cd /opt/corsika-77402-lago && ./coconut -b
 
 ## testing corsika
 ## ./corsika75600Linux_QGSII_gheisha < all-inputs > output.txt
