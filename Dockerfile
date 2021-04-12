@@ -36,11 +36,11 @@ RUN yum -y install gcc gcc-c++ gcc-gfortran \
 #               "$ONECLIENT_PROVIDER_HOST_TO_BUILD/cdmi/test4/corsika/corsika-75600-lago.tar.gz" \
 #               | tar xvz -C /opt              
 RUN while ! curl -O -C- -k -H "X-Auth-Token: $ONECLIENT_ACCESS_TOKEN_TO_BUILD" \
-                 "$ONECLIENT_PROVIDER_HOST_TO_BUILD/cdmi/LAGOsoft/corsika/lago-corsika-8c98bf419940ca7a9c7fd10bef7ad9e090b785d3.zip" ; \ 
+                 "$ONECLIENT_PROVIDER_HOST_TO_BUILD/cdmi/LAGOsoft/corsika/lago-corsika-ae38b63419f6882ca1d070b34e3f6e46a721ffe9.zip" ; \ 
                  do true ; done
-RUN unzip ./lago-corsika-8c98bf419940ca7a9c7fd10bef7ad9e090b785d3.zip  
+RUN unzip ./lago-corsika-ae38b63419f6882ca1d070b34e3f6e46a721ffe9.zip  
 RUN mv lago-corsika-main/corsika-77402 /opt/corsika-77402-lago
-RUN rm -f lago-corsika-8c98bf419940ca7a9c7fd10bef7ad9e090b785d3.zip
+RUN rm -f lago-corsika-ae38b63419f6882ca1d070b34e3f6e46a721ffe9.zip
 
 RUN cd /opt/corsika-77402-lago && ./coconut -b
 
