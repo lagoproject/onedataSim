@@ -29,7 +29,7 @@ RUN yum -y update
 # CORSIKA pre-requisites
 RUN yum -y install gcc gcc-c++ gcc-gfortran \
         curl csh make perl perl-Data-Dumper \
-        git perl-Switch file unzip
+        git perl-Switch file unzip bzip2
 
 # CORSIKA autorished copy for internal distribution on the LAGO Collaboration (CDMI private link)
 #RUN curl -k -H "X-Auth-Token: $ONECLIENT_ACCESS_TOKEN_TO_BUILD" \
