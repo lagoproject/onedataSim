@@ -42,7 +42,7 @@ RUN unzip ./lago-corsika-ae38b63419f6882ca1d070b34e3f6e46a721ffe9.zip
 RUN mv lago-corsika-main/corsika-77402 /opt/corsika-77402-lago
 RUN rm -f lago-corsika-ae38b63419f6882ca1d070b34e3f6e46a721ffe9.zip
 
-RUN cd /opt/corsika-77402-lago && ./coconut -b
+RUN cd /opt/corsika-77402-lago && ./coconut-lago
 
 ## testing corsika
 ## ./corsika75600Linux_QGSII_gheisha < all-inputs > output.txt
