@@ -230,7 +230,7 @@ def get_sys_args():
     codename = 'S0_' + args_dict['s'] + '_' + str(args_dict['t'])
 
     if args_dict['k'] is not None:
-        condename += '_' + str(args_dict['k'])
+        codename += '_' + str(args_dict['k'])
 
     codename += '_' + args_dict['v'] + '_' + args_dict['h']
 
