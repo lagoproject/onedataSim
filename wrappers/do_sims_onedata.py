@@ -214,7 +214,7 @@ def _run_check_and_copy_results(catcodename, filecode, task, onedata_path,
                 # shutil.move('.' + id, onedata_path + id)
                 cmd = "mv ." + id + " " + onedata_path + id
                 _run_Popen(cmd)
-                id_hidden = '/.metadata' + id.lstrip('/').replace('/','/.')
+                id_hidden = '/' + id.lstrip('/').replace('/','/.metadata/.')
                 _write_file(onedata_path + id_hidden + '.jsonld', md)
                 xattr.setxattr(onedata_path + id, 'onedata_json', md)
         except Exception as inst:
