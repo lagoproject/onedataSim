@@ -178,6 +178,28 @@ def get_dataset_metadata(catcodename, filecode, startdate, end_date,
 
 
 #########
+
+# ------------ queue operations trhough oneclient -----------
+q_onedata = Queue()
+
+def _consumer_onedata_mv(onedata_path):
+    
+    while True:
+        md = q_onedata.get()
+        try:
+            id = json.loads(md)['@id']
+            # oneclient change the filename owner when you move it to
+            # onedata and this action raise exceptions with shutil.move()
+            # shutil.move('.' + id, onedata_path + id)
+            cmd = "mv ." + id + " " + onedata_path + id
+            _run_Popen(cmd)
+            xattr.setxattr(onedata_path + id, 'onedata_json', md)
+            id_hidden = '/' + id.lstrip('/').replace('/','/.metadata/.')
+            _write_file(onedata_path + id_hidden + '.jsonld', md)
+            q_onedata.task_done()
+        except Exception as inst:
+            q_onedata.put(md)
+
 def _run_check_and_copy_results(catcodename, filecode, task, onedata_path,
                                 arti_params_dict):
 
@@ -208,18 +230,11 @@ def _run_check_and_copy_results(catcodename, filecode, task, onedata_path,
                                                 arti_params_dict)
             
             for md in metadatalist:
-                id = json.loads(md)['@id']
-                # oneclient change the filename owner when you move it to
-                # onedata and this action raise exceptions with shutil.move()
-                # shutil.move('.' + id, onedata_path + id)
-                cmd = "mv ." + id + " " + onedata_path + id
-                _run_Popen(cmd)
-                id_hidden = '/' + id.lstrip('/').replace('/','/.metadata/.')
-                _write_file(onedata_path + id_hidden + '.jsonld', md)
-                xattr.setxattr(onedata_path + id, 'onedata_json', md)
+                q_onedata.put(md)
         except Exception as inst:
             raise inst
 
+ 
 
 # ------------ producer/consumer ---------
 main_start_date = _xsd_dateTime()
@@ -321,7 +336,13 @@ for i in range(int(arti_params_dict["j"])):  # processors
     t.start()
 
 _producer(catcodename, arti_params)
+
+t = Thread(target=_consumer_onedata_mv, args=(onedata_path))
+t.daemon = True
+t.start()
+
 q.join()
+q_onedata.join()
 
 
 md = json.loads(xattr.getxattr(catalog_path, 'onedata_json'))
