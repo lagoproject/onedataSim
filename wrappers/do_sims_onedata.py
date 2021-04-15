@@ -17,6 +17,7 @@ import xattr
 import json
 import datetime
 import shutil
+import time
 
 from threading import Thread
 from queue import Queue
@@ -183,7 +184,7 @@ def get_dataset_metadata(catcodename, filecode, startdate, end_date,
 q_onedata = Queue()
 
 def _consumer_onedata_mv(onedata_path):
-    
+   
     while True:
         md = q_onedata.get()
         try:
@@ -199,7 +200,10 @@ def _consumer_onedata_mv(onedata_path):
             q_onedata.task_done()
         except Exception as inst:
             q_onedata.put(md)
+            time.sleep(2)
 
+            
+            
 def _run_check_and_copy_results(catcodename, filecode, task, onedata_path,
                                 arti_params_dict):
 
