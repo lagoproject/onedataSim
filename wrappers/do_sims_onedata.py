@@ -337,7 +337,7 @@ for i in range(int(arti_params_dict["j"])):  # processors
 
 _producer(catcodename, arti_params)
 
-t = Thread(target=_consumer_onedata_mv, args=(onedata_path))
+t = Thread(target=_consumer_onedata_mv, args=(onedata_path,))
 t.daemon = True
 t.start()
 
