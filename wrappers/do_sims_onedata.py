@@ -184,7 +184,7 @@ def get_dataset_metadata(catcodename, filecode, startdate, end_date,
 q_onedata = Queue()
 
 def _consumer_onedata_mv(onedata_path):
-   
+    
     while True:
         md = q_onedata.get()
         try:
@@ -192,18 +192,34 @@ def _consumer_onedata_mv(onedata_path):
             # oneclient change the filename owner when you move it to
             # onedata and this action raise exceptions with shutil.move()
             # shutil.move('.' + id, onedata_path + id)
-            cmd = "mv ." + id + " " + onedata_path + id
-            _run_Popen(cmd)
-            xattr.setxattr(onedata_path + id, 'onedata_json', md)
-            id_hidden = '/' + id.lstrip('/').replace('/','/.metadata/.')
-            _write_file(onedata_path + id_hidden + '.jsonld', md)
+            #  
+            # copy if the file exists, if not can be because corsika failed
+            if os.path.exists("." + id):
+                cmd = "cp ." + id + " " + onedata_path + id
+                _run_Popen(cmd)
+                time.sleep(0.1)
+                # test if effectively copied to copy metadata
+                if os.path.exists(onedata_path + id):
+                    xattr.setxattr(onedata_path + id, 'onedata_json', md)
+                    id_hidden = '/' + id.lstrip('/').replace('/','/.metadata/.')
+                    _write_file(onedata_path + id_hidden + '.jsonld', md)
+                else:
+                    print('CAUTION: '+ id +' is not in onedata, requeuing...' )
+                    raise inst
+                # thus, I can remove local file 
+                cmd = "rm -f ." + id
+                _run_Popen(cmd)
+            else:
+                print('ERROR: '+ id +' was not calculated')
+
             q_onedata.task_done()
+
         except Exception as inst:
+            print(id + ': copy queued again')
             q_onedata.put(md)
             time.sleep(2)
 
-            
-            
+
 def _run_check_and_copy_results(catcodename, filecode, task, onedata_path,
                                 arti_params_dict):
 

@@ -63,7 +63,7 @@ RUN cd /opt/onedataSim && bash install.sh
 #We did not use oneclient for downloading corsika-lago to isolate from its compiling 
 # and because it were need use privileged mode.
 RUN curl -sS http://get.onedata.org/oneclient-2002.sh | bash
-RUN mkdir -p /mnt/datahub.egi.eu && echo 'oneclient --force-proxy-io /mnt/datahub.egi.eu/' >> /root/.bashrc
+RUN mkdir -p /mnt/datahub.egi.eu && echo 'nice -n -10 oneclient --force-proxy-io /mnt/datahub.egi.eu/' >> /root/.bashrc
 
 #getfacl getfattr 
 RUN yum -y install acl attr 
