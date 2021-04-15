@@ -214,7 +214,8 @@ def _run_check_and_copy_results(catcodename, filecode, task, onedata_path,
                 # shutil.move('.' + id, onedata_path + id)
                 cmd = "mv ." + id + " " + onedata_path + id
                 _run_Popen(cmd)
-                _write_file(onedata_path + id + '.jsonld', md)
+                id_hidden = '/' + id.lstrip('/').replace('/','/.metadata/.')
+                _write_file(onedata_path + id_hidden + '.jsonld', md)
                 xattr.setxattr(onedata_path + id, 'onedata_json', md)
         except Exception as inst:
             raise inst
@@ -295,10 +296,12 @@ try:
     if os.path.exists(onedata_path):
         if not os.path.exists(catalog_path):
             os.mkdir(catalog_path, mode=0o755) # this should change to 0700
+            os.mkdir(catalog_path + '/.metadata', mode=0o755) # idem to 0700
             md = get_first_catalog_metadata_json(catcodename, 
                                                  arti_params_dict)
             md = _add_json(md, arti_params_json_md)
-            _write_file(catalog_path + '.jsonld', json.dumps(md))
+            _write_file(catalog_path + '/.metadata/.' + catcodename + '.jsonld',
+                        json.dumps(md))
             xattr.setxattr(catalog_path, 'onedata_json', json.dumps(md))
         else: 
             if not os.access(catalog_path, os.W_OK):
@@ -323,12 +326,14 @@ q.join()
 
 md = json.loads(xattr.getxattr(catalog_path, 'onedata_json'))
 
-md = _add_json(md, {'dataset': ["/" + catcodename + "/" + s for s in
-                                os.listdir(catalog_path)]})
+# I'm replacing, not adding datasets. 
+md['dataset'] = ["/" + catcodename + "/" + s for s in 
+                 os.listdir(catalog_path) if not s.startswith('.')]
 
 md = _add_json(md, json.loads(get_catalog_metadata_activity(main_start_date,
                                                             _xsd_dateTime(),
                                                             arti_params_dict)))
 
-_write_file(catalog_path + '.jsonld',  json.dumps(md))
+_write_file(catalog_path + '/.metadata/.' + catcodename + '.jsonld',
+            json.dumps(md))
 xattr.setxattr(catalog_path, 'onedata_json', json.dumps(md))

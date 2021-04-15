@@ -21,7 +21,7 @@ import shlex
 # from builtins import int
 
 
-CORSIKA_VER = '75600'
+CORSIKA_VER = '77402'
 
 
 # --- utils ---
@@ -55,7 +55,7 @@ def _get_git_commit(repopath):
         return str(lines[0])
     else:
         raise Exception("Git release of software not found")
-    
+
 
 def _get_arti_params_json_md(arti_dict):
 
@@ -138,9 +138,10 @@ def get_sys_args():
     #  echo -e "  -s <site> : \
     #    Location (several options)"
     parser.add_argument('-s', dest='s', required=True,
-                        choices=["hess", "sac", "etn", "ber", "lim", "glr",
-                                 "mch", "bga", "mge", "brc", "and", "mpc",
-                                 "cha", "cid", "mor", "lsc", "mbo", "ccs"],
+                        choices=[ "QUIE","and","asu","ber","bga","brc","bue",
+                                  "cha","chia","cpv","cuz","gua","kna","lim",
+                                  "lpb","lsc","mapi","mge","pam","sac","sao",
+                                  "sawb","serb","sng","tac","tuc","vcp" ],
                         help='Predefined LAGO site')
     #  echo -e "  -j <procs> : \
     #    Number of processors to use"
@@ -165,7 +166,7 @@ def get_sys_args():
                         help='Enable high energy cuts for secondaries')
     #  echo -e "  -k <altitude, in cm> : \
     #    Fix altitude, even for predefined sites"
-    parser.add_argument('-k', dest='k', required=True, type=float,
+    parser.add_argument('-k', dest='k', type=float,
                         help='Fix altitude, even for predefined sites, in cm, \
                         float and scientific notation allowed')
     #  echo -e "  -c <modatm> : \
@@ -227,8 +228,13 @@ def get_sys_args():
     # project a.k.a codename
     # it should describe a simulation
 
-    codename = 'S0_' + args_dict['s'] + '_' + str(args_dict['t']) + '_' + \
-        str(args_dict['k']) + '_' + args_dict['v'] + '_' + args_dict['h']
+    codename = 'S0_' + args_dict['s'] + '_' + str(args_dict['t'])
+
+    if args_dict['k'] is not None:
+        codename += '_' + str(args_dict['k'])
+
+    codename += '_' + args_dict['v'] + '_' + args_dict['h']
+
     if args_dict['y'] is True:
         codename += '_volu'
     else:
@@ -249,9 +255,8 @@ def get_sys_args():
     # args_dict.update({'w': '/opt/corsika-'+CORSIKA_VER+
     #                  '-lago/run/'+str(args_dict['t'])})
     args_dict.update({'w': '/opt/corsika-'+CORSIKA_VER+'-lago/run/'})
-        
-    
-    # reconstruct arguments to launch ARTI by command line    
+
+    # reconstruct arguments to launch ARTI by command line
     s = ''
     for (key, value) in args_dict.items():
         if value is not None:
