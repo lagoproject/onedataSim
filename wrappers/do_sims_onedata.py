@@ -298,7 +298,9 @@ def _producer(catcodename, arti_params):
             s_aux = z_aux[1].replace('/', '')
             s_aux = z_aux[1].replace('.run', '')
             z_aux = s_aux.split('-')
-            filecode = runnr+'-'+prmpar+'-'+z_aux[1]
+            # runnr has at least 6 characters, but can has more    
+            runnr_6 = str(int(runnr)).zfill(6)
+            filecode = runnr_6 + '-' +prmpar +'-' + z_aux[1]
             q.put((filecode, task))
 
 
