@@ -1,5 +1,11 @@
 # LAGO onedataSim : packed tools for [ARTI](https://github.com/lagoproject/arti) simulation and analisys on [OneData](https://github.com/onedata)
 
+dev branch: [![Build Status](https://jenkins.eosc-synergy.eu/buildStatus/icon?job=eosc-synergy-org%2FonedataSim%2Fdev)](https://jenkins.eosc-synergy.eu/job/eosc-synergy-org/job/onedataSim/job/dev/)
+
+master branch: [![Build Status](https://jenkins.eosc-synergy.eu/buildStatus/icon?job=eosc-synergy-org%2FonedataSim%2Fmaster)](https://jenkins.eosc-synergy.eu/job/eosc-synergy-org/job/onedataSim/job/master/)
+
+
+
 ## Description
 
 LAGO onedataSim packets all requeriments for runnig [ARTI](https://github.com/lagoproject/arti) into a Docker container, giving researcher the advantage of obtaining results on any plataform that supports Docker (Linux, Windows and MacOs on personal computers, HTC/HPC clusters or cloud plublic/private providers).
@@ -25,7 +31,7 @@ Therefore, we encourage LAGO researchers to use these programs for their simulat
 
 ## Pre-requisites
 
-1. Be acredited in LAGO Virtual Organisation to obtain a OneData personal token.
+1. Be acredited in [LAGO Virtual Organisation](https://lagoproject.github.io/DMP/docs/howtos/how_to_join_LAGO_VO/) to obtain a OneData personal [token.](https://lagoproject.github.io/DMP/docs/howtos/how_to_login_into_OneData/) 
 
 2. Had [Docker](https://www.docker.com/) (or [Singularity](https://singularity.lbl.gov/) or [udocker](https://pypi.org/project/udocker/)) installed on your PC (or HPC/HTC facility) 
 
@@ -61,7 +67,9 @@ On CentOS 7 with root:
 
 To build the container is needed had a OneData token and to indicate any provider enroled as LAGO repository. This is so because ARTI currently calls [CORSIKA 7](https://www.ikp.kit.edu/corsika/79.php), which is licensed only for internal use of LAGO collaborators. As this software is stored at LAGO repository with closed permisions, its download requires to previously check if the user belongs to LAGO Virtual Organisation. 
 
-If you have the newer releases of *git*, you can build the container with one command:
+### Building from **master** branch
+
+If you have the newer releases of *git* installed in your machine, you can build the container with one command:  
 
 ```sh
 sudo docker build --no-cache --build-arg ONECLIENT_ACCESS_TOKEN_TO_BUILD="<personal OneData token>" \ 
@@ -78,7 +86,6 @@ sudo docker build --no-cache --build-arg ONECLIENT_ACCESS_TOKEN_TO_BUILD="<perso
                   -t  <container name> - < ./Dockerfile
 ```
 
-
 As an example:
 
 ```sh
@@ -87,6 +94,18 @@ sudo docker build --no-cache --build-arg ONECLIENT_ACCESS_TOKEN_TO_BUILD="MDAxY2
                   -t lagocontainer:0.0.1  https://github.com/lagoproject/onedataSim.git
 ```
 
+### Building from **develop** branch
+
+You can also create a container with the developing release (unstable) of onedataSim software. For this task,
+you must add ``--build-arg ONEDATASIM_BRANCH="develop"`` as argument and to append ``#develop`` at the end of 
+the repository link. For example:
+
+```sh
+sudo docker build --no-cache --build-arg ONEDATASIM_BRANCH="develop" \
+                  --build-arg ONECLIENT_ACCESS_TOKEN_TO_BUILD="MDV...o" \ 
+                  --build-arg ONECLIENT_PROVIDER_HOST_TO_BUILD="https://mon01-tic.ciemat.es" \ 
+                  -t lagocontainer:0.0.1  https://github.com/lagoproject/onedataSim.git#develop
+```
 
 
 
@@ -107,7 +126,7 @@ sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN="<personal onedata toke
 ```sh
 sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN="MDAxY2xv...iXm8jowGgo" \
                 -e ONECLIENT_PROVIDER_HOST="mon01-tic.ciemat.es" \
-                -it lagocontainer:0.0.1  bash -lc "do_sims_onedata.py -t 10 -u 0000-0001-6497-753X -s sac -k 2.0e2 -h QGSII"
+                -it lagocontainer:0.0.1  bash -lc "do_sims_onedata.py -t 10 -u 0000-0001-6497-753X -s sac -k 2.0e2 -h QGSII -x"
 ```
 
 2. Executing on a multi-processor server
@@ -125,9 +144,29 @@ sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN="<personal onedata toke
 
 1. Executing on HTC clusters
 
-2. Executing on resurces instantiated by IaaS public/private cloud providers
+If you has enough permissions (sudo) to run Docker in privileged mode on a cluster and get the computing nodes in exclusive mode, you can run many simulations at time.
 
-3. Executing on Kubernettes
+For example on the Slurm batch systems, you can submit the `docker build` and the `docker run` operations in the same command line. (Note that removing `--no-cache`, the Docker image will not be rebuilt, except for changes in the GitHub repository).
+
+```sh
+export TOKEN="MDAxY...LAo"
+export ONEPROVIDER="mon01-tic.ciemat.es"
+
+srun -o %j.out --exclusive sudo docker build \
+                             --build-arg ONECLIENT_ACCESS_TOKEN_TO_BUILD=$TOKEN \
+                             --build-arg ONECLIENT_PROVIDER_HOST_TO_BUILD=https://$ONEPROVIDER \
+                              -t lagocontainer:0.0.1  https://github.com/lagoproject/onedataSim.git \ 
+                           && sudo docker run --privileged \
+                              -e ONECLIENT_ACCESS_TOKEN=$TOKEN 
+                              -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \
+                              -it lagocontainer:0.0.1  \
+                              bash -lc "do_sims_onedata.py -t 10 -u 0000-0001-6497-753X -s sac -k 1.5e2 -h QGSII -x" \
+                           &
+```
+
+2. Executing on resurces instantiated by IaaS cloud providers
+
+TBD.
 
 
 ## Logging into container for developing purposes
@@ -148,34 +187,45 @@ To log into the container only has to run bash without parameters, positioned al
 
 2. Explore OneData repository within the container.
 
+Firstly test if the repository is already mounted and force mount if necessary:
 ```sh
-[root@c42dc622f7eb run]# oneclient /mnt
+[root@c42dc622f7eb run]# ls -alh /mnt/datahub.egi.eu
+[root@c42dc622f7eb run]# ls -alh /mnt/datahub.egi.eu/LAGOsim
+total 0
+drwxrwxr-x 1 root    root   0 Sep 17 13:52 .
+drwxrwxr-x 1 root    root   0 Sep 15 08:47 ..
+[root@c42dc622f7eb run]# oneclient -- force-proxy-io /mnt/datahub.egi.eu
 Connecting to provider 'mon01-tic.ciemat.es:443' using session ID: '4998286443844254461'...
 Getting configuration...
-Oneclient has been successfully mounted in '/mnt'.
-[root@c42dc622f7eb run]# ls -alh /mnt/
+Oneclient has been successfully mounted in '/mnt/datahub.egi.eu'.
+```
+
+Then, you can explore the repository:
+
+```sh
+[root@c42dc622f7eb run]# ls -alh /mnt/datahub.egi.eu
 total 0
 drwxr-xr-x 1 root root  0 Sep 15 08:46 .
 drwxr-xr-x 1 root root 29 Sep 17 15:10 ..
 drwxrwxr-x 1 root root  0 Jun 16 13:23 PLAYGROUND
 drwxrwxr-x 1 root root  0 Jun 16 13:23 notebooks-training
 drwxrwxr-x 1 root root  0 Sep 15 08:47 LAGOsim
-[root@c42dc622f7eb run]# ls -alh /mnt/LAGOsim
+[root@c42dc622f7eb run]# ls -alh /mnt/datahub.egi.eu/LAGOsim
 total 0
 drwxrwxr-x 1 1034995 638198 0 Sep 17 13:52 .
 drwxrwxr-x 1 root    root   0 Sep 15 08:47 ..
-drwxr-xr-x 1 1034995 638198 0 Sep  7 18:41 sac_10_100.0_75600_QGSII_flat
-drwxr-xr-x 1 1034995 638198 0 Sep 13 12:59 sac_10_110.0_75600_QGSII_flat
-drwxr-xr-x 1 1034995 638198 0 Sep 13 13:04 sac_10_120.0_75600_QGSII_flat
-drwxr-xr-x 1 1034995 638198 0 Sep 13 13:05 sac_10_130.0_75600_QGSII_flat
-drwxr-xr-x 1 1034995 638198 0 Sep 13 13:06 sac_10_140.0_75600_QGSII_flat
-drwxr-xr-x 1 1034995 638198 0 Sep 13 13:11 sac_10_150.0_75600_QGSII_flat
-drwxr-xr-x 1 1034995 638198 0 Sep 13 16:21 sac_10_200.0_75600_QGSII_flat
-drwxr-xr-x 1 1034995 638198 0 Sep 14 15:28 sac_10_300.0_75600_QGSII_flat
-drwxr-xr-x 1  398931 638198 0 Sep 17 13:41 sac_10_500.0_75600_QGSII_flat
-drwxr-xr-x 1  398931 638198 0 Sep 17 13:52 sac_10_600.0_75600_QGSII_flat
-drwxr-xr-x 1 1034995 638198 0 Sep  8 12:30 sac_1_100.0_75600_QGSII_flat
-drwxr-xr-x 1 1034995 638198 0 Sep 13 16:17 sac_60_200.0_75600_QGSII_flat
+drwxr-xr-x 1 1034995 638198 0 Sep  7 18:41 S0_sac_10_100.0_75600_QGSII_flat
+drwxr-xr-x 1 1034995 638198 0 Sep 13 12:59 S0_sac_10_110.0_75600_QGSII_flat
+drwxr-xr-x 1 1034995 638198 0 Sep 13 13:04 S0_sac_10_120.0_75600_QGSII_flat
+drwxr-xr-x 1 1034995 638198 0 Sep 13 13:05 S0_sac_10_130.0_75600_QGSII_flat
+drwxr-xr-x 1 1034995 638198 0 Sep 13 13:06 S0_sac_10_140.0_75600_QGSII_flat
+drwxr-xr-x 1 1034995 638198 0 Sep 13 13:11 S0_sac_10_150.0_75600_QGSII_flat
+drwxr-xr-x 1 1034995 638198 0 Sep 13 16:21 S0_sac_10_200.0_75600_QGSII_flat
+drwxr-xr-x 1 1034995 638198 0 Sep 14 15:28 S0_sac_10_300.0_75600_QGSII_flat
+drwxr-xr-x 1  398931 638198 0 Sep 17 13:41 S0_sac_10_500.0_75600_QGSII_flat
+drwxr-xr-x 1  398931 638198 0 Sep 17 13:52 S0_sac_10_600.0_75600_QGSII_flat
+drwxr-xr-x 1 1034995 638198 0 Sep  8 12:30 S0_sac_1_100.0_75600_QGSII_flat
+drwxr-xr-x 1 1034995 638198 0 Sep 13 16:17 S0_sac_60_200.0_75600_QGSII_flat
 ...
 ...
 ```
