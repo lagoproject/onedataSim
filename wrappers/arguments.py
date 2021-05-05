@@ -12,49 +12,11 @@
 # command line, arti_params identical than do_sim.sh in ARTI.
 # https://docs.python.org/3.3/library/argparse.html
 
-# import argparse, sys
 import argparse
-import os
-import subprocess
-import sys
-import shlex
-# from builtins import int
+from utils import _run_Popen, _run_Popen_interactive, _get_git_commit
 
 
 CORSIKA_VER = '77402'
-
-
-# --- utils ---
-
-def _run_Popen_interactive(command):
-
-    print(command+'\n')
-    p = subprocess.Popen(shlex.split(command), env=os.environ,
-                         stdin=sys.stdin, stdout=sys.stdout,
-                         stderr=sys.stderr)
-    p.wait()
-
-def _run_Popen(command, timeout=None):
-
-    print(command+'\n')
-    p = subprocess.Popen(command + ' 2>&1', shell=True, env=os.environ,
-                         stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-    p.wait(timeout)
-    res = ""
-    if p.returncode != 0:
-        print("Return code: "+str(res)+'\n')
-    else:
-        res = p.communicate()[0]
-    return res
-
-def _get_git_commit(repopath):
-
-    cmd = "git --git-dir " + repopath + "/.git rev-parse --verify HEAD"
-    lines = _run_Popen(cmd).decode("utf-8").split('\n')
-    if str(lines[0]) != "":
-        return str(lines[0])
-    else:
-        raise Exception("Git release of software not found")
 
 
 def _get_arti_params_json_md(arti_dict):
