@@ -20,73 +20,53 @@ import shutil
 from queue import Queue
 
 # own functions
-from arguments import get_sys_args
-from utils import _run_Popen, _run_Popen_interactive, 
-    _add_json, _replace_common_patterns, _get_common_metadata_aux
+from args_sims import get_sys_args
+
+import mdUtils
+import osUtils
+
 
 from ARTIwrapper import ARTIwrapper
-
-
-
-
+    
+        
 # ---- specific metadata for S0 datasets (corsika files) ----
-
-onedataSimPath = os.path.dirname(os.path.abspath(__file__))
 
 def _get_input_metadata(filecode):
 
-    with open(onedataSimPath+'/json_tpl/common_activity.json',
-              'r') as file1:
-        with open(onedataSimPath+'/json_tpl/dataset_corsika_input.json',
-                  'r') as file2:
-            j = _get_common_metadata_aux()
-            j = _add_json(j, json.loads(file1.read()))
-            j = _add_json(j, json.loads(file2.read()))
-            s = json.dumps(j)
-            s = s.replace('FILENAME', 'DAT'+filecode+'.input')
-            # DCAT2 distribution:format & mediaType
-            s = s.replace('FORMAT', 'TXT')  
-            s = s.replace('MEDIATYPE', 'text') 
-            # warning, corsikainput metadata must be included also...
-            return s
+    args=['common_activity.json', 'dataset_corsika_input.json']
+    s = mdUtils.get_metadata_for_dataset(args)
+    s = s.replace('FILENAME', 'DAT'+filecode+'.input')
+    # DCAT2 distribution:format & mediaType
+    s = s.replace('FORMAT', 'TXT')  
+    s = s.replace('MEDIATYPE', 'text') 
+    # warning, corsikainput metadata must be included also...
+    return s
 
 
 def _get_bin_output_metadata(filecode):
 
-    with open(onedataSimPath+'/json_tpl/common_dataset_corsika_output.json',
-              'r') as file1:
-        with open(onedataSimPath +
-                  '/json_tpl/dataset_corsika_bin_output.json',
-                  'r') as file2:
-            j = _get_common_metadata_aux()
-            j = _add_json(j, json.loads(file1.read()))
-            j = _add_json(j, json.loads(file2.read()))
-            s = json.dumps(j)
-            runnr = filecode.split('-')[0]
-            s = s.replace('FILENAME', 'DAT'+runnr+'.bz2')
-            # DCAT2 distribution:format & mediaType
-            s = s.replace('FORMAT', 'BIN')  
-            s = s.replace('MEDIATYPE', 'octet-stream') 
-            return s
+    args=['common_dataset_corsika_output.json',
+          'dataset_corsika_bin_output.json']
+    s = mdUtils.get_metadata_for_dataset(args)
+    runnr = filecode.split('-')[0]
+    s = s.replace('FILENAME', 'DAT'+runnr+'.bz2')
+    # DCAT2 distribution:format & mediaType
+    s = s.replace('FORMAT', 'BIN')  
+    s = s.replace('MEDIATYPE', 'octet-stream') 
+    return s
 
 
 def _get_lst_output_metadata(filecode):
 
-    with open(onedataSimPath+'/json_tpl/common_dataset_corsika_output.json',
-              'r') as file1:
-        with open(onedataSimPath +
-                  '/json_tpl/dataset_corsika_lst_output.json',
-                  'r') as file2:
-            j = _get_common_metadata_aux()
-            j = _add_json(j, json.loads(file1.read()))
-            j = _add_json(j, json.loads(file2.read()))
-            s = json.dumps(j)
-            s = s.replace('FILENAME', 'DAT'+filecode+'.lst.bz2')
-            # DCAT2 distribution:format & mediaType
-            s = s.replace('FORMAT', 'TXT')  
-            s = s.replace('MEDIATYPE', 'text') 
-            # falta comprimir si fuera necesario
-            return s
+    args = ['common_dataset_corsika_output.json',
+            'dataset_corsika_lst_output.json']
+    s = mdUtils.get_metadata_for_dataset(args)
+    s = s.replace('FILENAME', 'DAT'+filecode+'.lst.bz2')
+    # DCAT2 distribution:format & mediaType
+    s = s.replace('FORMAT', 'TXT')  
+    s = s.replace('MEDIATYPE', 'text') 
+    # falta comprimir si fuera necesario
+    return s
 
 
 def get_dataset_metadata_S0(catcodename, filecode, startdate, end_date,
@@ -97,7 +77,7 @@ def get_dataset_metadata_S0(catcodename, filecode, startdate, end_date,
                  _get_input_metadata(filecode)]
     mdlist = []
     for s in mdlistaux:
-        s = _replace_common_patterns(s, catcodename, arti_params_dict)
+        s = mdUtils.replace_common_patterns(s, catcodename, arti_params_dict)
         s = s.replace('NRUN', filecode)
         s = s.replace('STARTDATE', startdate)
         s = s.replace('ENDDATE', end_date)
@@ -118,23 +98,23 @@ def producerS0(catcodename, arti_params):
         shutil.rmtree(catcodename, ignore_errors=True)
 
     cmd = 'do_sims.sh ' + arti_params
-    _run_Popen_interactive(cmd)
+    osUtils.run_Popen_interactive(cmd)
 
     # WARNING, I HAD TO PATCH rain.pl FOR AVOID SCREEN !!!!
     cmd = "sed 's/screen -d -m -a -S \$name \$script; screen -ls/\$script/' " + \
        " rain.pl -i"
-    _run_Popen(cmd)
+    osUtils.run_Popen(cmd)
     
     # WARNING, I HAD TO PATCH rain.pl FOR AVOID .long files !!!
     cmd = "sed 's/\$llongi /F /' rain.pl -i"
-    _run_Popen(cmd)
+    osUtils.run_Popen(cmd)
 
     # -g only creates .input's
     # cmd="sed 's/\.\/rain.pl/echo \$i: \.\/rain.pl -g /' go-*.sh  -i"
     cmd = "sed 's/\.\/rain.pl/echo \$i: \.\/rain.pl /' go-*.sh  -i"
-    _run_Popen(cmd)
+    osUtils.run_Popen(cmd)
     cmd = "cat go-*.sh | bash  2>/dev/null"
-    lines = _run_Popen(cmd).decode("utf-8").split('\n')
+    lines = osUtils.run_Popen(cmd).decode("utf-8").split('\n')
     for z in lines:
         if z != "":
             print(z)

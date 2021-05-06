@@ -21,17 +21,12 @@ from threading import Thread
 from queue import Queue
 
 # own functions
-from utils import _run_Popen, _run_Popen_interactive, _write_file,
-    _xsd_dateTime, _add_json, 
-    get_first_catalog_metadata_json,get_catalog_metadata_activity 
+import osUtils
+import mdUtils
 
 
+class ARTIwrapper():    
 
-
-
-class ARTIwrapper(self):    
-
-    
     def __init__(self, get_sys_args, get_dataset_metadata, producer):
         self._q = None
         self._q_onedata = None
@@ -55,19 +50,19 @@ class ARTIwrapper(self):
                 # copy if the file exists, if not can be because corsika failed
                 if os.path.exists("." + id):
                     cmd = "cp ." + id + " " + onedata_path + id
-                    _run_Popen(cmd)
+                    osUtils.run_Popen(cmd)
                     time.sleep(0.1)
                     # test if effectively copied to copy metadata
                     if os.path.exists(onedata_path + id):
                         xattr.setxattr(onedata_path + id, 'onedata_json', md)
                         id_hidden = '/' + id.lstrip('/').replace('/','/.metadata/.')
-                        _write_file(onedata_path + id_hidden + '.jsonld', md)
+                        osUtils.write_file(onedata_path + id_hidden + '.jsonld', md)
                     else:
                         print('CAUTION: '+ id +' is not in onedata, requeuing...' )
                         raise inst
                     # thus, I can remove local file 
                     cmd = "rm -f ." + id
-                    _run_Popen(cmd)
+                    osUtils.run_Popen(cmd)
                 else:
                     print('ERROR: '+ id +' was not calculated')
     
@@ -85,7 +80,7 @@ class ARTIwrapper(self):
         # check if the results are already in onedata before running the task
         runtask = False
         mdlist_prev = self._get_dataset_metadata(catcodename, filecode,
-                                                _xsd_dateTime(), _xsd_dateTime(),
+                                                mdUtils.xsd_dateTime(), mdUtils.xsd_dateTime(),
                                                 arti_params_dict)
         for md in mdlist_prev:
             id = json.loads(md)['@id']
@@ -102,10 +97,10 @@ class ARTIwrapper(self):
             print("Results already in OneData, none to do with RUN : " + filecode)
         else:
             try:
-                start_date = _xsd_dateTime()
-                _run_Popen(task)
+                start_date = mdUtils.xsd_dateTime()
+                osUtils.run_Popen(task)
                 metadatalist = self._get_dataset_metadata(catcodename, filecode, 
-                                                          start_date, _xsd_dateTime(),
+                                                          start_date, mdUtils.xsd_dateTime(),
                                                           arti_params_dict)
                 
                 for md in metadatalist:
@@ -121,13 +116,14 @@ class ARTIwrapper(self):
     # function inputs: catcodename, arti_params
     #          output: Queue() with (filecode, task) elements
     #def _producer(self, catcodename, arti_params):
+    #    pass
     
     
     def _consumer(self, catcodename, onedata_path, arti_params_dict):
         while True:
-            (filecode, task) = q.get()
+            (filecode, task) = self._q.get()
             try:
-                _run_check_and_copy_results(catcodename, filecode, task,
+                self._run_check_and_copy_results(catcodename, filecode, task,
                                             onedata_path, arti_params_dict)
                 print('Completed NRUN: ' + str(filecode) + '  ' + task)
                 self._q.task_done()
@@ -136,14 +132,42 @@ class ARTIwrapper(self):
     
     # ---- END: producer/consumer of executions ---------
     
+    def _reconstruct_arti_args_from_dict(self, args_dict):
+        # reconstruct arguments to launch ARTI by command line
+        s = ''
+        for (key, value) in args_dict.items():
+            if value is not None:
+                s += ' -'+key
+                if value is not True:
+                    s += ' '+str(value)
+        return s
+    
+    def _add_private_info_to_dict(self, args_dict):
+    
+        # Now I can add extra info (without changing s)
+        args_dict['priv_articommit'] = mdUtils.get_git_commit(os.environ['LAGO_ARTI'])
+        args_dict['priv_odsimcommit'] = mdUtils.get_git_commit(os.environ['LAGO_ONEDATASIM'])
+        
+        # WARNING temporarily the main HANDLE ref will be the current OneProvider 
+        handleaux='https://' + os.environ['ONECLIENT_PROVIDER_HOST']
+        args_dict['priv_handlejsonapi'] = handleaux + '/api/v3/oneprovider/metadata/json'
+        args_dict['priv_handlecdmi'] = handleaux + '/cdmi'
+        
+        # dcat:accessURL corresponds to the landing page and it can only be set when the
+        # data will be officially published, thus temporarily we firstly use a dummy url
+        args_dict['priv_landingpage'] = 'https://datahub.egi.eu/not_published_yet'
+    
+        return args_dict
+    
     
     # ---- MAIN PROGRAM ---------
     
     def run(self):
 
-        main_start_date = _xsd_dateTime()
-        (arti_params, arti_params_dict, arti_params_json_md) = self._get_sys_args()
-        catcodename = arti_params_dict["p"]
+        main_start_date = mdUtils.xsd_dateTime()
+        (catcodename, arti_params_dict, arti_params_json_md) = self._get_sys_args()
+        arti_params = self._reconstruct_arti_args_from_dict(arti_params_dict)
+        arti_params_dict = mdUtils.add_private_info_to_dict(arti_params_dict)
         # onedata_path = '/mnt/datahub.egi.eu/LAGOsim'
         onedata_path = '/mnt/datahub.egi.eu/test8/LAGOSIM'
         catalog_path = onedata_path + '/' + catcodename
@@ -154,15 +178,15 @@ class ARTIwrapper(self):
             # mount OneData (fails in python although you wait forever):
             # removed, currently in Dockerfile.
             # cmd = "oneclient --force-proxy-io /mnt"
-            # _run_Popen(cmd, timeout=10)
+            # osUtils.run_Popen(cmd, timeout=10)
             if os.path.exists(onedata_path):
                 if not os.path.exists(catalog_path):
                     os.mkdir(catalog_path, mode=0o755) # this should change to 0700
                     os.mkdir(catalog_path + '/.metadata', mode=0o755) # idem to 0700
-                    md = get_first_catalog_metadata_json(catcodename, 
+                    md = mdUtils.get_first_catalog_metadata_json(catcodename, 
                                                          arti_params_dict)
-                    md = _add_json(md, arti_params_json_md)
-                    _write_file(catalog_path + '/.metadata/.' + catcodename + '.jsonld',
+                    md = mdUtils.add_json(md, arti_params_json_md)
+                    osUtils.write_file(catalog_path + '/.metadata/.' + catcodename + '.jsonld',
                                 json.dumps(md))
                     xattr.setxattr(catalog_path, 'onedata_json', json.dumps(md))
                 else: 
@@ -198,11 +222,12 @@ class ARTIwrapper(self):
         md['dataset'] = ["/" + catcodename + "/" + s for s in 
                          os.listdir(catalog_path) if not s.startswith('.')]
         
-        md = _add_json(md, json.loads(get_catalog_metadata_activity(main_start_date,
-                                                                    _xsd_dateTime(),
+        md = mdUtils.add_json(md, json.loads(mdUtils.get_catalog_metadata_activity(main_start_date,
+                                                                    mdUtils.xsd_dateTime(),
+                                                                    catcodename,
                                                                     arti_params_dict)))
         
-        _write_file(catalog_path + '/.metadata/.' + catcodename + '.jsonld',
+        osUtils.write_file(catalog_path + '/.metadata/.' + catcodename + '.jsonld',
                     json.dumps(md))
         xattr.setxattr(catalog_path, 'onedata_json', json.dumps(md))
         

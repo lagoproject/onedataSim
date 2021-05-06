@@ -7,55 +7,24 @@
 # Copyright (c): 2020-today, The LAGO Collaboration (http://lagoproject.net)  #
 ###############################################################################
 
-
 import os
-import subprocess
-import sys
-import shlex
 import json
 import datetime
 
+#own modules
+import osUtils
 
-def _run_Popen_interactive(command):
-
-    print(command+'\n')
-    p = subprocess.Popen(shlex.split(command), env=os.environ,
-                         stdin=sys.stdin, stdout=sys.stdout,
-                         stderr=sys.stderr)
-    p.wait()
-
-def _run_Popen(command, timeout=None):
-
-    print(command+'\n')
-    p = subprocess.Popen(command + ' 2>&1', shell=True, env=os.environ,
-                         stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-    p.wait(timeout)
-    res = ""
-    if p.returncode != 0:
-        print("Return code: "+str(res)+'\n')
-    else:
-        res = p.communicate()[0]
-    return res
-
-def _get_git_commit(repopath):
+def get_git_commit(repopath):
 
     cmd = "git --git-dir " + repopath + "/.git rev-parse --verify HEAD"
-    lines = _run_Popen(cmd).decode("utf-8").split('\n')
+    lines = osUtils.run_Popen(cmd).decode("utf-8").split('\n')
     if str(lines[0]) != "":
         return str(lines[0])
     else:
         raise Exception("Git release of software not found")
-    
+      
 
-
-def _write_file(filepath, txt):
-    
-    with open(filepath, 'w+') as file1:
-        file1.write(txt)
-        
-        
-
-def _xsd_dateTime():
+def xsd_dateTime():
 
     # xsd:dateTime
     # CCYY-MM-DDThh:mm:ss.sss[Z|(+|-)hh:mm]
@@ -66,7 +35,7 @@ def _xsd_dateTime():
 # j is adding j_new terms to existing keys or adding keys.
 # j and j_new must have same structure (pruned) tree
 # (dict.update adds only when key not exist, otherwise replace)
-def _add_json(j, j_new):
+def add_json(j, j_new):
 
     if type(j) is list:
         if type(j_new) is list:
@@ -78,16 +47,16 @@ def _add_json(j, j_new):
         k_old = j.keys()
         for k, v in j_new.items():
             if k in k_old:
-                j[k] = _add_json(j[k], v)
+                j[k] = add_json(j[k], v)
             else:
                 j[k] = v
         return j
 
     # is not a list or a dict, is a term.
     # I change to list and call recursiveness
-    return _add_json([j], j_new)
+    return add_json([j], j_new)
 
-def _replace_common_patterns(s, catcodename, arti_params_dict):
+def replace_common_patterns(s, catcodename, arti_params_dict):
 
     s = s.replace('CATCODENAME', catcodename)
     s = s.replace('ORCID', arti_params_dict['u'])
@@ -99,41 +68,39 @@ def _replace_common_patterns(s, catcodename, arti_params_dict):
     s = s.replace('LANDINGPAGE', arti_params_dict['priv_landingpage'])
     return s
 
+
+template_path = os.path.dirname(os.path.abspath(__file__)) + '/json_tpl/'
+
+def get_metadata_for_dataset(args=[]):
+    
+    common = ['common_context.json','common_dataset.json']
+    templates = common + args
+    j={}
+    for temp in templates:
+        with open(template_path + temp, 'r') as file_aux:
+            j = add_json(j, json.loads(file_aux.read()))
+    s = json.dumps(j)
+    return s    
+
+# warning: this returns json.loads
 def get_first_catalog_metadata_json(catcodename, arti_params_dict):
 
-    with open(onedataSimPath+'/json_tpl/common_context.json', 'r') as file1:
-        with open(onedataSimPath+'/json_tpl/common_catalog.json',
-                  'r') as file2:
+    with open(template_path+'common_context.json', 'r') as file1:
+        with open(template_path+'common_catalog.json', 'r') as file2:
             j = json.loads(file1.read())
-            j = _add_json(j, json.loads(file2.read()))
+            j = add_json(j, json.loads(file2.read()))
             s = json.dumps(j)
-            s = _replace_common_patterns(s, catcodename, arti_params_dict)
+            s = replace_common_patterns(s, catcodename, arti_params_dict)
             return json.loads(s)
 
 
-def get_catalog_metadata_activity(startdate, enddate, arti_params_dict):
+def get_catalog_metadata_activity(startdate, enddate, catcodename, arti_params_dict):
 
-    with open(onedataSimPath+'/json_tpl/common_activity.json',
-              'r') as file1:
+    with open(template_path+'common_activity.json', 'r') as file1:
         j = json.loads(file1.read())
         s = json.dumps(j)
         s = s.replace('STARTDATE', startdate)
         s = s.replace('ENDDATE', enddate)
-        s = _replace_common_patterns(s, catcodename, arti_params_dict)
+        s = replace_common_patterns(s, catcodename, arti_params_dict)
         return s
-
-def _get_common_metadata_aux():
-
-    with open(onedataSimPath+'/json_tpl/common_context.json', 'r') as file1:
-        with open(onedataSimPath+'/json_tpl/common_dataset.json',
-                  'r') as file2:
-            j = json.loads(file1.read())
-            j = _add_json(j, json.loads(file2.read()))
-            return j
-
-
-
-
-
-
 

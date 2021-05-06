@@ -13,11 +13,8 @@
 # https://docs.python.org/3.3/library/argparse.html
 
 import argparse
-from utils import _run_Popen, _run_Popen_interactive, _get_git_commit
-
 
 CORSIKA_VER = '77402'
-
 
 def _get_arti_params_json_md(arti_dict):
 
@@ -218,25 +215,6 @@ def get_sys_args():
     #                  '-lago/run/'+str(args_dict['t'])})
     args_dict.update({'w': '/opt/corsika-'+CORSIKA_VER+'-lago/run/'})
 
-    # reconstruct arguments to launch ARTI by command line
-    s = ''
-    for (key, value) in args_dict.items():
-        if value is not None:
-            s += ' -'+key
-            if value is not True:
-                s += ' '+str(value)
-
-    # Now I can add extra info (without changing s)
-    args_dict['priv_articommit'] = _get_git_commit(os.environ['LAGO_ARTI'])
-    args_dict['priv_odsimcommit'] = _get_git_commit(os.environ['LAGO_ONEDATASIM'])
-    
-    # WARNING temporarily the main HANDLE ref will be the current OneProvider 
-    handleaux='https://' + os.environ['ONECLIENT_PROVIDER_HOST']
-    args_dict['priv_handlejsonapi'] = handleaux + '/api/v3/oneprovider/metadata/json'
-    args_dict['priv_handlecdmi'] = handleaux + '/cdmi'
-    
-    # dcat:accessURL corresponds to the landing page and it can only be set when the
-    # data will be officially published, thus temporarily we firstly use a dummy url
-    args_dict['priv_landingpage'] = 'https://datahub.egi.eu/not_published_yet'
-    
-    return (s, args_dict, _get_arti_params_json_md(args_dict))
+ 
+ 
+    return (codename, args_dict, _get_arti_params_json_md(args_dict))
