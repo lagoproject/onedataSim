@@ -29,16 +29,15 @@ import osUtils
 
 
 from ARTIwrapper import ARTIwrapper
-    
-        
+
 # ---- specific metadata for S1 datasets (corsika files) ----
 
 # output primaries
 def _get_prim_metadata(filecode):
 
     #TO BE DONE  (only illustrative)
-    
-    args=['common_activity.json', 'dataset_corsika_input.json']
+
+    args=['common_activity.json', 'dataset_S1_SPECIFIC.json']
     s = mdUtils.get_metadata_for_dataset(args)
     s = s.replace('FILENAME', filecode+'prim.bz2')
     # DCAT2 distribution:format & mediaType
@@ -80,8 +79,7 @@ def producer_S1(catcodename, arti_params):
 
     cmd = 'do_.showers.sh ' + arti_params
     osUtils.run_Popen_interactive(cmd)
-    
-    
+
     # IN DO_SHOWERS.SH (BASH) the section of code that proccess & create files is:
     #
     # for i in ${wdir}/DAT??????.bz2; do
@@ -100,7 +98,7 @@ def producer_S1(catcodename, arti_params):
     # AND WHEN ALL THOSE HAS BEEN COMPLETED can execute the line in "catcodename.shw.run" (SECONDARIES?)
     #
     # This final execution is a PROBLEM.... I only centering on primaries
-    
+
     with open(catcodename+'run', 'r') as file1:
         for z in  file1.readlines()
             if z != "":
@@ -108,7 +106,7 @@ def producer_S1(catcodename, arti_params):
                 # "bzip2 -d -k $i; echo $j | ${arti_path}/analysis/lagocrkread | ${arti_path}/analysis/analysis -p ${u}; rm ${j}"
                 # AND YOU SHOUD CREATE SOMETHING SIMILAR TO:
                 # filecode = $i
-                # task =  "cp remote_onedata/$i ." + z 
+                # task =  "cp remote_onedata/$i ." + z
                 q.put((filecode, task))
 
     return q
