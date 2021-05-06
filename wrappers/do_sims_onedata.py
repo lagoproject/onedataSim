@@ -13,14 +13,12 @@
 # apt-get install python3-xattr
 # or yum install -y python36-pyxattr
 import os
-import xattr
-import json
 import shutil
 
 from queue import Queue
 
 # own functions
-from args_sims import get_sys_args
+import args_sims
 
 import mdUtils
 import osUtils
@@ -138,7 +136,8 @@ def producerS0(catcodename, arti_params):
 
 # ---- MAIN run ----
 
-simulation = ARTIwrapper(get_sys_args, get_dataset_metadata_S0, producerS0)
+simulation = ARTIwrapper(args_sims.get_sys_args_S0, get_dataset_metadata_S0,
+                         producerS0)
 simulation.run()
 
 

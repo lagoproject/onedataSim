@@ -51,7 +51,7 @@ def _get_arti_params_json_md(arti_dict):
     return j
 
 
-def get_sys_args():
+def get_sys_args_S0():
 
     disclaimer = 'do_onedata: simulating LAGO sites and storing/publishing \
     results in OneData'
@@ -179,8 +179,17 @@ def get_sys_args():
     args = parser.parse_args()
 
     args_dict = vars(args)
-
-    # add working dir, project, and corsika version...
+    
+    
+    # ---- customise parameters for ARTI and onedataSim ----
+    # 
+    # the most important is the "project name" that it is used 
+    # for onedataSim as "codename"
+    #
+    # the other are the version of external software used
+    # and the working dir
+     
+    # version of external software (Corsika version)
 
     args_dict.update({'v': CORSIKA_VER})
 
@@ -211,10 +220,8 @@ def get_sys_args():
     args_dict.update({'p': codename})
 
     # working dir
-    # args_dict.update({'w': '/opt/corsika-'+CORSIKA_VER+
-    #                  '-lago/run/'+str(args_dict['t'])})
+    
     args_dict.update({'w': '/opt/corsika-'+CORSIKA_VER+'-lago/run/'})
 
- 
  
     return (codename, args_dict, _get_arti_params_json_md(args_dict))
