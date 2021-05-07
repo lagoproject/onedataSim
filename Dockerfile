@@ -72,6 +72,7 @@ RUN yum -y install acl attr
 RUN yum -y install  python2-pip python-devel libffi-devel 
 # sometimes pip's upgrade fails
 RUN pip install --upgrade pip
+RUN pip install typing
 RUN pip install xattr
 
 #python3 and libraries for Lago processing with onedata
