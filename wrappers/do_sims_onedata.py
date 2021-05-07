@@ -272,11 +272,11 @@ def _producer(catcodename, arti_params):
     #        ARTI tries fit the number of tasks (NRUN) to the number of procs
     #        for being correct in terms of physics, however was not implemented 
     #        for fit the output sizes vs flux-time (arti_params[t])   
-    old_j = arti_params[j]
-    aux_j = abs(int(arti_params[t])/900)
+    old_j = arti_params["j"]
+    aux_j = abs(int(arti_params["t"])/900)
     if aux_j == 0 : aux_j = 1
     if aux_j > 12 : aux_j = 12
-    arti_params[j] = aux_j
+    arti_params["j"] = aux_j
     print("PATCH: change -j : " + old_j + " by :" + aux_j + " to generate tasks")
     
     cmd = 'do_sims.sh ' + arti_params
