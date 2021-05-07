@@ -271,13 +271,22 @@ def _producer(catcodename, arti_params):
     # PATCH: correct the creation of tasks, which is based on (-j) in ARTI.
     #        ARTI tries fit the number of tasks (NRUN) to the number of procs
     #        for being correct in terms of physics, however was not implemented 
-    #        for fit the output sizes vs flux-time (arti_params[t])   
-    old_j = arti_params["j"]
-    aux_j = abs(int(arti_params["t"])/900)
-    if aux_j == 0 : aux_j = 1
-    if aux_j > 12 : aux_j = 12
-    arti_params["j"] = aux_j
-    print("PATCH: change -j : " + old_j + " by :" + aux_j + " to generate tasks")
+    #        for fit the output sizes vs flux-time (arti_params[t])  
+ 
+    params_aux_flux = arti_params[arti_params.find("-t")+3:]
+    flux_time = int(params_aux_flux[:params_aux_flux.find("-")])
+
+    params_aux = arti_params[arti_params.find("-j")+3:]
+    old_j = int(params_aux[:params_aux.find("-")])
+    
+    aux_j = int(int(flux_time)/900)
+    if aux_j == 0 : 
+        aux_j = 1
+    if aux_j > 12 : 
+        aux_j = 12
+    arti_params = arti_params[:arti_params.find("-j")] + "-j " + str(aux_j) +" " + params_aux[params_aux.find("-"):]
+
+    print("PATCH: change -j : " + str(old_j) + " by :" + str(aux_j) + " to generate tasks")
     
     cmd = 'do_sims.sh ' + arti_params
     _run_Popen_interactive(cmd)
