@@ -24,7 +24,7 @@ RUN sed -e '/mirrorlist=.*/d' \
     -e "s/\$releasever/7.8.2003/g" \
     -e "s/mirror.centos.org\\/centos/vault.centos.org/g" \
     -i /etc/yum.repos.d/CentOS-*
-#RUN yum -y update
+RUN yum -y update
 
 # CORSIKA pre-requisites
 RUN yum -y install gcc gcc-c++ gcc-gfortran \
@@ -70,8 +70,10 @@ RUN yum -y install acl attr
 
 # xattr (this is  python2 but I had found the command only in python2)
 RUN yum -y install  python2-pip python-devel libffi-devel 
-# sometimes pip's upgrade fails
+# sometimes pip's upgrade fails and doesn't find "typing" module
 # RUN pip install --upgrade pip
+# RUN pip install typing
+RUN pip install cffi
 RUN pip install xattr
 
 #python3 and libraries for Lago processing with onedata
