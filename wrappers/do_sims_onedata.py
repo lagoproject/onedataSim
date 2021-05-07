@@ -95,7 +95,8 @@ def get_first_catalog_metadata_json(catcodename, arti_params_dict):
             return json.loads(s)
 
 
-def get_catalog_metadata_activity(startdate, enddate, arti_params_dict):
+def get_catalog_metadata_activity(startdate, enddate, catcodename,
+                                  arti_params_dict):
 
     with open(onedataSimPath+'/json_tpl/catalog_corsika_activity.json',
               'r') as file1:
@@ -266,7 +267,18 @@ def _producer(catcodename, arti_params):
     # clean a possible previous simulation
     if os.path.exists(catcodename):
         shutil.rmtree(catcodename, ignore_errors=True)
-
+    
+    # PATCH: correct the creation of tasks, which is based on (-j) in ARTI.
+    #        ARTI tries fit the number of tasks (NRUN) to the number of procs
+    #        for being correct in terms of physics, however was not implemented 
+    #        for fit the output sizes vs flux-time (arti_params[t])   
+    old_j = arti_params[j]
+    aux_j = abs(int(arti_params[t])/900)
+    if aux_j == 0 : aux_j = 1
+    if aux_j > 12 : aux_j = 12
+    arti_params[j] = aux_j
+    print("PATCH: change -j : " + old_j + " by :" + aux_j + " to generate tasks")
+    
     cmd = 'do_sims.sh ' + arti_params
     _run_Popen_interactive(cmd)
 
@@ -375,6 +387,7 @@ md['dataset'] = ["/" + catcodename + "/" + s for s in
 
 md = _add_json(md, json.loads(get_catalog_metadata_activity(main_start_date,
                                                             _xsd_dateTime(),
+                                                            catcodename,
                                                             arti_params_dict)))
 
 _write_file(catalog_path + '/.metadata/.' + catcodename + '.jsonld',
