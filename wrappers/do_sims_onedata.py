@@ -219,6 +219,10 @@ def _consumer_onedata_mv(onedata_path):
             print(id + ': copy queued again')
             q_onedata.put(md)
             time.sleep(2)
+            # we have to substract 1 to queue lenght because q.put
+            # always add 1 to lenght but really we are re-queing and
+            # size remains the same
+            q_onedata.task_done()
 
 
 def _run_check_and_copy_results(catcodename, filecode, task, onedata_path,
@@ -335,6 +339,10 @@ def _consumer(catcodename, onedata_path, arti_params_dict):
             q.task_done()
         except Exception as inst:
             q.put((filecode, task))
+            # we have to substract 1 to queue lenght because q.put
+            # always add 1 to lenght but really we are re-queing and 
+            # size remains the same  
+            q.task_done()
 
 
 # ------------ main stuff ---------
