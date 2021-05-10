@@ -72,8 +72,12 @@ class ARTIwrapper():
                 print(id + ': copy queued again')
                 self._q_onedata.put(md)
                 time.sleep(2)
-    
-    
+                # we have to substract 1 to queue lenght because q.put
+                # always add 1 to lenght but really we are re-queing and
+                # size remains the same
+                self._q_onedata.task_done()
+                
+                
     def _run_check_and_copy_results(self, catcodename, filecode, task, onedata_path,
                                     arti_params_dict):
     
@@ -129,6 +133,10 @@ class ARTIwrapper():
                 self._q.task_done()
             except Exception as inst:
                 self._q.put((filecode, task))
+                # we have to substract 1 to queue lenght because q.put
+                # always add 1 to lenght but really we are re-queing and 
+                # size remains the same  
+                self._q.task_done()
     
     # ---- END: producer/consumer of executions ---------
     
