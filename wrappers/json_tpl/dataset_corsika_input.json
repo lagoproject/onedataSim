@@ -1,27 +1,3 @@
- {
-  "dct:hasFormat" : "/CATCODENAME/FILENAME#corsikainput",
-  "@graph" : [
-    {
-     "@id" : "/CATCODENAME/FILENAME#activity",
-     "@type" : "prov:Activity",
-     "prov:wasAssociatedWith" : { "@id" : "https://api.github.com/repos/lagoproject/arti/git/commits/COMMITSHAARTI", "@type" : "lago:Software", "name" : "arti", "sdo:codeRepository" : "https://github.com/lagoproject/arti/tree/COMMITSHAARTI",
-                                "lago:runtimePlatform" : { "@id:" : "https://api.github.com/repos/lagoproject/onedataSim/git/commits/COMMITSHAODSIM", "@type" : "lago:Software", "name" : "onedataSim", "sdo:codeRepository" : "https://github.com/lagoproject/onedataSim/tree/COMMITSHAODSIM" } },
-     "prov:used" : "/CATCODENAME#artiParams",
-     "prov:startedAtTime" : "STARTDATE",
-     "prov:endedAtTime" : "ENDDATE"
-    },
-    {
-     "@id" : "/CATCODENAME/FILENAME#distribution",
-     "@type" : "Distribution",
-     "accessURL" : "XXXX",
-     "format" : "http://publications.europa.eu/resource/authority/file-type/TXT",
-     "accessService" : "/CATCODENAME/FILENAME#dataservice",
-     "mediaType" : "http://www.iana.org/assignments/media-types/text",
-     "publisher" :  { "@id" : "https://github.com/lagoproject/DMP/blob/0.0.1/defs/lagocollaboration.jsonld" , "@type" : "lago:Organization" },
-     "creator" : { "@id" : "https://orcid.org/ORCID" , "@type" : "lago:Person" },
-     "license" : "https://creativecommons.org/licenses/by-nc-sa/4.0/",
-     "rights" : "https://github.com/lagoproject/DMP/blob/0.0.1/rights/lagoCommonRights.jsonld",
-     "accessRigths" : "http://publications.europa.eu/resource/authority/access-right/RESTRICTED"
-    }
-  ]
+{
+  "dct:hasFormat" : "/CATCODENAME/FILENAME#corsikainput"
 }

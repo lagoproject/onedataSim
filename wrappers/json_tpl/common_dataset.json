@@ -1,10 +1,10 @@
 {
   "@id" : "/CATCODENAME/FILENAME",   
   "@type" : "DataSet",
-  "description" : "CORSIKA FILENAME",
+  "description" : "FILENAME",
   "title" : "CATCODENAME_FILENAME",
   "wasGeneratedBy" : "/CATCODENAME/FILENAME#activity",
-  "qualifiedAttribution" : { "@id" : "https://orcid.org/ORCIDCODE" , "@type" : "lago:Person" },
+  "qualifiedAttribution" : { "@id" : "https://orcid.org/ORCID" , "@type" : "lago:Person" },
   "distribution" : "/CATCODENAME/FILENAME#distribution",
   "@graph" : [
     {
@@ -14,6 +14,19 @@
      "title" : "CATCODENAME_FILENAME_CDMI",
      "servesDataset" : "/CATCODENAME/FILENAME",
      "conformsTo" : "https://www.iana.org/assignments/media-types/application/cdmi-object"
+    },
+    {
+     "@id" : "/CATCODENAME/FILENAME#distribution",
+     "@type" : "Distribution",
+     "accessURL" : "LANDINGPAGE",
+     "format" : "http://publications.europa.eu/resource/authority/file-type/FORMAT",
+     "accessService" : "/CATCODENAME/FILENAME#dataservice",
+     "mediaType" : "http://www.iana.org/assignments/media-types/MEDIATYPE",
+     "publisher" :  { "@id" : "https://raw.githubusercontent.com/lagoproject/DMP/1.1/defs/lagocollaboration.jsonld" , "@type" : "lago:Organization" },
+     "creator" : { "@id" : "https://orcid.org/ORCID" , "@type" : "lago:Person" },
+     "license" : "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+     "rights" : "https://raw.githubusercontent.com/lagoproject/DMP/1.1/rights/lagoCommonRights.jsonld",
+     "accessRigths" : "http://publications.europa.eu/resource/authority/access-right/RESTRICTED"
     }
   ]
 }

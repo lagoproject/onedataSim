@@ -29,19 +29,20 @@ RUN yum -y update
 # CORSIKA pre-requisites
 RUN yum -y install gcc gcc-c++ gcc-gfortran \
         curl csh make perl perl-Data-Dumper \
-        git perl-Switch
+        git perl-Switch file unzip bzip2
 
 # CORSIKA autorished copy for internal distribution on the LAGO Collaboration (CDMI private link)
 #RUN curl -k -H "X-Auth-Token: $ONECLIENT_ACCESS_TOKEN_TO_BUILD" \
 #               "$ONECLIENT_PROVIDER_HOST_TO_BUILD/cdmi/test4/corsika/corsika-75600-lago.tar.gz" \
 #               | tar xvz -C /opt              
 RUN while ! curl -O -C- -k -H "X-Auth-Token: $ONECLIENT_ACCESS_TOKEN_TO_BUILD" \
-                 "$ONECLIENT_PROVIDER_HOST_TO_BUILD/cdmi/LAGOsoft/corsika/corsika-75600-lago.tar.gz" ; \ 
+                 "$ONECLIENT_PROVIDER_HOST_TO_BUILD/cdmi/LAGOsoft/corsika/lago-corsika-ae38b63419f6882ca1d070b34e3f6e46a721ffe9.zip" ; \ 
                  do true ; done
-RUN tar -xvzf ./corsika-75600-lago.tar.gz --directory /opt 
-RUN rm -f corsika-75600-lago.tar.gz
+RUN unzip ./lago-corsika-ae38b63419f6882ca1d070b34e3f6e46a721ffe9.zip  
+RUN mv lago-corsika-main/corsika-77402 /opt/corsika-77402-lago
+RUN rm -f lago-corsika-ae38b63419f6882ca1d070b34e3f6e46a721ffe9.zip
 
-RUN cd /opt/corsika-75600-lago && ./coconut -b
+RUN cd /opt/corsika-77402-lago && ./coconut-lago
 
 ## testing corsika
 ## ./corsika75600Linux_QGSII_gheisha < all-inputs > output.txt
@@ -62,7 +63,7 @@ RUN cd /opt/onedataSim && bash install.sh
 #We did not use oneclient for downloading corsika-lago to isolate from its compiling 
 # and because it were need use privileged mode.
 RUN curl -sS http://get.onedata.org/oneclient-2002.sh | bash
-RUN mkdir -p /mnt/datahub.egi.eu && echo 'oneclient --force-proxy-io /mnt/datahub.egi.eu/' >> /root/.bashrc
+RUN mkdir -p /mnt/datahub.egi.eu && echo 'nice -n -10 oneclient --force-proxy-io /mnt/datahub.egi.eu/' >> /root/.bashrc
 
 #getfacl getfattr 
 RUN yum -y install acl attr 
@@ -76,6 +77,6 @@ RUN pip install xattr
 #python3 and libraries for Lago processing with onedata
 RUN yum -y install python3 python36-pyxattr
 
-WORKDIR /opt/corsika-75600-lago/run
+WORKDIR /opt/corsika-77402-lago/run
 #ENTRYPOINT /opt/arti/sims/do_datahub.sh
 CMD bash

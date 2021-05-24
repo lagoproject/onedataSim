@@ -12,222 +12,107 @@
 # additional modules needed
 # apt-get install python3-xattr
 # or yum install -y python36-pyxattr
-# import subprocess, os, shutil, xattr, json, datetime, fcntl, sys, shlex
-import subprocess
 import os
-import xattr
-import json
-import datetime
-import sys
-import shlex
+import shutil
 
-from threading import Thread
 from queue import Queue
 
-#
-from arguments import get_sys_args
+# own functions
+import args_sims
 
-onedataSimPath = os.path.dirname(os.path.abspath(__file__))
-
-
-# ----- utils -----
-def _run_Popen_interactive(command):
-
-    print(command+'\n')
-    p = subprocess.Popen(shlex.split(command), env=os.environ,
-                         stdin=sys.stdin, stdout=sys.stdout,
-                         stderr=sys.stderr)
-    p.wait()
+import mdUtils
+import osUtils
 
 
-def _run_Popen(command, timeout=None):
-    print(command+'\n')
-    p = subprocess.Popen(command + ' 2>&1', shell=True, env=os.environ,
-                         stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-    p.wait(timeout)
-    res = ""
-    if p.returncode != 0:
-        print("Return code: "+str(res)+'\n')
-    else:
-        res = p.communicate()[0]
-    return res
-
-
-def _xsd_dateTime():
-
-    # xsd:dateTime
-    # CCYY-MM-DDThh:mm:ss.sss[Z|(+|-)hh:mm]
-    # The time zone may be specified as Z (UTC) or (+|-)hh:mm.
-    return str(datetime.datetime.utcnow()).replace(' ', 'T')+'Z'
-
-
-# j is adding j_new terms to existing keys or adding keys.
-# j and j_new must have same structure (pruned) tree
-# (dict.update adds only when key not exist, otherwise replace)
-def _add_json(j, j_new):
-
-    if type(j) is list:
-        if type(j_new) is list:
-            j += j_new
-            return j
-        return j.append(j_new)
-
-    if (type(j) is dict) and (type(j_new) is dict):
-        k_old = j.keys()
-        for k, v in j_new.items():
-            if k in k_old:
-                j[k] = _add_json(j[k], v)
-            else:
-                j[k] = v
-        return j
-
-    # is not a list or a dict, is a term.
-    # I change to list and call recursiveness
-    return _add_json([j], j_new)
-
-
-#####
-def get_first_catalog_metadata_json(catcodename, orcid):
-
-    with open(onedataSimPath+'/json_tpl/common_context.json', 'r') as file1:
-        with open(onedataSimPath+'/json_tpl/catalog_corsika.json',
-                  'r') as file2:
-            j = json.loads(file1.read())
-            j = _add_json(j, json.loads(file2.read()))
-            s = json.dumps(j)
-            s = s.replace('CATCODENAME', catcodename)
-            s = s.replace('ORCID', orcid)
-            return json.loads(s)
-
-
-def get_catalog_metadata_activity(startdate, enddate):
-
-    with open(onedataSimPath+'/json_tpl/catalog_corsika_activity.json',
-              'r') as file1:
-        j = json.loads(file1.read())
-        s = json.dumps(j)
-        s = s.replace('CATCODENAME', catcodename)
-        s = s.replace('STARTDATE', startdate)
-        s = s.replace('ENDDATE', enddate)
-        return s
-
-
-######
-def _get_common_metadata_aux():
-
-    with open(onedataSimPath+'/json_tpl/common_context.json', 'r') as file1:
-        with open(onedataSimPath+'/json_tpl/common_dataset.json',
-                  'r') as file2:
-            j = json.loads(file1.read())
-            j = _add_json(j, json.loads(file2.read()))
-            return j
-
+from ARTIwrapper import ARTIwrapper
+    
+        
+# ---- specific metadata for S0 datasets (corsika files) ----
 
 def _get_input_metadata(filecode):
 
-    with open(onedataSimPath+'/json_tpl/dataset_corsika_input.json',
-              'r') as file1:
-        j = _get_common_metadata_aux()
-        j = _add_json(j, json.loads(file1.read()))
-        s = json.dumps(j)
-        s = s.replace('FILENAME', 'DAT'+filecode+'.input')
-        # warning, corsikainput metadata must be included also...
-        return s
+    args=['common_activity.json', 'dataset_corsika_input.json']
+    s = mdUtils.get_metadata_for_dataset(args)
+    s = s.replace('FILENAME', 'DAT'+filecode+'.input')
+    # DCAT2 distribution:format & mediaType
+    s = s.replace('FORMAT', 'TXT')  
+    s = s.replace('MEDIATYPE', 'text') 
+    # warning, corsikainput metadata must be included also...
+    return s
 
 
 def _get_bin_output_metadata(filecode):
 
-    with open(onedataSimPath+'/json_tpl/common_dataset_corsika_output.json',
-              'r') as file1:
-        with open(onedataSimPath +
-                  '/json_tpl/dataset_corsika_bin_output.json',
-                  'r') as file2:
-            j = _get_common_metadata_aux()
-            j = _add_json(j, json.loads(file1.read()))
-            j = _add_json(j, json.loads(file2.read()))
-            s = json.dumps(j)
-            runnr = filecode.split('-')[0]
-            s = s.replace('FILENAME', 'DAT'+runnr+'.bz2')
-            return s
+    args=['common_dataset_corsika_output.json',
+          'dataset_corsika_bin_output.json']
+    s = mdUtils.get_metadata_for_dataset(args)
+    runnr = filecode.split('-')[0]
+    s = s.replace('FILENAME', 'DAT'+runnr+'.bz2')
+    # DCAT2 distribution:format & mediaType
+    s = s.replace('FORMAT', 'BIN')  
+    s = s.replace('MEDIATYPE', 'octet-stream') 
+    return s
 
 
 def _get_lst_output_metadata(filecode):
 
-    with open(onedataSimPath+'/json_tpl/common_dataset_corsika_output.json',
-              'r') as file1:
-        with open(onedataSimPath +
-                  '/json_tpl/dataset_corsika_lst_output.json',
-                  'r') as file2:
-            j = _get_common_metadata_aux()
-            j = _add_json(j, json.loads(file1.read()))
-            j = _add_json(j, json.loads(file2.read()))
-            s = json.dumps(j)
-            s = s.replace('FILENAME', 'DAT'+filecode+'.lst.bz2')
-            # falta comprimir si fuera necesario
-            return s
+    args = ['common_dataset_corsika_output.json',
+            'dataset_corsika_lst_output.json']
+    s = mdUtils.get_metadata_for_dataset(args)
+    s = s.replace('FILENAME', 'DAT'+filecode+'.lst.bz2')
+    # DCAT2 distribution:format & mediaType
+    s = s.replace('FORMAT', 'TXT')  
+    s = s.replace('MEDIATYPE', 'text') 
+    # falta comprimir si fuera necesario
+    return s
 
 
-def get_dataset_metadata(catcodename, filecode, startdate, end_date):
+def get_dataset_metadata_S0(catcodename, filecode, startdate, end_date,
+                         arti_params_dict):
 
     mdlistaux = [_get_bin_output_metadata(filecode),
                  _get_lst_output_metadata(filecode),
                  _get_input_metadata(filecode)]
     mdlist = []
     for s in mdlistaux:
-        s = s.replace('CATCODENAME', catcodename)
+        s = mdUtils.replace_common_patterns(s, catcodename, arti_params_dict)
         s = s.replace('NRUN', filecode)
         s = s.replace('STARTDATE', startdate)
         s = s.replace('ENDDATE', end_date)
         mdlist.append(s)
     return mdlist
 
-
-#########
-def _run_check_and_copy_results(catcodename, filecode, task, onedata_path):
-
-    start_date = _xsd_dateTime()
-
-    try:
-        _run_Popen(task)
-        metadatalist = get_dataset_metadata(catcodename, filecode, 
-                                            start_date, _xsd_dateTime())
-        for md in metadatalist:
-            id = json.loads(md)['@id']
-            # oneclient change the filename owner when you move it to onedata
-            # and this action raise exceptions with shutil.move()
-            # shutil.move('.' + id, onedata_path + id)
-            cmd = "mv ." + id + " " + onedata_path + id
-            _run_Popen(cmd)
-            xattr.setxattr(onedata_path + id, 'onedata_json', md)
-    except Exception as inst:
-        raise inst
+# ---- END: specific metadata for S0 datasets (corsika files) ----
 
 
-# ------------ producer/consumer ---------
-main_start_date = _xsd_dateTime()
-q = Queue()
+# ---- specific producer for S0 datasets (corsika) ----
 
+def producerS0(catcodename, arti_params):
 
-def _producer(catcodename, arti_params):
+    q = Queue()
+
+    # clean a possible previous simulation
+    if os.path.exists(catcodename):
+        shutil.rmtree(catcodename, ignore_errors=True)
 
     cmd = 'do_sims.sh ' + arti_params
-    _run_Popen_interactive(cmd)
+    osUtils.run_Popen_interactive(cmd)
 
     # WARNING, I HAD TO PATCH rain.pl FOR AVOID SCREEN !!!!
     cmd = "sed 's/screen -d -m -a -S \$name \$script; screen -ls/\$script/' " + \
        " rain.pl -i"
-    _run_Popen(cmd)
+    osUtils.run_Popen(cmd)
     
     # WARNING, I HAD TO PATCH rain.pl FOR AVOID .long files !!!
     cmd = "sed 's/\$llongi /F /' rain.pl -i"
-    _run_Popen(cmd)
+    osUtils.run_Popen(cmd)
 
     # -g only creates .input's
     # cmd="sed 's/\.\/rain.pl/echo \$i: \.\/rain.pl -g /' go-*.sh  -i"
     cmd = "sed 's/\.\/rain.pl/echo \$i: \.\/rain.pl /' go-*.sh  -i"
-    _run_Popen(cmd)
+    osUtils.run_Popen(cmd)
     cmd = "cat go-*.sh | bash  2>/dev/null"
-    lines = _run_Popen(cmd).decode("utf-8").split('\n')
+    lines = osUtils.run_Popen(cmd).decode("utf-8").split('\n')
     for z in lines:
         if z != "":
             print(z)
@@ -241,64 +126,21 @@ def _producer(catcodename, arti_params):
             s_aux = z_aux[1].replace('/', '')
             s_aux = z_aux[1].replace('.run', '')
             z_aux = s_aux.split('-')
-            filecode = runnr+'-'+prmpar+'-'+z_aux[1]
+            # runnr has at least 6 characters, but can has more    
+            runnr_6 = str(int(runnr)).zfill(6)
+            filecode = runnr_6 + '-' +prmpar +'-' + z_aux[1]
             q.put((filecode, task))
 
-
-def _consumer(catcodename, onedata_path):
-    while True:
-        (filecode, task) = q.get()
-        try:
-            _run_check_and_copy_results(catcodename, filecode, task,
-                                        onedata_path)
-            print('Completed NRUN: ' + str(filecode) + '  ' + task)
-            q.task_done()
-        except Exception as inst:
-            q.put((filecode, task))
+    return q
 
 
-# ------------ main stuff ---------
-(arti_params, arti_params_dict, arti_params_json_md) = get_sys_args()
-catcodename = arti_params_dict["p"]
-# onedata_path = '/mnt/datahub.egi.eu/LAGOsim'
-onedata_path = '/mnt/datahub.egi.eu/test4/LAGOSIM'
-catalog_path = onedata_path + '/' + catcodename
+# ---- MAIN run ----
 
-print(arti_params, arti_params_dict, arti_params_json_md)
-
-try:
-    # mount OneData (fails in python although you wait forever):
-    # removed, currently in Dockerfile.
-    # cmd = "oneclient --force-proxy-io /mnt"
-    # _run_Popen(cmd, timeout=10)
-    if os.path.exists(onedata_path):
-        if not os.path.exists(catalog_path):
-            os.mkdir(catalog_path)
-        else:
-            # It is needed managing this with some kind of versioning
-            # or completion of failed simulations
-            raise Exception("Simulation already in OneData")
-    else:
-        raise Exception("OneData not mounted")
-except Exception as inst:
-    raise inst
+simulation = ARTIwrapper(args_sims.get_sys_args_S0, get_dataset_metadata_S0,
+                         producerS0)
+simulation.run()
 
 
-md = get_first_catalog_metadata_json(catcodename, arti_params_dict['u'])
-md = _add_json(md, arti_params_json_md)
-xattr.setxattr(catalog_path, 'onedata_json', json.dumps(md))
-
-for i in range(int(arti_params_dict["j"])):  # processors
-    t = Thread(target=_consumer, args=(catcodename, onedata_path))
-    t.daemon = True
-    t.start()
-
-_producer(catcodename, arti_params)
-q.join()
 
 
-md = _add_json(md, {'dataset': ["/" + catcodename + "/" + s for s in
-                                os.listdir(catalog_path)]})
-md = _add_json(md, json.loads(get_catalog_metadata_activity(main_start_date,
-                                                            _xsd_dateTime())))
-xattr.setxattr(catalog_path, 'onedata_json', json.dumps(md))
+
