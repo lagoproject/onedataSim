@@ -97,10 +97,10 @@ def get_sys_args_S0():
     #  echo -e "  -s <site> : \
     #    Location (several options)"
     parser.add_argument('-s', dest='s', required=True,
-                        choices=[ "QUIE","and","asu","ber","bga","brc","bue",
-                                  "cha","chia","cpv","cuz","gua","kna","lim",
-                                  "lpb","lsc","mapi","mge","pam","sac","sao",
-                                  "sawb","serb","sng","tac","tuc","vcp" ],
+                        #choices=[ "QUIE","and","asu","ber","bga","brc","bue",
+                        #          "cha","chia","cpv","cuz","gua","kna","lim",
+                        #          "lpb","lsc","mapi","mge","pam","sac","sao",
+                        #          "sawb","serb","sng","tac","tuc","vcp" ],
                         help='Predefined LAGO site')
     #  echo -e "  -j <procs> : \
     #    Number of processors to use"
