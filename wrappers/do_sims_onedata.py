@@ -104,8 +104,9 @@ def producerS0(catcodename, arti_params):
     osUtils.run_Popen(cmd)
     
     # WARNING, I HAD TO PATCH rain.pl FOR AVOID .long files !!!
-    cmd = "sed 's/\$llongi /F /' rain.pl -i"
-    osUtils.run_Popen(cmd)
+    # 20210519 not necessary since arti@d8f8caa
+    # cmd = "sed 's/\$llongi /F /' rain.pl -i"
+    # osUtils.run_Popen(cmd)
 
     # -g only creates .input's
     # cmd="sed 's/\.\/rain.pl/echo \$i: \.\/rain.pl -g /' go-*.sh  -i"
