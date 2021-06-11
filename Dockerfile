@@ -79,6 +79,9 @@ RUN pip install xattr
 #python3 and libraries for Lago processing with onedata
 RUN yum -y install python3 python36-pyxattr
 
+# utils for debugging
+RUN yum -y install screen nano
+
 WORKDIR /opt/corsika-77402-lago/run
 #ENTRYPOINT /opt/arti/sims/do_datahub.sh
 CMD bash
