@@ -95,7 +95,8 @@ def get_first_catalog_metadata_json(catcodename, arti_params_dict):
             return json.loads(s)
 
 
-def get_catalog_metadata_activity(startdate, enddate, arti_params_dict):
+def get_catalog_metadata_activity(startdate, enddate, catcodename,
+                                  arti_params_dict):
 
     with open(onedataSimPath+'/json_tpl/catalog_corsika_activity.json',
               'r') as file1:
@@ -218,6 +219,10 @@ def _consumer_onedata_mv(onedata_path):
             print(id + ': copy queued again')
             q_onedata.put(md)
             time.sleep(2)
+            # we have to substract 1 to queue lenght because q.put
+            # always add 1 to lenght but really we are re-queing and
+            # size remains the same
+            q_onedata.task_done()
 
 
 def _run_check_and_copy_results(catcodename, filecode, task, onedata_path,
@@ -266,7 +271,27 @@ def _producer(catcodename, arti_params):
     # clean a possible previous simulation
     if os.path.exists(catcodename):
         shutil.rmtree(catcodename, ignore_errors=True)
+    
+    # PATCH: correct the creation of tasks, which is based on (-j) in ARTI.
+    #        ARTI tries fit the number of tasks (NRUN) to the number of procs
+    #        for being correct in terms of physics, however was not implemented 
+    #        for fit the output sizes vs flux-time (arti_params[t])  
+ 
+    params_aux_flux = arti_params[arti_params.find("-t")+3:]
+    flux_time = int(params_aux_flux[:params_aux_flux.find("-")])
 
+    params_aux = arti_params[arti_params.find("-j")+3:]
+    old_j = int(params_aux[:params_aux.find("-")])
+    
+    aux_j = int(int(flux_time)/900)
+    if aux_j == 0 : 
+        aux_j = 1
+    if aux_j > 12 : 
+        aux_j = 12
+    arti_params = arti_params[:arti_params.find("-j")] + "-j " + str(aux_j) +" " + params_aux[params_aux.find("-"):]
+
+    print("PATCH: change -j : " + str(old_j) + " by :" + str(aux_j) + " to generate tasks")
+    
     cmd = 'do_sims.sh ' + arti_params
     _run_Popen_interactive(cmd)
 
@@ -276,8 +301,9 @@ def _producer(catcodename, arti_params):
     _run_Popen(cmd)
     
     # WARNING, I HAD TO PATCH rain.pl FOR AVOID .long files !!!
-    cmd = "sed 's/\$llongi /F /' rain.pl -i"
-    _run_Popen(cmd)
+    # 20210519 not necessary since arti@d8f8caa
+    # cmd = "sed 's/\$llongi /F /' rain.pl -i"
+    # _run_Popen(cmd)
 
     # -g only creates .input's
     # cmd="sed 's/\.\/rain.pl/echo \$i: \.\/rain.pl -g /' go-*.sh  -i"
@@ -314,13 +340,17 @@ def _consumer(catcodename, onedata_path, arti_params_dict):
             q.task_done()
         except Exception as inst:
             q.put((filecode, task))
+            # we have to substract 1 to queue lenght because q.put
+            # always add 1 to lenght but really we are re-queing and 
+            # size remains the same  
+            q.task_done()
 
 
 # ------------ main stuff ---------
 (arti_params, arti_params_dict, arti_params_json_md) = get_sys_args()
 catcodename = arti_params_dict["p"]
-# onedata_path = '/mnt/datahub.egi.eu/LAGOsim'
 onedata_path = '/mnt/datahub.egi.eu/LAGOsim'
+#onedata_path = '/mnt/datahub.egi.eu/test8/LAGOSIM'
 catalog_path = onedata_path + '/' + catcodename
 
 print(arti_params, arti_params_dict, arti_params_json_md)
@@ -375,6 +405,7 @@ md['dataset'] = ["/" + catcodename + "/" + s for s in
 
 md = _add_json(md, json.loads(get_catalog_metadata_activity(main_start_date,
                                                             _xsd_dateTime(),
+                                                            catcodename,
                                                             arti_params_dict)))
 
 _write_file(catalog_path + '/.metadata/.' + catcodename + '.jsonld',
