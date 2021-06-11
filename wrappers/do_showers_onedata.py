@@ -14,8 +14,7 @@
 # or yum install -y python36-pyxattr
 
 #EXAMPLE of possible standard modules needed
-import os
-import xattr
+# import xattr
 import json
 import shutil
 
@@ -33,13 +32,31 @@ from ARTIwrapper import ARTIwrapper
 # ---- specific metadata for S1 datasets (corsika files) ----
 
 # output primaries
-def _get_prim_metadata(filecode):
+def _get_pri_metadata(filecode):
 
-    #TO BE DONE  (only illustrative)
-
-    args=['common_activity.json', 'dataset_S1_SPECIFIC.json']
+    args=['common_activity.json', 'dataset_arti_pri_output.json']
     s = mdUtils.get_metadata_for_dataset(args)
-    s = s.replace('FILENAME', filecode+'prim.bz2')
+    s = s.replace('FILENAME', filecode+'pri.bz2')
+    # DCAT2 distribution:format & mediaType
+    s = s.replace('FORMAT', 'BIN')  ## BIN or TXT
+    s = s.replace('MEDIATYPE', 'octet-stream')  ## octect-stream or text
+    return s
+
+def _get_sec_metadata(filecode):
+
+    args=['common_activity.json', 'dataset_arti_sec_output.json']
+    s = mdUtils.get_metadata_for_dataset(args)
+    s = s.replace('FILENAME', filecode+'sec.bz2')
+    # DCAT2 distribution:format & mediaType
+    s = s.replace('FORMAT', 'BIN')  ## BIN or TXT
+    s = s.replace('MEDIATYPE', 'octet-stream')  ## octect-stream or text
+    return s
+
+def _get_shw_metadata(filecode):
+
+    args=['common_activity.json', 'dataset_arti_shw_output.json']
+    s = mdUtils.get_metadata_for_dataset(args)
+    s = s.replace('FILENAME', filecode+'shw.bz2')
     # DCAT2 distribution:format & mediaType
     s = s.replace('FORMAT', 'BIN')  ## BIN or TXT
     s = s.replace('MEDIATYPE', 'octet-stream')  ## octect-stream or text
@@ -51,7 +68,9 @@ def get_dataset_metadata_S1(catcodename, filecode, startdate, end_date,
 
     #TO BE DONE  (only illustrative)
 
-    mdlistaux = [_get_prim_metadata(filecode)]
+    mdlistaux = [_get_pri_metadata(filecode),
+                 _get_sec_metadata(filecode),
+                 _get_shw_metadata(filecode)]
     mdlist = []
     for s in mdlistaux:
         s = mdUtils.replace_common_patterns(s, catcodename, arti_params_dict)
@@ -64,9 +83,7 @@ def get_dataset_metadata_S1(catcodename, filecode, startdate, end_date,
 # ---- END: specific metadata for S0 datasets (corsika files) ----
 
 
-# ---- specific producer for S0 datasets (corsika) ----
-
-
+# ---- specific producer for S1 datasets (arti) ----
 
 def producer_S1(catcodename, arti_params):
 
@@ -77,7 +94,7 @@ def producer_S1(catcodename, arti_params):
     if os.path.exists(catcodename):
         shutil.rmtree(catcodename, ignore_errors=True)
 
-    cmd = 'do_.showers.sh ' + arti_params
+    cmd = 'do_showers.sh ' + arti_params
     osUtils.run_Popen_interactive(cmd)
 
     # IN DO_SHOWERS.SH (BASH) the section of code that proccess & create files is:
@@ -99,14 +116,18 @@ def producer_S1(catcodename, arti_params):
     #
     # This final execution is a PROBLEM.... I only centering on primaries
 
-    with open(catcodename+'run', 'r') as file1:
-        for z in  file1.readlines()
+    with open(catcodename+'.run', 'r') as file1:
+        for z in file1.readlines()
             if z != "":
                 # YOU OBTAIN SOMETHING SIMILAR TO:
                 # "bzip2 -d -k $i; echo $j | ${arti_path}/analysis/lagocrkread | ${arti_path}/analysis/analysis -p ${u}; rm ${j}"
                 # AND YOU SHOUD CREATE SOMETHING SIMILAR TO:
                 # filecode = $i
                 # task =  "cp remote_onedata/$i ." + z
+                print(z)
+                z_aux = z.split(" ")
+                filecode = z_aux[14].replace(';', '')
+                task = z
                 q.put((filecode, task))
 
     return q
@@ -117,7 +138,6 @@ def producer_S1(catcodename, arti_params):
 simulation = ARTIwrapper(args_showers.get_sys_args_S1, get_dataset_metadata_S1,
                          producer_S1)
 simulation.run()
-
 
 
 
