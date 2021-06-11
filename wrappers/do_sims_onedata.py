@@ -349,8 +349,8 @@ def _consumer(catcodename, onedata_path, arti_params_dict):
 # ------------ main stuff ---------
 (arti_params, arti_params_dict, arti_params_json_md) = get_sys_args()
 catcodename = arti_params_dict["p"]
-onedata_path = '/mnt/datahub.egi.eu/LAGOsim'
-# onedata_path = '/mnt/datahub.egi.eu/test8/LAGOSIM'
+#onedata_path = '/mnt/datahub.egi.eu/LAGOsim'
+onedata_path = '/mnt/datahub.egi.eu/test8/LAGOSIM'
 catalog_path = onedata_path + '/' + catcodename
 
 print(arti_params, arti_params_dict, arti_params_json_md)
