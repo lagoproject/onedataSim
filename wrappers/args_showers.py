@@ -18,29 +18,12 @@ import os
 ###CORSIKA_VER = '77402'
 
 def _get_arti_params_json_md(arti_dict):
-    # YOU SHOULD PARSE EVERY ARGUMENT
-    #   echo -e "  -o <origin directory>     : Origin dir, where the DAT files are located"
-    # 	echo -e "  -r <ARTI directory>       : ARTI installation directory, generally pointed by \$LAGO_ARTI (default)"
-    # 	echo -e "  -w <workding directory>      : Working dir, where the analysis will be done (default is current directory, ${wdir})"
-    # 	echo -e "  -r <ARTI directory>       : ARTI installation directory, generally pointed by \$LAGO_ARTI (default)"
-    # 	echo -e "  -e <energy bins>          : Number of energy secondary bins (default: $energy_bins"
-    # 	echo -e "  -d <distance bins>        : Number of distance secondary bins (default: $distance_bins"
-    # 	echo -e "  -p <project base name>    : Base name for identification of S1 files (don't use spaces). Default: odir basename"
-    # 	echo -e "  -k <site altitude, in m>  : For curved mode (default), site altitude in m a.s.l. (mandatory)"
-    # 	echo -e "  -s <type>                 : Filter secondaries by type: 1: EM, 2: MU, 3: HD"
-    # 	echo -e "  -t <time>                 : Normalize energy distribution in particles/(m2 s bin), S=1 m2; <t> = flux time (s)."
-    # 	echo -e "  -m <bins per decade>      : Produce files with the energy distribution of the primary flux per nuclei."
-    # 	echo -e "  -j                        : Produce a batch file for parallel processing. Not compatible with local (-l)"
-    # 	echo -e "  -l                        : Enable parallel execution locally ($N procs). Not compatible with parallel (-j)"
-    # 	echo -e "  -?                        : Shows this help and exit."
-
-
     dict_aux = {
          "@id": "/"+arti_dict['p']+"#artiParams",
          "@type": "lago:ArtiParams",
          "lago:detectorSite":
-         "https://github.com/lagoproject/DMP/blob/1.1/defs/sitesLago.jsonld#"
-         + arti_dict['s'],
+         "https://github.com/lagoproject/DMP/blob/1.1/defs/sitesLago.jsonld#",
+         "lago:originDirectory": arti_dict['o'],
          "lago:energyBins": arti_dict['e'],
          "lago:distanceBins": arti_dict['d'],
          "lago:obsLev": arti_dict['k'],
@@ -48,14 +31,8 @@ def _get_arti_params_json_md(arti_dict):
          "lago:fluxTime": arti_dict['t'],
          "lago:binsPerDecade": arti_dict['m'],
          }
-         #....
-         #....
-         # YOU SOULDH OBTAIN SOME PARAMETERS FROM THE S0 METADATA
-         # OTHERS FROM PARAMETERS... 
-
-
+    
     # create JSON removing empty values
-
     j = {"@graph": [
         {k: v for k, v in dict_aux.items() if v is not None}
         ]}
@@ -63,7 +40,7 @@ def _get_arti_params_json_md(arti_dict):
     return j
 
 
-def get_sys_args_S0():
+def get_sys_args_S1():
 
     disclaimer = 'do_onedata: simulating LAGO sites and storing/publishing \
     results in OneData'
@@ -118,29 +95,11 @@ def get_sys_args_S0():
     # it should describe a simulation
 
     # codename is identical to the S0 origin, but begins with S1
-    S0_codename = 'S0_' + args_dict['s'] + '_' + str(args_dict['t'])
+    S0_codename_full = args_dict['o']
+    S0_codename = S0_codename_full.split("/")
+    S0_codename = S0_codename[4]
 
-    if args_dict['k'] is not None:
-        S0_codename += '_' + str(args_dict['k'])
-
-    S0_codename += '_' + args_dict['v'] + '_' + args_dict['h']
-
-    if args_dict['y'] is True:
-        S0_codename += '_volu'
-    else:
-        S0_codename += '_flat'
-
-    if args_dict['e'] is True:
-        S0_codename += '_Cherenk'
-
-    if args_dict['a'] is True:
-        S0_codename += '_HEcuts'
-
-    if args_dict['x'] is True:
-        S0_codename += '_defaults'    
-    
-    S0_codename_tail= S0_codename[3:]
-    codename = 'S1_' + S0_codename_tail
+    codename = 'S1_' + S0_codename
 
     args_dict.update({'p': codename})
 
