@@ -14,7 +14,7 @@
 # or yum install -y python36-pyxattr
 
 #EXAMPLE of possible standard modules needed
-# import xattr
+import xattr
 import json
 import shutil
 
