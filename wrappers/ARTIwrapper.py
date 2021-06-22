@@ -219,7 +219,8 @@ class ARTIwrapper():
         
         self._q = self._producer(catcodename, arti_params)
         
-        t = Thread(target=self._consumer_onedata_cp, args=(onedata_path,))
+        # t = Thread(target=self._consumer_onedata_cp, args=(onedata_path,))
+        t = Thread(target=self._consumer_onedata_cp, args=(onedata_path))
         t.daemon = True
         t.start()
         
