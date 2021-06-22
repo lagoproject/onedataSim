@@ -117,6 +117,7 @@ def producer_S1(catcodename, arti_params):
     # This final execution is a PROBLEM.... I only centering on primaries
 
     with open(catcodename+'.run', 'r') as file1:
+        print(file1)
         for z in file1.readlines()
             if z != "":
                 # YOU OBTAIN SOMETHING SIMILAR TO:
