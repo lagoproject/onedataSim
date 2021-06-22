@@ -57,7 +57,7 @@ def get_sys_args_S1():
                         help='Number of energy secondary bins (default: $energy_bins)')
     parser.add_argument('-d', dest='d', required=True, type=int,
                         help='Number of distance secondary bins (default: $distance_bins)')
-    parser.add_argument('-p', dest='p', required=True,
+    parser.add_argument('-p', dest='p',
                         help='Base name for identification of S1 files (do not use spaces). Default: odir basename')
     parser.add_argument('-k', dest='k', required=True, type=int,
                         help='For curved mode (default), site altitude in m a.s.l. (mandatory)')
@@ -67,9 +67,9 @@ def get_sys_args_S1():
                         help='Flux time (in seconds) for simulations')
     parser.add_argument('-m', dest='m', required=True, type=int,
                         help='Produce files with the energy distribution of the primary flux per nuclei')
-    parser.add_argument('-j', dest='j', required=True,
+    parser.add_argument('-j', dest='j',
                         help='Produce a batch file for parallel processing. Not compatible with local (-l)')
-    parser.add_argument('-l', dest='l', required=True,
+    parser.add_argument('-l', dest='l',
                         help='Enable parallel execution locally ($N procs). Not compatible with parallel (-j)')
     parser.add_argument('-?', action='help', help='Shows this help and exit.')
 
