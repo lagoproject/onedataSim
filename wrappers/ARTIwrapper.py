@@ -196,7 +196,7 @@ class ARTIwrapper():
                                                          arti_params_dict)
                     md = mdUtils.add_json(md, arti_params_json_md)
                     # osUtils.write_file(catalog_path + '/.metadata/.' + catcodename + '.jsonld',
-                                json.dumps(md))
+                    #             json.dumps(md))
                     osUtils._write_file(catalog_path + '/.metadata/.' + catcodename + '.jsonld',
                                 json.dumps(md))
                     xattr.setxattr(catalog_path, 'onedata_json', json.dumps(md))
