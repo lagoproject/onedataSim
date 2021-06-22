@@ -118,7 +118,7 @@ def producer_S1(catcodename, arti_params):
 
     with open(catcodename+'.run', 'r') as file1:
         print(file1)
-        for z in file1.readlines()
+        for z in file1.readlines():
             if z != "":
                 # YOU OBTAIN SOMETHING SIMILAR TO:
                 # "bzip2 -d -k $i; echo $j | ${arti_path}/analysis/lagocrkread | ${arti_path}/analysis/analysis -p ${u}; rm ${j}"
