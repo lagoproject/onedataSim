@@ -28,7 +28,8 @@ import mdUtils
 class ARTIwrapper():    
 
     def __init__(self, get_sys_args, get_dataset_metadata, producer):
-        self._q = None
+        # self._q = None
+        self._q=Queue()
         self._q_onedata = None
         # passed functions
         self._get_sys_args = get_sys_args
