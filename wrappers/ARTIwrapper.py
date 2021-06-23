@@ -239,7 +239,9 @@ class ARTIwrapper():
                                                                     catcodename,
                                                                     arti_params_dict)))
         
-        osUtils.write_file(catalog_path + '/.metadata/.' + catcodename + '.jsonld',
+        # osUtils.write_file(catalog_path + '/.metadata/.' + catcodename + '.jsonld',
+        #             json.dumps(md))
+        osUtils._write_file(catalog_path + '/.metadata/.' + catcodename + '.jsonld',
                     json.dumps(md))
         xattr.setxattr(catalog_path, 'onedata_json', json.dumps(md))
         
