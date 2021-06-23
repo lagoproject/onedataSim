@@ -218,6 +218,7 @@ class ARTIwrapper():
             t.start()
         
         self._q = self._producer(catcodename, arti_params)
+        self._q_onedata=Queue()
         
         t = Thread(target=self._consumer_onedata_cp, args=(onedata_path,))
         t.daemon = True
