@@ -126,7 +126,6 @@ class ARTIwrapper():
     def _consumer(self, catcodename, onedata_path, arti_params_dict):
         while True:
             (filecode, task) = self._q.get()
-            print(self._q)
             try:
                 self._run_check_and_copy_results(catcodename, filecode, task,
                                             onedata_path, arti_params_dict)
