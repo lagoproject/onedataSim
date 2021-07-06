@@ -210,6 +210,8 @@ class ARTIwrapper():
                 raise Exception("OneData not mounted")
         except Exception as inst:
             raise inst
+            
+        self._q = self._producer(catcodename, arti_params)    
         
         for i in range(int(arti_params_dict["j"])):  # processors
             t = Thread(target=self._consumer, args=(catcodename, onedata_path,
@@ -217,7 +219,7 @@ class ARTIwrapper():
             t.daemon = True
             t.start()
         
-        self._q = self._producer(catcodename, arti_params)
+        # self._q = self._producer(catcodename, arti_params)
         self._q_onedata=Queue()
         
         t = Thread(target=self._consumer_onedata_cp, args=(onedata_path,))
