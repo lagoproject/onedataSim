@@ -16,6 +16,7 @@
 #EXAMPLE of possible standard modules needed
 import xattr
 import json
+import os
 import shutil
 
 from queue import Queue
