@@ -72,10 +72,11 @@ def get_sys_args_S1():
     parser.add_argument('-?', action='help', help='Shows this help and exit.')
 
     #added, not equiv in do_showers:
+
     parser.add_argument('-u', dest='u', required=True,
                         help='ORCID code describing user, plain usernames are \
                         no allowed for publication')
-    
+
     args = parser.parse_args()
 
     args_dict = vars(args)

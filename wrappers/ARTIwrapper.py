@@ -56,7 +56,7 @@ class ARTIwrapper():
                     if os.path.exists(onedata_path + id):
                         xattr.setxattr(onedata_path + id, 'onedata_json', md)
                         id_hidden = '/' + id.lstrip('/').replace('/','/.metadata/.')
-                        osUtils.write_file(onedata_path + id_hidden + '.jsonld', md)
+                        osUtils._write_file(onedata_path + id_hidden + '.jsonld', md)
                     else:
                         print('CAUTION: '+ id +' is not in onedata, requeuing...' )
                         raise inst

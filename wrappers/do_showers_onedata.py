@@ -37,7 +37,7 @@ def _get_pri_metadata(filecode):
 
     args=['common_activity.json', 'dataset_arti_pri_output.json']
     s = mdUtils.get_metadata_for_dataset(args)
-    s = s.replace('FILENAME', filecode+'pri.bz2')
+    s = s.replace('FILENAME', filecode +'.pri.bz2')
     # DCAT2 distribution:format & mediaType
     s = s.replace('FORMAT', 'BIN')  ## BIN or TXT
     s = s.replace('MEDIATYPE', 'octet-stream')  ## octect-stream or text
@@ -47,7 +47,7 @@ def _get_sec_metadata(filecode):
 
     args=['common_activity.json', 'dataset_arti_sec_output.json']
     s = mdUtils.get_metadata_for_dataset(args)
-    s = s.replace('FILENAME', filecode+'sec.bz2')
+    s = s.replace('FILENAME', filecode + '.sec.bz2')
     # DCAT2 distribution:format & mediaType
     s = s.replace('FORMAT', 'BIN')  ## BIN or TXT
     s = s.replace('MEDIATYPE', 'octet-stream')  ## octect-stream or text
@@ -57,7 +57,7 @@ def _get_shw_metadata(filecode):
 
     args=['common_activity.json', 'dataset_arti_shw_output.json']
     s = mdUtils.get_metadata_for_dataset(args)
-    s = s.replace('FILENAME', filecode+'shw.bz2')
+    s = s.replace('FILENAME', filecode + '.shw.bz2')
     # DCAT2 distribution:format & mediaType
     s = s.replace('FORMAT', 'BIN')  ## BIN or TXT
     s = s.replace('MEDIATYPE', 'octet-stream')  ## octect-stream or text
@@ -117,7 +117,7 @@ def producer_S1(catcodename, arti_params):
     #
     # This final execution is a PROBLEM.... I only centering on primaries
 
-    with open(catcodename+'.run', 'r') as file1:
+    with open('./' + catcodename + '/'+ catcodename + '.run', 'r') as file1:
         print(file1)
         for z in file1.readlines():
             if z != "":
@@ -127,8 +127,7 @@ def producer_S1(catcodename, arti_params):
                 # filecode = $i
                 # task =  "cp remote_onedata/$i ." + z
                 print(z)
-                z_aux = z.split(" ")
-                filecode = z_aux[14].replace(';', '')
+                filecode = z.split("echo DAT")[1].split(" ")[0]
                 task = z
                 q.put((filecode, task))
 
