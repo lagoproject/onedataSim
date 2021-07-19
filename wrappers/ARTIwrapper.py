@@ -28,8 +28,8 @@ import mdUtils
 class ARTIwrapper():    
 
     def __init__(self, get_sys_args, get_dataset_metadata, producer):
-        self._q = None
-        self._q_onedata = None
+        self._q = Queue()
+        self._q_onedata = Queue()
         # passed functions
         self._get_sys_args = get_sys_args
         self._get_dataset_metadata = get_dataset_metadata
@@ -56,7 +56,7 @@ class ARTIwrapper():
                     if os.path.exists(onedata_path + id):
                         xattr.setxattr(onedata_path + id, 'onedata_json', md)
                         id_hidden = '/' + id.lstrip('/').replace('/','/.metadata/.')
-                        osUtils.write_file(onedata_path + id_hidden + '.jsonld', md)
+                        osUtils._write_file(onedata_path + id_hidden + '.jsonld', md)
                     else:
                         print('CAUTION: '+ id +' is not in onedata, requeuing...' )
                         raise inst
@@ -175,7 +175,8 @@ class ARTIwrapper():
         main_start_date = mdUtils.xsd_dateTime()
         (catcodename, arti_params_dict, arti_params_json_md) = self._get_sys_args()
         arti_params = self._reconstruct_arti_args_from_dict(arti_params_dict)
-        arti_params_dict = mdUtils.add_private_info_to_dict(arti_params_dict)
+        arti_params_dict = self._add_private_info_to_dict(arti_params_dict)
+        # arti_params_dict = mdUtils.add_private_info_to_dict(arti_params_dict)
         # onedata_path = '/mnt/datahub.egi.eu/LAGOsim'
         onedata_path = '/mnt/datahub.egi.eu/test8/LAGOSIM'
         catalog_path = onedata_path + '/' + catcodename
@@ -194,7 +195,9 @@ class ARTIwrapper():
                     md = mdUtils.get_first_catalog_metadata_json(catcodename, 
                                                          arti_params_dict)
                     md = mdUtils.add_json(md, arti_params_json_md)
-                    osUtils.write_file(catalog_path + '/.metadata/.' + catcodename + '.jsonld',
+                    # osUtils.write_file(catalog_path + '/.metadata/.' + catcodename + '.jsonld',
+                    #             json.dumps(md))
+                    osUtils._write_file(catalog_path + '/.metadata/.' + catcodename + '.jsonld',
                                 json.dumps(md))
                     xattr.setxattr(catalog_path, 'onedata_json', json.dumps(md))
                 else: 
@@ -206,7 +209,7 @@ class ARTIwrapper():
             else:
                 raise Exception("OneData not mounted")
         except Exception as inst:
-            raise inst
+            raise inst    
         
         for i in range(int(arti_params_dict["j"])):  # processors
             t = Thread(target=self._consumer, args=(catcodename, onedata_path,
@@ -214,7 +217,8 @@ class ARTIwrapper():
             t.daemon = True
             t.start()
         
-        self._q = self._producer(catcodename, arti_params)
+        q_aux = self._producer(catcodename, arti_params)
+        for i in q_aux.queue:self._q.put(i)
         
         t = Thread(target=self._consumer_onedata_cp, args=(onedata_path,))
         t.daemon = True
@@ -235,7 +239,9 @@ class ARTIwrapper():
                                                                     catcodename,
                                                                     arti_params_dict)))
         
-        osUtils.write_file(catalog_path + '/.metadata/.' + catcodename + '.jsonld',
+        # osUtils.write_file(catalog_path + '/.metadata/.' + catcodename + '.jsonld',
+        #             json.dumps(md))
+        osUtils._write_file(catalog_path + '/.metadata/.' + catcodename + '.jsonld',
                     json.dumps(md))
         xattr.setxattr(catalog_path, 'onedata_json', json.dumps(md))
         
