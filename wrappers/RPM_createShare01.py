@@ -4,7 +4,7 @@
 import requests
 import json
 
-OneData_Token = "MDAxY2xvY2F00aW9uIGRhdGFodWIuZWdpLmV1CjAwMzZpZGVudGlmaWVyIDJhYzMwMDNkODkwOTQ4NDFiMTExODIyOGE4OGNjMjk4Y2g3NTc2CjAwMWFjaWQgdGltZSA8IDE2MzgyNjY1NjYKMDAyZnNpZ25hdHVyZSAUlaITPwFIWROJF1D3TUA7VXFM2iDo9JBRO01C5Y6hcoAo"
+OneData_Token = ""
 OneData_Header = "application/json"
 OneData_Host = "ceta-ciemat-02.datahub.egi.eu"
 OneData_fileName = "S0_and_10_114.0_77402_QGSII_flat_defaults"
