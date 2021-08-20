@@ -6,47 +6,26 @@
 # Copyright (c): 2020-today, The LAGO Collaboration (http://lagoproject.net)   #
 ################################################################################
 
-FROM centos:7.8.2003
+#--build-arg type=S0, S1 or S2, is mandatory
+ARG type
+# baseOS private,  only for development purposes
+ARG baseOS
+RUN if [ "$type" = "S0" ] ; \
+    then $type="lagoproject.net/corsika:xxxx" ; \ 
+    elif [ "$type" = "S1" ] ; \
+    then $type="centos:latest" ; \ 
+    elif [ "$type" = "S2" ] ; \
+    then $type="lagoproject.net/geant4:xxxx" ; \
+    else echo "Error: --build-arg type=S0, S1 or S2, is mandatory "; \
+    fi
 
+#An ARG declared before a FROM is outside of a build stage, so it can’t be used in any instruction after a FROM
+FROM baseOS
 # 
-ARG ONECLIENT_ACCESS_TOKEN_TO_BUILD
-ARG ONECLIENT_PROVIDER_HOST_TO_BUILD
 ARG ONEDATASIM_BRANCH="master"
-
 # user credentials when the container were used
 ENV ONECLIENT_ACCESS_TOKEN=""
 ENV ONECLIENT_PROVIDER_HOST=""
-
-#to limit to this minor SO release
-RUN echo '7.8.2003' > /etc/yum/vars/releasever
-RUN sed -e '/mirrorlist=.*/d' \
-    -e 's/#baseurl=/baseurl=/' \
-    -e "s/\$releasever/7.8.2003/g" \
-    -e "s/mirror.centos.org\\/centos/vault.centos.org/g" \
-    -i /etc/yum.repos.d/CentOS-*
-RUN yum -y update
-
-# CORSIKA pre-requisites
-RUN yum -y install gcc gcc-c++ gcc-gfortran \
-        curl csh make perl perl-Data-Dumper \
-        git perl-Switch file unzip bzip2
-
-# CORSIKA autorished copy for internal distribution on the LAGO Collaboration (CDMI private link)
-#RUN curl -k -H "X-Auth-Token: $ONECLIENT_ACCESS_TOKEN_TO_BUILD" \
-#               "$ONECLIENT_PROVIDER_HOST_TO_BUILD/cdmi/test4/corsika/corsika-75600-lago.tar.gz" \
-#               | tar xvz -C /opt              
-RUN while ! curl -O -C- -k -H "X-Auth-Token: $ONECLIENT_ACCESS_TOKEN_TO_BUILD" \
-                 "$ONECLIENT_PROVIDER_HOST_TO_BUILD/cdmi/LAGOsoft/corsika/lago-corsika-ae38b63419f6882ca1d070b34e3f6e46a721ffe9.zip" ; \ 
-                 do true ; done
-RUN unzip ./lago-corsika-ae38b63419f6882ca1d070b34e3f6e46a721ffe9.zip  
-RUN mv lago-corsika-main/corsika-77402 /opt/corsika-77402-lago
-RUN rm -f lago-corsika-ae38b63419f6882ca1d070b34e3f6e46a721ffe9.zip
-
-RUN cd /opt/corsika-77402-lago && ./coconut-lago
-
-## testing corsika
-## ./corsika75600Linux_QGSII_gheisha < all-inputs > output.txt
-
 
 #dowload and compile ARTI LAGO crktools
 RUN yum -y install bzip2
