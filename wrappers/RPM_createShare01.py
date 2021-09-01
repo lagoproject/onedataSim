@@ -23,7 +23,7 @@ print(share_level1)
 
 OneData_urlregisterHandle = "https://datahub.egi.eu/api/v3/onezone/user/handles"
 OneData_shareID = json.loads(share_level1.text)["shareId"]
-OneData_metadata = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<metadata xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n     <oai_dc:dc>\n      <dc:title>S0_and_10_114.0_77402_QGSII_flat_defaults</dc:title>\n      <dc:creator>RPM</dc:creator>\n      <dc:date>2021-09-01</dc:date>\n      <dc:publisher>lago:Organization</dc:publisher>\n      <dc:rights>cc4.0</dc:rights>\n     </oai_dc:dc>\n\n</metadata>\n"
+OneData_metadata = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<metadata xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n     <dc:title>S0_and_10_114.0_77402_QGSII_flat_defaults</dc:title>\n      <dc:creator>RPM</dc:creator>\n      <dc:date>2021-09-01</dc:date>\n      <dc:publisher>lago:Organization</dc:publisher>\n      <dc:rights>cc4.0</dc:rights>\n\n</metadata>\n"
 OneData_handleServiceId = "986fe2ab97a6b749fac17eb9e9b38c37chb045"
 data_file_handle = { "handleServiceId": OneData_handleServiceId, "resourceType": "Share", "resourceId": OneData_shareID, "metadata": OneData_metadata}
 
