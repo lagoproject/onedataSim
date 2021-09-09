@@ -221,7 +221,7 @@ def get_sys_args_S0():
 
     # working dir
     
-    args_dict.update({'w': '/opt/corsika-'+CORSIKA_VER+'-lago/run/'})
+    args_dict.update({'w': '/opt/lago-corsika-'+CORSIKA_VER+'/run/'})
 
  
     return (codename, args_dict, _get_arti_params_json_md(args_dict))
