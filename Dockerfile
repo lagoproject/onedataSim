@@ -11,7 +11,7 @@ FROM centos:7
 #--build-arg TYPE=S0, S1 or S2, is mandatory
 ARG TYPE
 # BASE_OS private,  only for development purposes
-ENV BASE_OS=""
+ENV BASE_OS="centos:7"
 RUN if [ "$TYPE" = "S0" ] ; \
     then BASE_OS="lagoproject.net/corsika:xxxx" ; \
     elif [ "$TYPE" = "S1" ] ; \
