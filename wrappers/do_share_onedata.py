@@ -4,7 +4,7 @@
 #          CIEMAT - Sci-Track Group (http://rdgroups.ciemat.es/web/sci-track),#
 #          for the EOSC-Synergy project (EU H2020 RI Grant No 857647).        #
 # License (SPDX): BSD-3-Clause (https://opensource.org/licenses/BSD-3-Clause) #
-# Copyright (c): 2020-today, The LAGO Collaboration (http://lagoproject.net)  #
+# Copyright (c): 2021-today, The LAGO Collaboration (http://lagoproject.net)  #
 ###############################################################################
 
 
@@ -41,10 +41,14 @@ OneData_handleServiceId = ""
 
 def folder0_content (folder0_id, host, token):
     """
-
+    
+    Modules
+    -------
+    request, json
+    
     Parameters
     ----------
-    folder0_id : Onedata folder id containing the data to publish.
+    folder0_id : Onedata folder level 0 id containing the data to publish.
     host : OneData provider (e.g., ceta-ciemat-02.datahub.egi.eu).
     token : OneData personal access token.
 
@@ -64,9 +68,13 @@ def folder0_content (folder0_id, host, token):
 def OneData_sharing (filename, file_id, host, token):
     """
 
+    Modules
+    -------
+    request
+    
     Parameters
     ----------
-    filename : OneData provider (e.g., ceta-ciemat-02.datahub.egi.eu).
+    filename : Folder name to share and handle.
     file_id : OneData folder id containing the data to publish.
     host : OneData provider (e.g., ceta-ciemat-02.datahub.egi.eu).
     token : OneData personal access token.
@@ -90,12 +98,16 @@ def OneData_sharing (filename, file_id, host, token):
 def OneData_createhandle (handleservice_id, share_id, local_path, filename, host, token):
     """
 
+    Modules
+    -------
+    request
+    
     Parameters
     ----------
     handleservice_id : OneData handle service id
     share_id : file shared id
     local_path : local path where the xlm files are stored
-    filename : OneData provider (e.g., ceta-ciemat-02.datahub.egi.eu).
+    filename : Folder name to share and handle.
     host : OneData provider (e.g., ceta-ciemat-02.datahub.egi.eu).
     token : OneData personal access token.
 
@@ -117,6 +129,68 @@ def OneData_createhandle (handleservice_id, share_id, local_path, filename, host
     
     return (OneData_metadata)
     
+
+def folder1_getattrs (handleservice_id, local_path, folder1_id, host, token):
+    """
+
+    Modules
+    -------
+    request, json
+    
+    Description
+    -----------
+    This function gets the attributes of the files to share and handle.
+    If the file has been shared already, checks if more than once.
+    In that case, only leaves one and deletes the rest (leaves the oldest).
+    Then, it checks if the share already has a handle and, if not, creates one.
+    If the file has not been shared, then returns and empty file:
+    shareinfo_level1=[]
+    
+    Parameters
+    ----------
+    handleservice_id : OneData handle service id
+    local_path : local path where the xlm files are stored
+    folder1_id : Onedata folder level 1 id (contained in level 0 folder).
+    host : OneData provider (e.g., ceta-ciemat-02.datahub.egi.eu).
+    token : OneData personal access token.
+
+    Returns
+    -------
+    shareinfo_level1: Get the basic information about the shared folder level 1
+
+    """
+    OneData_urlgetAttrs = "https://" + host + '/api/v3/oneprovider/data/' + folder1_id + "?attribute=shares"
+    request_param = {'X-Auth-Token': token}
+    shareid_level1 = requests.get(OneData_urlgetAttrs, headers=request_param)
+    attrs_level1 = json.loads(shareid_level1.text)
+    
+    if attrs_level1['shares']:
+        
+        for ii in range(len(attrs_level1['shares'])):
+            n = len(attrs_level1['shares'])-1
+            if ii<1:            
+                OneData_urlgetShareinfo = "https://" + host + '/api/v3/oneprovider/shares/' + attrs_level1['shares'][n-ii]
+                shareinfo_level1 = requests.get(OneData_urlgetShareinfo, headers=request_param)
+                
+                allinfo_level1 = json.loads(shareinfo_level1.text)
+                if allinfo_level1['handleId']:
+                    print('handle exist already')
+                    print(allinfo_level1['handleId'])
+                else:
+                    print('creating handle')
+                    #OneData_createhandle(handleservice_id, allinfo_level1['shareId'], local_path, allinfo_level1['name'], host, token)
+                
+            else:
+                OneData_urldeleteShare = "https://" + host + '/api/v3/oneprovider/shares/' + attrs_level1['shares'][n-ii]
+                requests.delete(OneData_urldeleteShare, headers=request_param)
+                print("extra share deleted")
+    
+    else:
+        shareinfo_level1 = []
+        print("folder not shared yet")        
+            
+    return (shareinfo_level1)
+
 
 # MAIN CODE
 
@@ -184,12 +258,14 @@ for p in all_level0['children']:
             file_object.close()
             print(p['name'] + " XML file created")
             
-            # SHARE
-            share_level1 = OneData_sharing (p['name'], p['id'], OneData_Host, OneData_Token)
+            shareinfo_level1 = folder1_getattrs(OneData_handleServiceId, catalog_path_temp, p['id'], OneData_Host, OneData_Token)
             
-            # HANDLE
-            OneData_createhandle (OneData_handleServiceId, json.loads(share_level1.text)["shareId"], catalog_path_temp, p['name'], OneData_Host, OneData_Token)
-           
-          
+            if shareinfo_level1:
+                pass
+            else:
+                share_level1 = OneData_sharing (p['name'], p['id'], OneData_Host, OneData_Token)
+                OneData_createhandle(OneData_handleServiceId, json.loads(share_level1.text)["shareId"], catalog_path_temp, p['name'], OneData_Host, OneData_Token)
+                print('share and handle just created')
+
         else:
             print(p['name'] + " Calculation not completed")
