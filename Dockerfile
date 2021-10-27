@@ -6,22 +6,16 @@
 # Copyright (c): 2020-today, The LAGO Collaboration (http://lagoproject.net)   #
 ################################################################################
 
-#I need some distribution to RUN if-then-else
-FROM centos:7
-#--build-arg TYPE=S0, S1 or S2, is mandatory
-ARG TYPE
-# BASE_OS private,  only for development purposes
-ENV BASE_OS="centos:7"
-RUN if [ "$TYPE" = "S0" ] ; \
-    then BASE_OS="lagoproject.net/corsika:xxxx" ; \
-    elif [ "$TYPE" = "S1" ] ; \
-    then BASE_OS="centos:7" ; \
-    elif [ "$TYPE" = "S2" ] ; \
-    then BASE_OS="lagoproject.net/geant4:xxxx" ; \
-    else echo "Error: --build-arg TYPE=S0, S1 or S2, is mandatory "; \
-    fi
+#--build-arg ARG for S0 (lagocollaboration/lago-corsika), 
+#                    S1 (centos) 
+                     S2(lagocollaboration/lago-geant)
+#main ARG                     
+ARG BASE_OS="centos:7"
+# ARG BASE_OS="lagocollaboration/lago-corsika:77402-dev"
+# ARG BASE_OS="lagocollaboration/lago-geant:xxxx"
 
-#An ARG declared before a FROM is outside of a build stage, so it can’t be used in any instruction after a FROM
+#An ARG declared before a FROM is outside of a build stage, so it can’t
+#  be used in any instruction after a FROM if the ARG is not declared again
 FROM $BASE_OS
 #
 ARG ONEDATASIM_BRANCH="master"
@@ -29,6 +23,8 @@ ARG ONEDATASIM_BRANCH="master"
 ENV ONECLIENT_ACCESS_TOKEN=""
 ENV ONECLIENT_PROVIDER_HOST=""
 
+#ARG BASE_OS
+#RUN echo "Using OS: ${BASE_OS}"
 RUN yum -y update
 
 #dowload and compile ARTI LAGO crktools
@@ -63,6 +59,6 @@ RUN pip install xattr
 #python3 and libraries for Lago processing with onedata
 RUN yum -y install python3 python36-pyxattr
 
-WORKDIR /opt/corsika-77402-lago/run
+#WORKDIR /opt/corsika-77402-lago/run
 #ENTRYPOINT /opt/arti/sims/do_datahub.sh
 CMD bash
