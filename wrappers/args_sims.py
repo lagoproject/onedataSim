@@ -13,8 +13,18 @@
 # https://docs.python.org/3.3/library/argparse.html
 
 import argparse
+import os
+import sys
 
-CORSIKA_VER = '77402'
+# this script only runs in "/opt/lago-corsika-CORSIKA_VER/run" directory
+def _get_corsika_version():
+    
+    try:
+        return os.getcwd().split("/opt/lago-corsika-")[1].split("/run")[0]
+    except:
+        print("Please, execute in the /opt/lago-corsika-CORSIKA_VER/run directory")
+        sys.exit(1)
+    
 
 def _get_arti_params_json_md(arti_dict):
 
@@ -190,7 +200,7 @@ def get_sys_args_S0():
     # and the working dir
      
     # version of external software (Corsika version)
-
+    CORSIKA_VER = _get_corsika_version()    
     args_dict.update({'v': CORSIKA_VER})
 
     # project a.k.a codename
