@@ -19,6 +19,7 @@ ARG BASE_OS="centos:7"
 FROM $BASE_OS
 #
 ARG ONEDATASIM_BRANCH="master"
+ARG ARTI_BRANCH=$ONEDATASIM_BRANCH
 # user credentials when the container were used
 ENV ONECLIENT_ACCESS_TOKEN=""
 ENV ONECLIENT_PROVIDER_HOST=""
@@ -30,11 +31,12 @@ RUN yum -y update
 #dowload and compile ARTI LAGO crktools
 RUN yum -y install git bzip2 gcc gcc-c++ gcc-gfortran make
 # we use the ones tested with onedataSim package
-# RUN cd /opt && git clone https://github.com/lagoproject/arti.git
-RUN cd /opt && git clone --branch $ONEDATASIM_BRANCH --recursive https://github.com/lagoproject/onedataSim.git
-RUN cd /opt/onedataSim/arti && make
+RUN cd /opt && git clone --branch $ARTI_BRANCH https://github.com/lagoproject/arti.git && /opt/arti && make
+# now, ARTI is not included as module in onedataSim:
+#RUN cd /opt && git clone --branch $ONEDATASIM_BRANCH --recursive https://github.com/lagoproject/onedataSim.git
+#RUN cd /opt/onedataSim/arti && make
 #set paths and permissions for onedataSim
-RUN cd /opt/onedataSim && bash install.sh
+RUN cd /opt && git clone --branch $ONEDATASIM_BRANCH https://github.com/lagoproject/onedataSim.git && /opt/onedataSim && bash install.sh
 
 #Onedata and tools needed by onedataSim
 
