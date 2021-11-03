@@ -153,6 +153,7 @@ class ARTIwrapper():
     def _add_private_info_to_dict(self, args_dict):
     
         # Now I can add extra info (without changing s)
+        args_dict['priv_corsikacommit'] = mdUtils.get_git_commit('/opt/lago-corsika-' + args_dict['v'])
         args_dict['priv_articommit'] = mdUtils.get_git_commit(os.environ['LAGO_ARTI'])
         args_dict['priv_odsimcommit'] = mdUtils.get_git_commit(os.environ['LAGO_ONEDATASIM'])
         
