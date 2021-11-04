@@ -39,7 +39,7 @@ ARG BASE_OS
 #------
 RUN yum -y install git bzip2 gcc gcc-c++ gcc-gfortran make
 # we use the ones tested with onedataSim package
-RUN cd /opt && git clone --branch $ARTI_BRANCH https://github.com/lagoproject/arti.git && /opt/arti && make
+RUN cd /opt && git clone --branch $ARTI_BRANCH https://github.com/lagoproject/arti.git && cd /opt/arti && make
 # now, ARTI is not included as module in onedataSim:
 #RUN cd /opt && git clone --branch $ONEDATASIM_BRANCH --recursive https://github.com/lagoproject/onedataSim.git
 #RUN cd /opt/onedataSim/arti && make
