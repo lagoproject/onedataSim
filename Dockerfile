@@ -49,7 +49,7 @@ RUN cd /opt && git clone --branch $ARTI_BRANCH https://github.com/lagoproject/ar
 #-------
 
 #set paths and permissions for onedataSim
-RUN cd /opt && git clone --branch $ONEDATASIM_BRANCH https://github.com/lagoproject/onedataSim.git && /opt/onedataSim && bash install.sh
+RUN cd /opt && git clone --branch $ONEDATASIM_BRANCH https://github.com/lagoproject/onedataSim.git && cd /opt/onedataSim && bash install.sh
 
 #Onedata and tools needed by onedataSim
 
