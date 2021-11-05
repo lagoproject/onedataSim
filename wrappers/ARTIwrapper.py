@@ -153,7 +153,10 @@ class ARTIwrapper():
     def _add_private_info_to_dict(self, args_dict):
     
         # Now I can add extra info (without changing s)
-        args_dict['priv_corsikacommit'] = mdUtils.get_git_commit('/opt/lago-corsika-' + args_dict['v'])
+        #
+        # if 'v' is defined, is because CORSIKA is used 
+        if 'v' in args_dict :
+            args_dict['priv_corsikacommit'] = mdUtils.get_git_commit('/opt/lago-corsika-' + args_dict['v'])
         args_dict['priv_articommit'] = mdUtils.get_git_commit(os.environ['LAGO_ARTI'])
         args_dict['priv_odsimcommit'] = mdUtils.get_git_commit(os.environ['LAGO_ONEDATASIM'])
         
@@ -178,8 +181,8 @@ class ARTIwrapper():
         arti_params = self._reconstruct_arti_args_from_dict(arti_params_dict)
         arti_params_dict = self._add_private_info_to_dict(arti_params_dict)
         # arti_params_dict = mdUtils.add_private_info_to_dict(arti_params_dict)
-        # onedata_path = '/mnt/datahub.egi.eu/LAGOsim'
-        onedata_path = '/mnt/datahub.egi.eu/test8/LAGOSIM'
+        onedata_path = '/mnt/datahub.egi.eu/LAGOsim'
+        # onedata_path = '/mnt/datahub.egi.eu/test8/LAGOSIM'
         catalog_path = onedata_path + '/' + catcodename
         
         print(arti_params, arti_params_dict, arti_params_json_md)
