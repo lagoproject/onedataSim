@@ -154,7 +154,7 @@ def producer_S1_pri_sec(catcodename, arti_params):
         i = param_list.index('-u')
         param_list.pop(i) # - u    
         param_list.pop(i) # the user
-        arti_params = ''.join(param_list)   
+        arti_params = ' '.join(param_list)   
     except:
         print("ERROR: ORCID is missed")
         raise
