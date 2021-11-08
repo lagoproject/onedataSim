@@ -147,7 +147,18 @@ def producer_S1_pri_sec(catcodename, arti_params):
     # clean a possible previous simulation
     if os.path.exists(catcodename):
         shutil.rmtree(catcodename, ignore_errors=True)
-
+    
+    # remove -u user 
+    try: 
+        param_list=arti_params.split(' ')
+        i = params_list.index('-u')
+        params_list.pop(i) # - u    
+        params_list.pop(i) # the user
+        arti_params = ''.join(param_list)   
+    except:
+        print("ERROR: ORCID is missed")
+        raise
+        
     cmd = 'do_showers.sh ' + arti_params
     osUtils.run_Popen_interactive(cmd)
 
