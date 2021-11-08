@@ -150,7 +150,7 @@ def producer_S1_pri_sec(catcodename, arti_params):
     
     # remove -u user 
     try: 
-        param_list=arti_params.split(' ')
+        params_list=arti_params.split(' ')
         i = params_list.index('-u')
         params_list.pop(i) # - u    
         params_list.pop(i) # the user
