@@ -243,13 +243,13 @@ simulation = ARTIwrapper(args_showers.get_sys_args_S1, get_dataset_metadata_S1_p
                          producer_S1_pri_sec)
 simulation.run()
 
-simulation = ARTIwrapper(args_showers.get_sys_args_S1, get_dataset_metadata_S1_shw,
-                         producer_S1_shw)
-simulation.run()
-
-simulation = ARTIwrapper(args_showers.get_sys_args_S1, get_dataset_metadata_S1_prt,
-                         producer_S1_prt)
-simulation.run()
+#simulation = ARTIwrapper(args_showers.get_sys_args_S1, get_dataset_metadata_S1_shw,
+#                         producer_S1_shw)
+#simulation.run()
+#
+#simulation = ARTIwrapper(args_showers.get_sys_args_S1, get_dataset_metadata_S1_prt,
+#                         producer_S1_prt)
+#simulation.run()
 
 
 
