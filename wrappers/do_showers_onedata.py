@@ -192,7 +192,7 @@ def producer_S1_shw(catcodename, arti_params):
     #osUtils.run_Popen_interactive(cmd)
 
 
-    with open('./' + catcodename + '/'+ catcodename + 'swh.run', 'r') as file1:
+    with open('./' + catcodename + '/'+ catcodename + 'shw.run', 'r') as file1:
         print(file1)
         for z in file1.readlines():
             if z != "":
