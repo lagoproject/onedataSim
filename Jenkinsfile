@@ -33,6 +33,7 @@ pipeline {
                     cleanWs()
                 }
             }
+        }
         stage('SQA baseline dynamic stages: build checks for S1') {
             steps {
                 script {
