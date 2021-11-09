@@ -12,7 +12,9 @@ config:
       variable: TOKEN_RUN
 # If we will want a private DockerHub
   credentials:
-    - id: dockerhub-token-ajrm
+    # first testing with eoscsynergybot account in dockerhub (synergy_dockerhub_bot_pass)
+    #- id: dockerhub-token-ajrm  
+    - id: synergy_dockerhub_bot_pass
       username_var: JPL_DOCKERUSER
       password_var: JPL_DOCKERPASS
   environment:
