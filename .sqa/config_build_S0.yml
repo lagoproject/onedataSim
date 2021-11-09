@@ -54,7 +54,8 @@ sqa_criteria:
           - >
             env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN}
             env ONECLIENT_PROVIDER_HOST="mon01-tic.ciemat.es"
-            bandit -r /opt/onedataSim -x tests -s B404,B602,B603
+            #bandit -r /opt/onedataSim -x tests -s B404,B602,B603
+            pip3 install bandit && python3 -m bandit -r /opt/onedataSim -x tests -s B404,B602,B603
           #- bandit -r /onedatasim-repo -x tests
 
 timeout: 900
