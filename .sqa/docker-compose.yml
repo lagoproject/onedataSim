@@ -9,7 +9,7 @@ services:
        target: /onedatasim-repo
     #command: sleep 3600
   onedatasim-S0:
-    container_name: "onedatasim-S0"
+    container_name: "onedatasimS0"
     build:
       context: "."
       dockerfile: "./Dockerfile"
@@ -22,7 +22,7 @@ services:
  #   #image: "lagoproject/onedatasim:latest" # image could be at DockerHub (under consideration)
     command: sleep 900
   onedatasim-S1:
-    container_name: "onedatasim-S1"
+    container_name: "onedatasimS1"
     build:
       context: "."
       dockerfile: "./Dockerfile"
@@ -32,7 +32,7 @@ services:
  #   #image: "lagoproject/onedatasim:latest" # image could be at DockerHub (under consideration)
     command: sleep 900
   onedatasim-S2:
-    container_name: "onedatasim-S2"
+    container_name: "onedatasimS2"
     build:
       context: "."
       dockerfile: "./Dockerfile"
