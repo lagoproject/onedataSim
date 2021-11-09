@@ -43,8 +43,7 @@ sqa_criteria:
             env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN}
             env ONECLIENT_PROVIDER_HOST="mon01-tic.ciemat.es"
             #pip install coverage && coverage run -m unittest discover -s /opt/onedataSim 
-            pip3 install coverage
-            coverage run -m unittest discover -s /opt/onedataSim
+            pip3 install coverage && python3 -m coverage run -m unittest discover -s /opt/onedataSim
           #- cover
   qc_security:
     repos:
