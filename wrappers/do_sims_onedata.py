@@ -95,6 +95,22 @@ def producerS0(catcodename, arti_params):
     if os.path.exists(catcodename):
         shutil.rmtree(catcodename, ignore_errors=True)
 
+    # WARNING, I HAD TO LINK BRANCH IN corsika binary
+    aux_list = arti_params.split(' ')
+    corsika_ver = aux_list[aux_list.index('-v') + 1]
+    try:
+       ver_only_num = corsika_ver.split('-')[0]
+       for file in os.listdir():
+           if file.startswith("corsika") and not os.path.islink(file):
+              link = file.replace(ver_only_num, corsika_ver)
+              if not os.path.exists(link):
+                  cmd = 'ln -s ' + file + ' ' + link
+                  osUtils.run_Popen_interactive(cmd)
+                  print('Link created: ' + link)
+    except:
+        pass
+    
+    # generate tasks    
     cmd = 'do_sims.sh ' + arti_params
     osUtils.run_Popen_interactive(cmd)
 
