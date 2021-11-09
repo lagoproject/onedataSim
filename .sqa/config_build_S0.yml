@@ -16,11 +16,11 @@ config:
     - id: synergy_dockerhub_bot_pass
       username_var: JPL_DOCKERUSER
       password_var: JPL_DOCKERPASS
-  environment:
-   # first testing with eoscsynergybot account in dockerhub (synergy_dockerhub_bot_pass)
-   #JPL_DOCKERSERVER: "hub.docker.com"
-   JPL_DOCKERPUSH: onedatasim-s0
-   #JPL_DOCKERFORCEBUILD: "True"
+environment:
+  # first testing with eoscsynergybot account in dockerhub (synergy_dockerhub_bot_pass)
+  #JPL_DOCKERSERVER: "hub.docker.com"
+  JPL_DOCKERPUSH: onedatasim-s0
+  #JPL_DOCKERFORCEBUILD: "True"
 # #  LANG: C.UTF-8
 sqa_criteria:
   qc_functional:
