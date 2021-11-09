@@ -24,7 +24,7 @@ sqa_criteria:
     repos:
       onedatasim:
         # we need a complete build to test simulations
-        container: onedatasim-S0
+        container: onedatasim-s0
         #environment:
         #  - ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN}
         #  - ONECLIENT_PROVIDER_HOST="mon01-tic.ciemat.es"
@@ -37,7 +37,7 @@ sqa_criteria:
   qc_coverage:
     repos:
       onedatasim:
-        container: onedatasim-S0
+        container: onedatasim-s0
         commands:
           - >
             env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN}
@@ -48,7 +48,7 @@ sqa_criteria:
     repos:
       onedatasim:
          # we need testing security of unittests..., not only with plain code.    
-        container: onedatasim-S0
+        container: onedatasim-s0
         commands:
           - >
             env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN}
