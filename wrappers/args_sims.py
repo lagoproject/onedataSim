@@ -12,63 +12,31 @@
 # command line, arti_params identical than do_sim.sh in ARTI.
 # https://docs.python.org/3.3/library/argparse.html
 
-# import argparse, sys
 import argparse
 import os
-import subprocess
 import sys
-import shlex
-# from builtins import int
 
-
-CORSIKA_VER = '75600'
-
-
-# --- utils ---
-
-def _run_Popen_interactive(command):
-
-    print(command+'\n')
-    p = subprocess.Popen(shlex.split(command), env=os.environ,
-                         stdin=sys.stdin, stdout=sys.stdout,
-                         stderr=sys.stderr)
-    p.wait()
-
-def _run_Popen(command, timeout=None):
-
-    print(command+'\n')
-    p = subprocess.Popen(command + ' 2>&1', shell=True, env=os.environ,
-                         stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-    p.wait(timeout)
-    res = ""
-    if p.returncode != 0:
-        print("Return code: "+str(res)+'\n')
-    else:
-        res = p.communicate()[0]
-    return res
-
-def _get_git_commit(repopath):
-
-    cmd = "git --git-dir " + repopath + "/.git rev-parse --verify HEAD"
-    lines = _run_Popen(cmd).decode("utf-8").split('\n')
-    if str(lines[0]) != "":
-        return str(lines[0])
-    else:
-        raise Exception("Git release of software not found")
+# this script only runs in "/opt/lago-corsika-CORSIKA_VER/run" directory
+def _get_corsika_version():
+    
+    try:
+        return os.getcwd().split("/opt/lago-corsika-")[1].split("/run")[0]
+    except:
+        print("Please, execute in the /opt/lago-corsika-CORSIKA_VER/run directory")
+        sys.exit(1)
     
 
 def _get_arti_params_json_md(arti_dict):
 
-    j = {"@graph": [
-        {
+    dict_aux = {
          "@id": "/"+arti_dict['p']+"#artiParams",
          "@type": "lago:ArtiParams",
-         "lago:fluxTime": "P"+str(arti_dict['p'])+"S",
+         "lago:fluxTime": "P"+str(arti_dict['t'])+"S",
          "lago:highEnergyIntModel": arti_dict['h'],
          "lago:detectorSite":
-         "https://github.com/lagoproject/DMP/blob/0.0.1/defs/sitesLago.jsonld#"
+         "https://github.com/lagoproject/DMP/blob/1.1/defs/sitesLago.jsonld#"
          + arti_dict['s'],
-         "lago:altitude": arti_dict['k'],
+         "lago:obsLev": arti_dict['k'],
          "lago:modatm": arti_dict['c'],
          "lago:rigidity": arti_dict['b'],
          "lago:tMin": arti_dict['m'],
@@ -83,11 +51,17 @@ def _get_arti_params_json_md(arti_dict):
          "lago:defaults": arti_dict['x'],
          "lago:highEnergyCutsSecondaries": arti_dict['a']
          }
+
+    # create JSON removing empty values
+
+    j = {"@graph": [
+        {k: v for k, v in dict_aux.items() if v is not None}
         ]}
+
     return j
 
 
-def get_sys_args():
+def get_sys_args_S0():
 
     disclaimer = 'do_onedata: simulating LAGO sites and storing/publishing \
     results in OneData'
@@ -133,9 +107,10 @@ def get_sys_args():
     #  echo -e "  -s <site> : \
     #    Location (several options)"
     parser.add_argument('-s', dest='s', required=True,
-                        choices=["hess", "sac", "etn", "ber", "lim", "glr",
-                                 "mch", "bga", "mge", "brc", "and", "mpc",
-                                 "cha", "cid", "mor", "lsc", "mbo", "ccs"],
+                        #choices=[ "QUIE","and","asu","ber","bga","brc","bue",
+                        #          "cha","chia","cpv","cuz","gua","kna","lim",
+                        #          "lpb","lsc","mapi","mge","pam","sac","sao",
+                        #          "sawb","serb","sng","tac","tuc","vcp" ],
                         help='Predefined LAGO site')
     #  echo -e "  -j <procs> : \
     #    Number of processors to use"
@@ -160,7 +135,7 @@ def get_sys_args():
                         help='Enable high energy cuts for secondaries')
     #  echo -e "  -k <altitude, in cm> : \
     #    Fix altitude, even for predefined sites"
-    parser.add_argument('-k', dest='k', required=True, type=float,
+    parser.add_argument('-k', dest='k', type=float,
                         help='Fix altitude, even for predefined sites, in cm, \
                         float and scientific notation allowed')
     #  echo -e "  -c <modatm> : \
@@ -214,16 +189,30 @@ def get_sys_args():
     args = parser.parse_args()
 
     args_dict = vars(args)
-
-    # add working dir, project, and corsika version...
-
+    
+    
+    # ---- customise parameters for ARTI and onedataSim ----
+    # 
+    # the most important is the "project name" that it is used 
+    # for onedataSim as "codename"
+    #
+    # the other are the version of external software used
+    # and the working dir
+     
+    # version of external software (Corsika version)
+    CORSIKA_VER = _get_corsika_version()    
     args_dict.update({'v': CORSIKA_VER})
 
     # project a.k.a codename
     # it should describe a simulation
 
-    codename = args_dict['s'] + '_' + str(args_dict['t']) + '_' + \
-        str(args_dict['k']) + '_' + args_dict['v'] + '_' + args_dict['h']
+    codename = 'S0_' + args_dict['s'] + '_' + str(args_dict['t'])
+
+    if args_dict['k'] is not None:
+        codename += '_' + str(args_dict['k'])
+
+    codename += '_' + args_dict['v'] + '_' + args_dict['h']
+
     if args_dict['y'] is True:
         codename += '_volu'
     else:
@@ -241,22 +230,8 @@ def get_sys_args():
     args_dict.update({'p': codename})
 
     # working dir
-    # args_dict.update({'w': '/opt/corsika-'+CORSIKA_VER+
-    #                  '-lago/run/'+str(args_dict['t'])})
-    args_dict.update({'w': '/opt/corsika-'+CORSIKA_VER+'-lago/run/'})
-        
     
-    # reconstruct arguments to launch ARTI by command line    
-    s = ''
-    for (key, value) in args_dict.items():
-        if value is not None:
-            s += ' -'+key
-            if value is not True:
-                s += ' '+str(value)
+    args_dict.update({'w': '/opt/lago-corsika-'+CORSIKA_VER+'/run/'})
 
-    # Now I can add extra info (without changing s)
-    args_dict['priv_articommit'] = _get_git_commit(os.environ['LAGO_ARTI'])
-    args_dict['priv_odsimcommit'] = _get_git_commit(os.environ['LAGO_ONEDATASIM'])
-        
-
-    return (s, args_dict, _get_arti_params_json_md(args_dict))
+ 
+    return (codename, args_dict, _get_arti_params_json_md(args_dict))

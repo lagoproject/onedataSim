@@ -4,8 +4,9 @@ config:
       repo: 'https://github.com/EOSC-synergy/onedataSim'
       branch: ${GIT_LOCAL_BRANCH##*/}  # I'd like to be a variable i.e GIT_BRANCH
   credentials:
-    - id: onedata-token-build-ajrm
-      variable: TOKEN_BUILD
+    # not necessary with docker-images
+    #- id: onedata-token-build-ajrm
+    #  variable: TOKEN_BUILD
     - id: onedata-token-test4-ajrm
       variable: TOKEN_RUN
 # If we will want a private DockerHub
@@ -23,7 +24,7 @@ sqa_criteria:
     repos:
       onedatasim:
         # we need a complete build to test simulations
-        container: onedatasim-build
+        container: onedatasim-S0
         #environment:
         #  - ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN}
         #  - ONECLIENT_PROVIDER_HOST="mon01-tic.ciemat.es"
@@ -36,7 +37,7 @@ sqa_criteria:
   qc_coverage:
     repos:
       onedatasim:
-        container: onedatasim-build
+        container: onedatasim-S0
         commands:
           - >
             env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN}
@@ -47,7 +48,7 @@ sqa_criteria:
     repos:
       onedatasim:
          # we need testing security of unittests..., not only with plain code.    
-        container: onedatasim-build
+        container: onedatasim-S0
         commands:
           - >
             env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN}

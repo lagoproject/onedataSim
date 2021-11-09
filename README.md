@@ -187,34 +187,45 @@ To log into the container only has to run bash without parameters, positioned al
 
 2. Explore OneData repository within the container.
 
+Firstly test if the repository is already mounted and force mount if necessary:
 ```sh
-[root@c42dc622f7eb run]# oneclient /mnt
+[root@c42dc622f7eb run]# ls -alh /mnt/datahub.egi.eu
+[root@c42dc622f7eb run]# ls -alh /mnt/datahub.egi.eu/LAGOsim
+total 0
+drwxrwxr-x 1 root    root   0 Sep 17 13:52 .
+drwxrwxr-x 1 root    root   0 Sep 15 08:47 ..
+[root@c42dc622f7eb run]# oneclient -- force-proxy-io /mnt/datahub.egi.eu
 Connecting to provider 'mon01-tic.ciemat.es:443' using session ID: '4998286443844254461'...
 Getting configuration...
-Oneclient has been successfully mounted in '/mnt'.
-[root@c42dc622f7eb run]# ls -alh /mnt/
+Oneclient has been successfully mounted in '/mnt/datahub.egi.eu'.
+```
+
+Then, you can explore the repository:
+
+```sh
+[root@c42dc622f7eb run]# ls -alh /mnt/datahub.egi.eu
 total 0
 drwxr-xr-x 1 root root  0 Sep 15 08:46 .
 drwxr-xr-x 1 root root 29 Sep 17 15:10 ..
 drwxrwxr-x 1 root root  0 Jun 16 13:23 PLAYGROUND
 drwxrwxr-x 1 root root  0 Jun 16 13:23 notebooks-training
 drwxrwxr-x 1 root root  0 Sep 15 08:47 LAGOsim
-[root@c42dc622f7eb run]# ls -alh /mnt/LAGOsim
+[root@c42dc622f7eb run]# ls -alh /mnt/datahub.egi.eu/LAGOsim
 total 0
 drwxrwxr-x 1 1034995 638198 0 Sep 17 13:52 .
 drwxrwxr-x 1 root    root   0 Sep 15 08:47 ..
-drwxr-xr-x 1 1034995 638198 0 Sep  7 18:41 sac_10_100.0_75600_QGSII_flat
-drwxr-xr-x 1 1034995 638198 0 Sep 13 12:59 sac_10_110.0_75600_QGSII_flat
-drwxr-xr-x 1 1034995 638198 0 Sep 13 13:04 sac_10_120.0_75600_QGSII_flat
-drwxr-xr-x 1 1034995 638198 0 Sep 13 13:05 sac_10_130.0_75600_QGSII_flat
-drwxr-xr-x 1 1034995 638198 0 Sep 13 13:06 sac_10_140.0_75600_QGSII_flat
-drwxr-xr-x 1 1034995 638198 0 Sep 13 13:11 sac_10_150.0_75600_QGSII_flat
-drwxr-xr-x 1 1034995 638198 0 Sep 13 16:21 sac_10_200.0_75600_QGSII_flat
-drwxr-xr-x 1 1034995 638198 0 Sep 14 15:28 sac_10_300.0_75600_QGSII_flat
-drwxr-xr-x 1  398931 638198 0 Sep 17 13:41 sac_10_500.0_75600_QGSII_flat
-drwxr-xr-x 1  398931 638198 0 Sep 17 13:52 sac_10_600.0_75600_QGSII_flat
-drwxr-xr-x 1 1034995 638198 0 Sep  8 12:30 sac_1_100.0_75600_QGSII_flat
-drwxr-xr-x 1 1034995 638198 0 Sep 13 16:17 sac_60_200.0_75600_QGSII_flat
+drwxr-xr-x 1 1034995 638198 0 Sep  7 18:41 S0_sac_10_100.0_75600_QGSII_flat
+drwxr-xr-x 1 1034995 638198 0 Sep 13 12:59 S0_sac_10_110.0_75600_QGSII_flat
+drwxr-xr-x 1 1034995 638198 0 Sep 13 13:04 S0_sac_10_120.0_75600_QGSII_flat
+drwxr-xr-x 1 1034995 638198 0 Sep 13 13:05 S0_sac_10_130.0_75600_QGSII_flat
+drwxr-xr-x 1 1034995 638198 0 Sep 13 13:06 S0_sac_10_140.0_75600_QGSII_flat
+drwxr-xr-x 1 1034995 638198 0 Sep 13 13:11 S0_sac_10_150.0_75600_QGSII_flat
+drwxr-xr-x 1 1034995 638198 0 Sep 13 16:21 S0_sac_10_200.0_75600_QGSII_flat
+drwxr-xr-x 1 1034995 638198 0 Sep 14 15:28 S0_sac_10_300.0_75600_QGSII_flat
+drwxr-xr-x 1  398931 638198 0 Sep 17 13:41 S0_sac_10_500.0_75600_QGSII_flat
+drwxr-xr-x 1  398931 638198 0 Sep 17 13:52 S0_sac_10_600.0_75600_QGSII_flat
+drwxr-xr-x 1 1034995 638198 0 Sep  8 12:30 S0_sac_1_100.0_75600_QGSII_flat
+drwxr-xr-x 1 1034995 638198 0 Sep 13 16:17 S0_sac_60_200.0_75600_QGSII_flat
 ...
 ...
 ```
