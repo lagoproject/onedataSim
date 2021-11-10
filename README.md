@@ -81,7 +81,7 @@ sudo docker pull lagocollaboration/onedatasim-s0:dev
 sudo docker pull lagocollaboration/onedatasim-s1:dev
 ```
 
-(Currently for our DockerHub space, downloads are limited to 100/day per IP. If you are you should consider distributing internally the docker image through docker save and load commands). 
+(Currently for our DockerHub space, downloads are limited to 100/day per IP. If you are many nodes under a NAT, you should consider distributing internally the docker image through ``docker save`` and ``load commands``). 
 
 
 
