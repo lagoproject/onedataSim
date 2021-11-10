@@ -63,7 +63,7 @@ On CentOS 7 with root:
 
 ## Downloading the official docker images to run onedataSim
 
-onedataSim, ARTI and required software (CORSIKA, GEANT4, ROOT) are built, tested and packed into docker images published in LAGO Collaboration space at [Docker-Hub](https://hub.docker.com/u/lagocollaboration)
+onedataSim, ARTI and required software (CORSIKA, GEANT4, ROOT) are built, tested and packed into Docker images, following a in a [CI/CD fashion](https://jenkins.eosc-synergy.eu/job/eosc-synergy-org/job/onedataSim/). When whole steps of the CI/CD pipeline are sucesfully completed, the images are certified and stored in the space of LAGO Collaboration at [Docker-Hub](https://hub.docker.com/u/lagocollaboration). The process assures the quality of the software published.
 
 Depending on the type of data that you want generate and/or processs ([S0,S1,S2](https://lagoproject.github.io/DMP/DMP/#types-and-formats-of-generatedcollected-data)), you should pull different image, because their size.
 
