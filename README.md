@@ -61,8 +61,9 @@ On CentOS 7 with root:
   systemctl start docker
 ```
 
-## Download the docker image to run onedataSim
+## Downloading the official docker images to run onedataSim
 
+onedataSim, ARTI and required software (CORSIKA, GEANT4, ROOT) are built, tested and packed into docker images published in LAGO repository at [Docker-Hub](https://hub.docker.com/u/lagocollaboration)
 
 ```
 sudo docker pull lagocollaboration/onedatasim-s0:dev
