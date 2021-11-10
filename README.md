@@ -72,13 +72,16 @@ Depending on the type of data that you want generate and/or processs (i.e. [S0, 
 - ( Future: ``onedatasim-s2`` will be mainly for generate S2 datasets (detector response). It will include GEANt4/ROOT, and consequently, heaviest (~ 1GB)).  
 
 
-```
+```sh
 sudo docker pull lagocollaboration/onedatasim-s0:dev
 ```
 
-```
+
+```sh
 sudo docker pull lagocollaboration/onedatasim-s1:dev
 ```
+
+(Currently for our DockerHub space, downloads are limited to 100/day per IP. If you are you should consider distributing internally the docker image through docker save and load commands). 
 
 
 
@@ -172,11 +175,17 @@ If you has enough permissions (sudo) to run Docker in privileged mode on a clust
 
 For example on the Slurm batch systems.
 
+
+
 ```sh
 export TOKEN="MDAxY...LAo"
 export ONEPROVIDER="mon01-tic.ciemat.es"
 
-srun -o %j.out --exclusive sudo docker pull lagocollaboration/onedatasim-s0:dev \ 
+sudo docker pull lagocollaboration/onedatasim-s0:dev
+
+sudo docker save -o <shared dir>/onedatasim-s0.tar onedatasim-s0:dev
+
+srun -o %j.out --exclusive sudo docker load -i -o <shared dir>/onedatasim-s0.tar \ 
                            && sudo docker run --privileged \
                               -e ONECLIENT_ACCESS_TOKEN=$TOKEN 
                               -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \
@@ -187,7 +196,7 @@ srun -o %j.out --exclusive sudo docker pull lagocollaboration/onedatasim-s0:dev 
 
 2. Executing on resurces instantiated by IaaS cloud providers
 
-TBD.
+TBD. [See EOSC training for LAGO](https://moodle.learn.eosc-synergy.eu/course/view.php?id=16)
 
 
 
