@@ -88,13 +88,18 @@ This automatised execution is the preferred one in LAGO collaboration.
 
 You can execute ``do_sims_onedata.py`` or ``do_analysis_onedata.py`` in a single command, without the needed of log into the container. If there is a lack of paramenters, it prompts you for them, if not this starts and the current progress is shown while the results are automatically stored in OneData. 
 
-1. Simple command example:
+
 
 ```sh
-sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN="<personal onedata token>" \
-                -e ONECLIENT_PROVIDER_HOST="<nearest onedata provider>" \ 
+export TOKEN="<personal OneData token (oneclient enabled)>"
+export ONEPROVIDER="<nearest OneData provider>"
+
+sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
+                -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \ 
                 -it <container name> bash -lc "do_sims_onedata.py <ARTI do_* params>"
 ```
+
+1. Simple simulation example:
 
 ```sh
 export TOKEN="MDAxY...LAo"
@@ -110,8 +115,8 @@ sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
 If you count on an standalone server for computing or a virtual machine instantiated with enough procesors memory and disk, you only need add the **-j \<procs\>** param to enable multi-processing:
 
 ```sh
-sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN="<personal onedata token>" \
-                -e ONECLIENT_PROVIDER_HOST="<nearest onedata provider>" \
+sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
+                -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \
                 -it <container name> bash -lc "do_sims_onedata.py -j <procs> <other ARTI do_* params>"
 ```
 
@@ -122,7 +127,7 @@ sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN="<personal onedata toke
 
 If you has enough permissions (sudo) to run Docker in privileged mode on a cluster and get the computing nodes in exclusive mode, you can run many simulations at time.
 
-For example on the Slurm batch systems, you can submit the `docker build` and the `docker run` operations in the same command line. (Note that removing `--no-cache`, the Docker image will not be rebuilt, except for changes in the GitHub repository).
+For example on the Slurm batch systems.
 
 ```sh
 export TOKEN="MDAxY...LAo"
