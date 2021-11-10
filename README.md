@@ -95,15 +95,21 @@ export ONEPROVIDER="<nearest OneData provider>"
 
 sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
                 -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \ 
-                -it <container name> bash -lc "do_sims_onedata.py <ARTI do_* params>"
+                -it <container name> bash -lc "do_*_onedata.py <ARTI do_* params>"
 ```
 
-. Showing parameters:
+### Running simulations (S0)
+
+1. Export credentials
 
 ```sh
 export TOKEN="MDAxY...LAo"
 export ONEPROVIDER="mon01-tic.ciemat.es"
+```
 
+1. Showing parameters:
+
+```sh
 sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
                 -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \
                 -it onedatasim-s0:dev  bash -lc "do_sims_onedata.py -?"
@@ -112,15 +118,12 @@ sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
 . Simple simulation example:
 
 ```sh
-export TOKEN="MDAxY...LAo"
-export ONEPROVIDER="mon01-tic.ciemat.es"
-
 sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
                 -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \
                 -it onedatasim-s0:dev  bash -lc "do_sims_onedata.py -t 10 -u 0000-0001-6497-753X -s and -k 2.0e2 -h QGSII -x"
 ```
 
-. Executing on a multi-processor server
+1. Executing on a multi-processor server
 
 If you count on an standalone server for computing or a virtual machine instantiated with enough procesors memory and disk, you only need add the **-j \<procs\>** param to enable multi-processing:
 
@@ -130,7 +133,28 @@ sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
                 -it <container name> bash -lc "do_sims_onedata.py -j <procs> <other ARTI do_* params>"
 ```
 
-. Executing an analysis:
+### Analysing S0 datasets
+
+
+
+1. Export credentials
+
+```sh
+export TOKEN="MDAxY...LAo"
+export ONEPROVIDER="mon01-tic.ciemat.es"
+```
+
+1. Showing parameters:
+
+```sh
+sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
+                -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \
+                -it onedatasim-s0:dev  bash -lc "do_showers_onedata.py -?"
+```
+
+
+
+1. Executing an analysis:
 
 ```sh
 sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
@@ -139,7 +163,9 @@ sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
 ```
 
 
+
 ## Advanced use cases
+
 
 1. Executing on HTC clusters
 
