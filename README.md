@@ -16,8 +16,8 @@ However, the main objective of onedataSim is to standardise the simulation and i
   - executes simulations as do_sims.sh, exactly with same parameters;
   - caches partial results as local scratch and then copies them to the official [LAGO repository](https://datahub.egi.eu) based on [OneData](https://github.com/onedata);
   - makes standardised metadata for every inputs and results and includes them as extended attributes in OneData filesystem. 
-2. **do_analysis_onedata.py** that:
-  - executes analysis as do_analysis.sh does.
+2. **do_showers_onedata.py** that:
+  - executes analysis as do_showers.sh does.
   - caches the selected simulation to be analisyed in local and then store results at the official [LAGO repository](https://datahub.egi.eu) based on [OneData](https://github.com/onedata);
   - makes also standardised metadata for these results and updates the corresponding catalog on OneData.
 
@@ -65,10 +65,10 @@ On CentOS 7 with root:
 
 onedataSim, ARTI and required software (CORSIKA, GEANT4, ROOT) are built, tested and packed into Docker images, following a in a [CI/CD fashion](https://jenkins.eosc-synergy.eu/job/eosc-synergy-org/job/onedataSim/). When whole steps of the CI/CD pipeline are sucesfully completed, the images are certified and stored in the space of LAGO Collaboration at [Docker-Hub](https://hub.docker.com/u/lagocollaboration). The process assures the quality of the software published.
 
-Depending on the type of data that you want generate and/or processs ([S0,S1,S2](https://lagoproject.github.io/DMP/DMP/#types-and-formats-of-generatedcollected-data)), you should pull different image, because their size.
+Depending on the type of data that you want generate and/or processs (i.e. [S0, S1, S2](https://lagoproject.github.io/DMP/DMP/#types-and-formats-of-generatedcollected-data)), you should pull different image, because their size.
 
-- ``onedatasim-s0`` is mainly for generate S0 datasets (simulations), but also allows S1 analisys. Therefore it includes the modified CORSIKA for LAGO, which it results in a heavy image (~700 MB).  
-- ``onedatasim-s1`` is only for generate S1 datasets (analysis), but the image is very small (~XXXMB).  
+- ``onedatasim-s0`` is mainly for generate S0 datasets (simulations with do_sims_onedata.py), but also allows S1 analysis. Therefore it includes the modified CORSIKA for LAGO, which it results in a heavy image (~700 MB).  
+- ``onedatasim-s1`` is only for generate S1 datasets (analysis with do_showers_onedata.py), but the image is very small (~XXXMB).  
 - (``onedatasim-s0`` will be mainly for generate S2 datasets (detector response). It will include GEANt4/ROOT, and consequently, heaviest (~ 1GB)).  
 
 
@@ -86,7 +86,7 @@ sudo docker pull lagocollaboration/onedatasim-s1:dev
 
 This automatised execution is the preferred one in LAGO collaboration.
 
-You can execute ``do_sims_onedata.py`` or ``do_analysis_onedata.py`` in a single command, without the needed of log into the container. If there is a lack of paramenters, it prompts you for them, if not this starts and the current progress is shown while the results are automatically stored in OneData. 
+You can execute ``do_sims_onedata.py`` or ``do_showers_onedata.py`` in a single command, without the needed of log into the container. If there is a lack of paramenters, it prompts you for them, if not this starts and the current progress is shown while the results are automatically stored in OneData. 
 
 
 
