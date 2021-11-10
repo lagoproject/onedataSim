@@ -67,9 +67,9 @@ onedataSim, ARTI and required software (CORSIKA, GEANT4, ROOT) are built, tested
 
 Depending on the type of data that you want generate and/or processs (i.e. [S0, S1, S2](https://lagoproject.github.io/DMP/DMP/#types-and-formats-of-generatedcollected-data)), you should pull different image, because their size.
 
-- ``onedatasim-s0`` is mainly for generate S0 datasets (simulations with do_sims_onedata.py), but also allows S1 analysis. Therefore it includes the modified CORSIKA for LAGO, which it results in a heavy image (~700 MB).  
-- ``onedatasim-s1`` is only for generate S1 datasets (analysis with do_showers_onedata.py), but the image is very small (~XXXMB).  
-- (``onedatasim-s0`` will be mainly for generate S2 datasets (detector response). It will include GEANt4/ROOT, and consequently, heaviest (~ 1GB)).  
+- **``onedatasim-s0``** is mainly for generate S0 datasets (simulations with ``do_sims_onedata.py``), but also allows S1 analysis. Therefore it includes the modified CORSIKA for LAGO, which it results in a heavy image (~700 MB).  
+- **``onedatasim-s1``** is only for generate S1 datasets (analysis with ``do_showers_onedata.py``), but the image is very small (~XXXMB).  
+- ( Future: ``onedatasim-s2`` will be mainly for generate S2 datasets (detector response). It will include GEANt4/ROOT, and consequently, heaviest (~ 1GB)).  
 
 
 ```
@@ -89,7 +89,6 @@ This automatised execution is the preferred one in LAGO collaboration.
 You can execute ``do_sims_onedata.py`` or ``do_showers_onedata.py`` in a single command, without the needed of log into the container. If there is a lack of paramenters, it prompts you for them, if not this starts and the current progress is shown while the results are automatically stored in OneData. 
 
 
-
 ```sh
 export TOKEN="<personal OneData token (oneclient enabled)>"
 export ONEPROVIDER="<nearest OneData provider>"
@@ -99,7 +98,18 @@ sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
                 -it <container name> bash -lc "do_sims_onedata.py <ARTI do_* params>"
 ```
 
-1. Simple simulation example:
+. Showing parameters:
+
+```sh
+export TOKEN="MDAxY...LAo"
+export ONEPROVIDER="mon01-tic.ciemat.es"
+
+sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
+                -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \
+                -it onedatasim-s0:dev  bash -lc "do_sims_onedata.py -?"
+```
+
+. Simple simulation example:
 
 ```sh
 export TOKEN="MDAxY...LAo"
@@ -110,7 +120,7 @@ sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
                 -it onedatasim-s0:dev  bash -lc "do_sims_onedata.py -t 10 -u 0000-0001-6497-753X -s and -k 2.0e2 -h QGSII -x"
 ```
 
-2. Executing on a multi-processor server
+. Executing on a multi-processor server
 
 If you count on an standalone server for computing or a virtual machine instantiated with enough procesors memory and disk, you only need add the **-j \<procs\>** param to enable multi-processing:
 
@@ -118,6 +128,14 @@ If you count on an standalone server for computing or a virtual machine instanti
 sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
                 -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \
                 -it <container name> bash -lc "do_sims_onedata.py -j <procs> <other ARTI do_* params>"
+```
+
+. Executing an analysis:
+
+```sh
+sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
+                -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \
+                -it <container name> bash -lc "do_showers_onedata.py -o XXXX  -u 0000-0001-6497-753X"
 ```
 
 
