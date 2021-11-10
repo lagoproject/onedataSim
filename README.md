@@ -2,7 +2,7 @@
 
 dev branch: [![Build Status](https://jenkins.eosc-synergy.eu/buildStatus/icon?job=eosc-synergy-org%2FonedataSim%2Fdev)](https://jenkins.eosc-synergy.eu/job/eosc-synergy-org/job/onedataSim/job/dev/)
 
-master branch: [![Build Status](https://jenkins.eosc-synergy.eu/buildStatus/icon?job=eosc-synergy-org%2FonedataSim%2Fmaster)](https://jenkins.eosc-synergy.eu/job/eosc-synergy-org/job/onedataSim/job/master/)
+master branch: [![Build Status](https://jenkins.eosc-synergy.eu/buildStatus/icon?job=eosc-synergy-org%2FonedataSim%2Fmaster)](https://jenkins.eosc-synergy.eu/job/eosc-synergy-org/job/onedataSim/job/master/{{ current.branch }})
 
 
 
@@ -12,19 +12,19 @@ LAGO onedataSim packets all requeriments for runnig [ARTI](https://github.com/la
 
 However, the main objective of onedataSim is to standardise the simulation and its analisys in [LAGO Collaboration](http://lagoproject.net) in order to curate, re-use and publish the results, following the [Data Management Plant (DPM)](https://lagoproject.github.io/DMP/) established. For this purpose, onedataSim includes two main programs:
 
-1. **do_sims_onedata.py** that:
-  - executes simulations as do_sims.sh, exactly with same parameters;
+1. **``do_sims_onedata.py``** that:
+  - executes simulations as ``do_sims.sh``, exactly with same parameters;
   - caches partial results as local scratch and then copies them to the official [LAGO repository](https://datahub.egi.eu) based on [OneData](https://github.com/onedata);
   - makes standardised metadata for every inputs and results and includes them as extended attributes in OneData filesystem. 
-2. **do_showers_onedata.py** that:
-  - executes analysis as do_showers.sh does.
-  - caches the selected simulation to be analisyed in local and then store results at the official [LAGO repository](https://datahub.egi.eu) based on [OneData](https://github.com/onedata);
+2. **``do_showers_onedata.py``** that:
+  - executes analysis as ``do_showers.sh`` does.
+  - caches the selected simulation to be analisyed in local from the official [LAGO repository](https://datahub.egi.eu) and then stores again the results to the repository;
   - makes also standardised metadata for these results and updates the corresponding catalog on OneData.
 
 Storing results on the official repository with standardised metadata enables:
   - sharing results with other LAGO members; 
-  - future searches and publishing through institutional/goverment catalog providers and virtual observatories; 
-  - properly citing scientific data and diseminating results through internet; 
+  - future searches and publishing through institutional/goverment catalog providers and virtual observatories such as the [B2FIND](https://b2find.eudat.eu/group/lago); 
+  - properly citing scientific data and diseminating results through internet through Handle.net' PiDs; 
   - building new results based on data minig or big data techniques thanks to linked metadata.
 
 Therefore, we encourage LAGO researchers to use these programs for their simulations. 
