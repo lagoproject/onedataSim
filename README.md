@@ -14,11 +14,11 @@ However, the main objective of onedataSim is to standardise the simulation and i
 
 1. **do_sims_onedata.py** that:
   - executes simulations as do_sims.sh, exactly with same parameters;
-  - caches partial results as local scratch and then copies them to the official LAGO repository based on [OneData](https://github.com/onedata);
+  - caches partial results as local scratch and then copies them to the official [LAGO repository](https://datahub.egi.eu) based on [OneData](https://github.com/onedata);
   - makes standardised metadata for every inputs and results and includes them as extended attributes in OneData filesystem. 
 2. **do_analysis_onedata.py** that:
   - executes analysis as do_analysis.sh does.
-  - caches the selected simulation to be analisyed in local and then store results at the official LAGO repository on [OneData](https://github.com/onedata);
+  - caches the selected simulation to be analisyed in local and then store results at the official [LAGO repository](https://datahub.egi.eu) based on [OneData](https://github.com/onedata);
   - makes also standardised metadata for these results and updates the corresponding catalog on OneData.
 
 Storing results on the official repository with standardised metadata enables:
@@ -61,13 +61,87 @@ On CentOS 7 with root:
   systemctl start docker
 ```
 
+## Download the docker image to run onedataSim
 
 
-## Building the onedataSim container
+```
+sudo docker pull lagocollaboration/onedatasim-s0:dev
+```
+
+```
+sudo docker pull lagocollaboration/onedatasim-s1:dev
+```
+
+
+
+## Executing a stardandised simulation & analisys to be stored in OneData repositories for LAGO
+
+This automatised execution is the preferred one in LAGO collaboration.
+
+You can execute ``do_sims_onedata.py`` or ``do_analysis_onedata.py`` in a single command, without the needed of log into the container. If there is a lack of paramenters, it prompts you for them, if not this starts and the current progress is shown while the results are automatically stored in OneData. 
+
+1. Simple command example:
+
+```sh
+sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN="<personal onedata token>" \
+                -e ONECLIENT_PROVIDER_HOST="<nearest onedata provider>" \ 
+                -it <container name> bash -lc "do_sims_onedata.py <ARTI do_* params>"
+```
+
+```sh
+export TOKEN="MDAxY...LAo"
+export ONEPROVIDER="mon01-tic.ciemat.es"
+
+sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
+                -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \
+                -it onedatasim-s0:dev  bash -lc "do_sims_onedata.py -t 10 -u 0000-0001-6497-753X -s and -k 2.0e2 -h QGSII -x"
+```
+
+2. Executing on a multi-processor server
+
+If you count on an standalone server for computing or a virtual machine instantiated with enough procesors memory and disk, you only need add the **-j \<procs\>** param to enable multi-processing:
+
+```sh
+sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN="<personal onedata token>" \
+                -e ONECLIENT_PROVIDER_HOST="<nearest onedata provider>" \
+                -it <container name> bash -lc "do_sims_onedata.py -j <procs> <other ARTI do_* params>"
+```
+
+
+## Advanced use cases
+
+1. Executing on HTC clusters
+
+If you has enough permissions (sudo) to run Docker in privileged mode on a cluster and get the computing nodes in exclusive mode, you can run many simulations at time.
+
+For example on the Slurm batch systems, you can submit the `docker build` and the `docker run` operations in the same command line. (Note that removing `--no-cache`, the Docker image will not be rebuilt, except for changes in the GitHub repository).
+
+```sh
+export TOKEN="MDAxY...LAo"
+export ONEPROVIDER="mon01-tic.ciemat.es"
+
+srun -o %j.out --exclusive sudo docker pull lagocollaboration/onedatasim-s0:dev \ 
+                           && sudo docker run --privileged \
+                              -e ONECLIENT_ACCESS_TOKEN=$TOKEN 
+                              -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \
+                              -it onedatasim-s0:dev  \
+                              bash -lc "do_sims_onedata.py -t 10 -u 0000-0001-6497-753X -s sac -k 1.5e2 -h QGSII -x" \
+                           &
+```
+
+2. Executing on resurces instantiated by IaaS cloud providers
+
+TBD.
+
+
+
+## Instructions only for developers
+
+### Building the onedataSim container
 
 To build the container is needed had a OneData token and to indicate any provider enroled as LAGO repository. This is so because ARTI currently calls [CORSIKA 7](https://www.ikp.kit.edu/corsika/79.php), which is licensed only for internal use of LAGO collaborators. As this software is stored at LAGO repository with closed permisions, its download requires to previously check if the user belongs to LAGO Virtual Organisation. 
 
-### Building from **master** branch
+#### Building from **master** branch
 
 If you have the newer releases of *git* installed in your machine, you can build the container with one command:  
 
@@ -94,7 +168,7 @@ sudo docker build --no-cache --build-arg ONECLIENT_ACCESS_TOKEN_TO_BUILD="MDAxY2
                   -t lagocontainer:0.0.1  https://github.com/lagoproject/onedataSim.git
 ```
 
-### Building from **develop** branch
+#### Building from **develop** branch
 
 You can also create a container with the developing release (unstable) of onedataSim software. For this task,
 you must add ``--build-arg ONEDATASIM_BRANCH="develop"`` as argument and to append ``#develop`` at the end of 
@@ -109,67 +183,7 @@ sudo docker build --no-cache --build-arg ONEDATASIM_BRANCH="develop" \
 
 
 
-## Executing a stardandised simulation & analisys to be stored in OneData repositories for LAGO
-
-This automatised execution is the preferred one in LAGO collaboration.
-
-You can execute do_sims_onedata.py or do_analysis_onedata.py in a single command, without the needed of log into the container. If there is a lack of paramenters, it prompts you for them, if not this starts and the current progress is shown while the results are automatically stored in OneData. 
-
-1. Simple command example:
-
-```sh
-sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN="<personal onedata token>" \
-                -e ONECLIENT_PROVIDER_HOST="<nearest onedata provider>" \ 
-                -it <container name> bash -lc "do_sims_onedata.py <ARTI do_* params>"
-```
-
-```sh
-sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN="MDAxY2xv...iXm8jowGgo" \
-                -e ONECLIENT_PROVIDER_HOST="mon01-tic.ciemat.es" \
-                -it lagocontainer:0.0.1  bash -lc "do_sims_onedata.py -t 10 -u 0000-0001-6497-753X -s sac -k 2.0e2 -h QGSII -x"
-```
-
-2. Executing on a multi-processor server
-
-If you count on an standalone server for computing or a virtual machine instantiated with enough procesors memory and disk, you only need add the **-j \<procs\>** param to enable multi-processing:
-
-```sh
-sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN="<personal onedata token>" \
-                -e ONECLIENT_PROVIDER_HOST="<nearest onedata provider>" \
-                -it <container name> bash -lc "do_sims_onedata.py -j <procs> <other ARTI do_* params>"
-```
-
-
-## Advanced use cases
-
-1. Executing on HTC clusters
-
-If you has enough permissions (sudo) to run Docker in privileged mode on a cluster and get the computing nodes in exclusive mode, you can run many simulations at time.
-
-For example on the Slurm batch systems, you can submit the `docker build` and the `docker run` operations in the same command line. (Note that removing `--no-cache`, the Docker image will not be rebuilt, except for changes in the GitHub repository).
-
-```sh
-export TOKEN="MDAxY...LAo"
-export ONEPROVIDER="mon01-tic.ciemat.es"
-
-srun -o %j.out --exclusive sudo docker build \
-                             --build-arg ONECLIENT_ACCESS_TOKEN_TO_BUILD=$TOKEN \
-                             --build-arg ONECLIENT_PROVIDER_HOST_TO_BUILD=https://$ONEPROVIDER \
-                              -t lagocontainer:0.0.1  https://github.com/lagoproject/onedataSim.git \ 
-                           && sudo docker run --privileged \
-                              -e ONECLIENT_ACCESS_TOKEN=$TOKEN 
-                              -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \
-                              -it lagocontainer:0.0.1  \
-                              bash -lc "do_sims_onedata.py -t 10 -u 0000-0001-6497-753X -s sac -k 1.5e2 -h QGSII -x" \
-                           &
-```
-
-2. Executing on resurces instantiated by IaaS cloud providers
-
-TBD.
-
-
-## Logging into container for developing purposes
+### Logging into container for developing purposes
 
 1. Runing scripts & attaching a local directory at login.
 
