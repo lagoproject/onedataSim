@@ -8,8 +8,8 @@ services:
        source: ./onedatasim
        target: /onedatasim-repo
     #command: sleep 3600
-  onedatasim-S0:
-    container_name: "onedatasim-S0"
+  onedatasim-s0:
+    container_name: "onedatasim-s0"
     build:
       context: "."
       dockerfile: "./Dockerfile"
@@ -21,8 +21,8 @@ services:
         BASE_OS : "lagocollaboration/lago-corsika:77402-dev"
  #   #image: "lagoproject/onedatasim:latest" # image could be at DockerHub (under consideration)
     command: sleep 900
-  onedatasim-S1:
-    container_name: "onedatasim-S1"
+  onedatasim-s1:
+    container_name: "onedatasim-s1"
     build:
       context: "."
       dockerfile: "./Dockerfile"
@@ -31,16 +31,13 @@ services:
         BASE_OS : "centos:7"
  #   #image: "lagoproject/onedatasim:latest" # image could be at DockerHub (under consideration)
     command: sleep 900
-  onedatasim-S2:
-    container_name: "onedatasim-S2"
-    build:
-      context: "."
-      dockerfile: "./Dockerfile"
-      args:
-        # but need a docker image, passed through argument (not by image param)
-        BASE_OS : "lagocollaboration/lago-geant:TAG"
- #   #image: "lagoproject/onedatasim:latest" # image could be at DockerHub (under consideration)
-    command: sleep 900
-
-
-
+#  onedatasim-s2:
+#    container_name: "onedatasim-s2"
+#    build:
+#      context: "."
+#      dockerfile: "./Dockerfile"
+#      args:
+#        # but need a docker image, passed through argument (not by image param)
+#        BASE_OS : "lagocollaboration/lago-geant:TAG"
+# #   #image: "lagoproject/onedatasim:latest" # image could be at DockerHub (under consideration)
+#    command: sleep 900
