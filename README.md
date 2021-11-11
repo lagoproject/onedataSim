@@ -39,12 +39,19 @@ It is only needed [Docker Engine](https://docs.docker.com/engine/install/) to ru
 
 On linux, the recommended way is to remove all docker packages included by default in your distro and to make use of Docker repositories.
 
-For example, for a Debian based distribution such as Ubuntu:
+For example, for a old Debian based distribution such as Ubuntu:
 ```sh
   sudo apt-get remove docker wmdocker docker-registry [...etc...]
   curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
   sudo add-apt-repository    "deb [arch=amd64] https://download.docker.com/linux/debian"
   sudo apt-get install docker-ce docker-ce-cli containerd.io
+```
+
+On an newly Debian release with the last Docker:
+
+```sh
+  sudo apt-get update
+  sudo apt-get install -y docker.io
 ```
 
 On CentOS 7 with root:
@@ -169,34 +176,81 @@ sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
 ## Advanced use cases
 
 
-1. Executing on HTC clusters
+### Executing on HTC clusters
 
 If you has enough permissions (sudo) to run Docker in privileged mode on a cluster and get the computing nodes in exclusive mode, you can run many simulations at time.
 
 For example on the Slurm batch systems.
 
+```sh
+sudo docker pull lagocollaboration/onedatasim-s0:dev
+sudo docker save -o <shared dir>/onedatasim-s0.tar onedatasim-s0:dev
+export TOKEN="<personal OneData token (oneclient enabled)>"
+export ONEPROVIDER="<nearest OneData provider>"
+sbatch simulation.sbatch
+```
 
+
+```sh
+#!/bin/bash
+#SBATCH --export=ALL
+#SBATCH --exclusive
+#SBATCH-o %j.log
+sudo docker stop $(docker ps -aq)
+sudo docker rm $(docker ps -aq)
+sudo docker load -i -o  /home/cloudadm/onedatasim-s0.tar
+sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
+                -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \ 
+                -it <container name> bash -lc "do_*_onedata.py <ARTI do_* params>"
+```
+
+
+### Executing on clusters instantiated by oneself in IaaS cloud providers
+
+1. First you has to create and configure a cluster in the cloud:
+
+- Using the EOSC public cloud, that enables the pre-configuration of Slurm and other schedulers (Kubernetes). [See EOSC-Synergy training for LAGO](https://moodle.learn.eosc-synergy.eu/course/view.php?id=16)
+- Using commercial public clouds (Amazon, Azure, Google, etc).
+- Using private clouds (institutional orchestators as OpenStack, OpenNebula, XenServer, VMware, etc).
+
+2.  Example for an Slurm instantiated on EOSC resources (pre-configured by IM):
+
+You can access to head node through SSH, using ``cloudadm`` account, but then you can gain root privileges with ``sudo``. 
+
+Slurm and a directory shared by NFS are already configured (/home), but some configruation has to be done: to share the users' directories and to install spackages needed for Docker:
+
+```sh
+sudo mkdir /home/cloudadm
+sudo chown cloudadm /home/cloudadm
+sudo docker pull lagocollaboration/onedatasim-s0:dev
+sudo docker save -o /home/cloudadm/onedatasim-s0.tar onedatasim-s0:dev
+```
+
+Then, you can launch simulations through ``sbatch``. The environment varialbles will be exported to execution nodes. Thus:
 
 ```sh
 export TOKEN="MDAxY...LAo"
 export ONEPROVIDER="mon01-tic.ciemat.es"
-
-sudo docker pull lagocollaboration/onedatasim-s0:dev
-
-sudo docker save -o <shared dir>/onedatasim-s0.tar onedatasim-s0:dev
-
-srun -o %j.out --exclusive sudo docker load -i -o <shared dir>/onedatasim-s0.tar \ 
-                           && sudo docker run --privileged \
-                              -e ONECLIENT_ACCESS_TOKEN=$TOKEN 
-                              -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \
-                              -it onedatasim-s0:dev  \
-                              bash -lc "do_sims_onedata.py -t 10 -u 0000-0001-6497-753X -s sac -k 1.5e2 -h QGSII -x" \
-                           &
+cd /home/cloudadm
+sbatch simulation.sbatch
 ```
 
-2. Executing on resurces instantiated by IaaS cloud providers
+A simulation.sbatch file for testing functionality can be one that will write the allowed parameters in <job number>.log :
 
-TBD. [See EOSC training for LAGO](https://moodle.learn.eosc-synergy.eu/course/view.php?id=16)
+```sh
+#!/bin/bash
+#SBATCH --export=ALL
+#SBATCH --exclusive
+#SBATCH-o %j.log
+date
+hostname
+sudo apt-get -y update
+sudo apt-get install -y  docker.io
+sudo docker stop $(docker ps -aq)
+sudo docker rm $(docker ps -aq)
+sudo docker load -i -o  /home/cloudadm/onedatasim-s0.tar
+sudo docker run --privileged -e ONECLIENT_ACCESS_TOKEN=$TOKEN -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER -i onedatasim-s0:dev bash -lc "do_sims_onedata.py -?"
+```
 
 
 
