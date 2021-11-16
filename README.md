@@ -10,21 +10,21 @@ master branch: [![Build Status](https://jenkins.eosc-synergy.eu/buildStatus/icon
 
 LAGO onedataSim packets all requeriments for runnig [ARTI](https://github.com/lagoproject/arti) into a Docker container, giving researcher the advantage of obtaining results on any plataform that supports Docker (Linux, Windows and MacOs on personal computers, HTC/HPC clusters or cloud plublic/private providers).
 
-However, the main objective of onedataSim is to standardise the simulation and its analisys in [LAGO Collaboration](http://lagoproject.net) in order to curate, re-use and publish the results, following the [Data Management Plant (DPM)](https://github.com/lagoproject/arti) established. For this purpose, onedataSim includes two main programs:
+However, the main objective of onedataSim is to standardise the simulation and its analisys in [LAGO Collaboration](http://lagoproject.net) in order to curate, re-use and publish the results, following the [Data Management Plant (DPM)](https://lagoproject.github.io/DMP/) established. For this purpose, onedataSim includes two main programs:
 
-1. **do_sims_onedata.py** that:
-  - executes simulations as do_sims.sh, exactly with same parameters;
-  - caches partial results as local scratch and then copies them to the official LAGO repository based on [OneData](https://github.com/onedata);
+1. **``do_sims_onedata.py``** that:
+  - executes simulations as ``do_sims.sh``, exactly with same parameters;
+  - caches partial results as local scratch and then copies them to the official [LAGO repository](https://datahub.egi.eu) based on [OneData](https://github.com/onedata);
   - makes standardised metadata for every inputs and results and includes them as extended attributes in OneData filesystem. 
-2. **do_analysis_onedata.py** that:
-  - executes analysis as do_analysis.sh does.
-  - caches the selected simulation to be analisyed in local and then store results at the official LAGO repository on [OneData](https://github.com/onedata);
+2. **``do_showers_onedata.py``** that:
+  - executes analysis as ``do_showers.sh`` does.
+  - caches the selected simulation to be analisyed in local from the official [LAGO repository](https://datahub.egi.eu) and then stores again the results to the repository;
   - makes also standardised metadata for these results and updates the corresponding catalog on OneData.
 
 Storing results on the official repository with standardised metadata enables:
   - sharing results with other LAGO members; 
-  - future searches and publishing through institutional/goverment catalog providers and virtual observatories; 
-  - properly citing scientific data and diseminating results through internet; 
+  - future searches and publishing through institutional/goverment catalog providers and virtual observatories such as the [B2FIND](https://b2find.eudat.eu/group/lago); 
+  - properly citing scientific data and diseminating results through internet through Handle.net' PiDs; 
   - building new results based on data minig or big data techniques thanks to linked metadata.
 
 Therefore, we encourage LAGO researchers to use these programs for their simulations. 
@@ -39,12 +39,19 @@ It is only needed [Docker Engine](https://docs.docker.com/engine/install/) to ru
 
 On linux, the recommended way is to remove all docker packages included by default in your distro and to make use of Docker repositories.
 
-For example, for a Debian based distribution such as Ubuntu:
+For example, for a old Debian based distribution such as Ubuntu:
 ```sh
   sudo apt-get remove docker wmdocker docker-registry [...etc...]
   curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
   sudo add-apt-repository    "deb [arch=amd64] https://download.docker.com/linux/debian"
   sudo apt-get install docker-ce docker-ce-cli containerd.io
+```
+
+On an newly Debian release with the last Docker:
+
+```sh
+  sudo apt-get update
+  sudo apt-get install -y docker.io
 ```
 
 On CentOS 7 with root:
@@ -61,13 +68,199 @@ On CentOS 7 with root:
   systemctl start docker
 ```
 
+## Downloading the official docker images to run onedataSim
+
+onedataSim, ARTI and required software (CORSIKA, GEANT4, ROOT) are built, tested and packed into Docker images, following a in a [CI/CD fashion](https://jenkins.eosc-synergy.eu/job/eosc-synergy-org/job/onedataSim/). When whole steps of the CI/CD pipeline are sucesfully completed, the images are certified and stored in the space of LAGO Collaboration at [Docker-Hub](https://hub.docker.com/u/lagocollaboration). The process assures the quality of the software published.
+
+Depending on the type of data that you want generate and/or processs (i.e. [S0, S1, S2](https://lagoproject.github.io/DMP/DMP/#types-and-formats-of-generatedcollected-data)), you should pull different image, because their size.
+
+- **``onedatasim-s0``** is mainly for generate S0 datasets (simulations with ``do_sims_onedata.py``), but also allows S1 analysis. Therefore it includes the modified CORSIKA for LAGO, which it results in a heavy image (~700 MB).  
+- **``onedatasim-s1``** is only for generate S1 datasets (analysis with ``do_showers_onedata.py``), but the image is very small (~XXXMB).  
+- ( Future: ``onedatasim-s2`` will be mainly for generate S2 datasets (detector response). It will include GEANt4/ROOT, and consequently, heaviest (~ 1GB)).  
 
 
-## Building the onedataSim container
+```sh
+sudo docker pull lagocollaboration/onedatasim-s0:dev
+```
+
+
+```sh
+sudo docker pull lagocollaboration/onedatasim-s1:dev
+```
+
+(Currently for our DockerHub space, downloads are limited to 100/day per IP. If you are many nodes under a NAT, you should consider distributing internally the docker image through ``docker save`` and ``load commands``). 
+
+
+
+## Executing a stardandised simulation & analisys to be stored in OneData repositories for LAGO
+
+This automatised execution is the preferred one in LAGO collaboration.
+
+You can execute ``do_sims_onedata.py`` or ``do_showers_onedata.py`` in a single command, without the needed of log into the container. If there is a lack of paramenters, it prompts you for them, if not this starts and the current progress is shown while the results are automatically stored in OneData. 
+
+
+```sh
+export TOKEN="<personal OneData token (oneclient enabled)>"
+export ONEPROVIDER="<nearest OneData provider>"
+
+sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
+                -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \ 
+                -it <container name> bash -lc "do_*_onedata.py <ARTI do_* params>"
+```
+
+### Running simulations (S0)
+
+1. Export credentials
+
+```sh
+export TOKEN="MDAxY...LAo"
+export ONEPROVIDER="mon01-tic.ciemat.es"
+```
+
+2. Showing parameters:
+
+```sh
+sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
+                -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \
+                -it onedatasim-s0:dev  bash -lc "do_sims_onedata.py -?"
+```
+
+. Simple simulation example:
+
+```sh
+sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
+                -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \
+                -it onedatasim-s0:dev  bash -lc "do_sims_onedata.py -t 10 -u 0000-0001-6497-753X -s and -k 2.0e2 -h QGSII -x"
+```
+
+3. Executing on a multi-processor server
+
+If you count on an standalone server for computing or a virtual machine instantiated with enough procesors memory and disk, you only need add the **-j \<procs\>** param to enable multi-processing:
+
+```sh
+sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
+                -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \
+                -it <container name> bash -lc "do_sims_onedata.py <other ARTI do_* params> -j <procs>"
+```
+
+### Analysing S0 datasets
+
+
+
+1. Export credentials
+
+```sh
+export TOKEN="MDAxY...LAo"
+export ONEPROVIDER="mon01-tic.ciemat.es"
+```
+
+2. Showing parameters:
+
+```sh
+sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
+                -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \
+                -it onedatasim-s0:dev  bash -lc "do_showers_onedata.py -?"
+```
+
+
+3. Executing an analysis:
+
+```sh
+sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
+                -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \
+                -it <container name> bash -lc "do_showers_onedata.py -o XXXX  -u 0000-0001-6497-753X"
+```
+
+
+
+## Advanced use cases
+
+
+### Executing on HTC clusters
+
+If you has enough permissions (sudo) to run Docker in privileged mode on a cluster and get the computing nodes in exclusive mode, you can run many simulations at time.
+
+For example on the Slurm batch systems.
+
+```sh
+sudo docker pull lagocollaboration/onedatasim-s0:dev
+sudo docker save -o <shared dir>/onedatasim-s0.tar onedatasim-s0:dev
+export TOKEN="<personal OneData token (oneclient enabled)>"
+export ONEPROVIDER="<nearest OneData provider>"
+sbatch simulation.sbatch
+```
+
+
+```sh
+#!/bin/bash
+#SBATCH --export=ALL
+#SBATCH --exclusive
+#SBATCH-o %j.log
+sudo docker stop $(docker ps -aq)
+sudo docker rm $(docker ps -aq)
+sudo docker load -i -o  /home/cloudadm/onedatasim-s0.tar
+sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
+                -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \ 
+                -it <container name> bash -lc "do_*_onedata.py <ARTI do_* params>"
+```
+
+
+### Executing on clusters instantiated by oneself in IaaS cloud providers
+
+1. First you has to create and configure a cluster in the cloud:
+
+- Using the EOSC public cloud, that enables the pre-configuration of Slurm and other schedulers (Kubernetes). [See EOSC-Synergy training for LAGO](https://moodle.learn.eosc-synergy.eu/course/view.php?id=16)
+- Using commercial public clouds (Amazon, Azure, Google, etc).
+- Using private clouds (institutional orchestators as OpenStack, OpenNebula, XenServer, VMware, etc).
+
+2.  Example for an Slurm instantiated on EOSC resources (pre-configured by IM):
+
+You can access to head node through SSH, using ``cloudadm`` account, but then you can gain root privileges with ``sudo``. 
+
+Slurm and a directory shared by NFS are already configured (/home), but some configruation has to be done: to share the users' directories and to install spackages needed for Docker:
+
+```sh
+sudo mkdir /home/cloudadm
+sudo chown cloudadm /home/cloudadm
+sudo docker pull lagocollaboration/onedatasim-s0:dev
+sudo docker save -o /home/cloudadm/onedatasim-s0.tar onedatasim-s0:dev
+```
+
+Then, you can launch simulations through ``sbatch``. The environment varialbles will be exported to execution nodes. Thus:
+
+```sh
+export TOKEN="MDAxY...LAo"
+export ONEPROVIDER="mon01-tic.ciemat.es"
+cd /home/cloudadm
+sbatch simulation.sbatch
+```
+
+A simulation.sbatch file for testing functionality can be one that will write the allowed parameters in <job number>.log :
+
+```sh
+#!/bin/bash
+#SBATCH --export=ALL
+#SBATCH --exclusive
+#SBATCH-o %j.log
+date
+hostname
+sudo apt-get -y update
+sudo apt-get install -y  docker.io
+sudo docker stop $(docker ps -aq)
+sudo docker rm $(docker ps -aq)
+sudo docker load -i -o  /home/cloudadm/onedatasim-s0.tar
+sudo docker run --privileged -e ONECLIENT_ACCESS_TOKEN=$TOKEN -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER -i onedatasim-s0:dev bash -lc "do_sims_onedata.py -?"
+```
+
+
+
+## Instructions only for developers
+
+### Building the onedataSim container
 
 To build the container is needed had a OneData token and to indicate any provider enroled as LAGO repository. This is so because ARTI currently calls [CORSIKA 7](https://www.ikp.kit.edu/corsika/79.php), which is licensed only for internal use of LAGO collaborators. As this software is stored at LAGO repository with closed permisions, its download requires to previously check if the user belongs to LAGO Virtual Organisation. 
 
-### Building from **master** branch
+#### Building from **master** branch
 
 If you have the newer releases of *git* installed in your machine, you can build the container with one command:  
 
@@ -94,7 +287,7 @@ sudo docker build --no-cache --build-arg ONECLIENT_ACCESS_TOKEN_TO_BUILD="MDAxY2
                   -t lagocontainer:0.0.1  https://github.com/lagoproject/onedataSim.git
 ```
 
-### Building from **develop** branch
+#### Building from **develop** branch
 
 You can also create a container with the developing release (unstable) of onedataSim software. For this task,
 you must add ``--build-arg ONEDATASIM_BRANCH="develop"`` as argument and to append ``#develop`` at the end of 
@@ -109,67 +302,7 @@ sudo docker build --no-cache --build-arg ONEDATASIM_BRANCH="develop" \
 
 
 
-## Executing a stardandised simulation & analisys to be stored in OneData repositories for LAGO
-
-This automatised execution is the preferred one in LAGO collaboration.
-
-You can execute do_sims_onedata.py or do_analysis_onedata.py in a single command, without the needed of log into the container. If there is a lack of paramenters, it prompts you for them, if not this starts and the current progress is shown while the results are automatically stored in OneData. 
-
-1. Simple command example:
-
-```sh
-sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN="<personal onedata token>" \
-                -e ONECLIENT_PROVIDER_HOST="<nearest onedata provider>" \ 
-                -it <container name> bash -lc "do_sims_onedata.py <ARTI do_* params>"
-```
-
-```sh
-sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN="MDAxY2xv...iXm8jowGgo" \
-                -e ONECLIENT_PROVIDER_HOST="mon01-tic.ciemat.es" \
-                -it lagocontainer:0.0.1  bash -lc "do_sims_onedata.py -t 10 -u 0000-0001-6497-753X -s sac -k 2.0e2 -h QGSII -x"
-```
-
-2. Executing on a multi-processor server
-
-If you count on an standalone server for computing or a virtual machine instantiated with enough procesors memory and disk, you only need add the **-j \<procs\>** param to enable multi-processing:
-
-```sh
-sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN="<personal onedata token>" \
-                -e ONECLIENT_PROVIDER_HOST="<nearest onedata provider>" \
-                -it <container name> bash -lc "do_sims_onedata.py -j <procs> <other ARTI do_* params>"
-```
-
-
-## Advanced use cases
-
-1. Executing on HTC clusters
-
-If you has enough permissions (sudo) to run Docker in privileged mode on a cluster and get the computing nodes in exclusive mode, you can run many simulations at time.
-
-For example on the Slurm batch systems, you can submit the `docker build` and the `docker run` operations in the same command line. (Note that removing `--no-cache`, the Docker image will not be rebuilt, except for changes in the GitHub repository).
-
-```sh
-export TOKEN="MDAxY...LAo"
-export ONEPROVIDER="mon01-tic.ciemat.es"
-
-srun -o %j.out --exclusive sudo docker build \
-                             --build-arg ONECLIENT_ACCESS_TOKEN_TO_BUILD=$TOKEN \
-                             --build-arg ONECLIENT_PROVIDER_HOST_TO_BUILD=https://$ONEPROVIDER \
-                              -t lagocontainer:0.0.1  https://github.com/lagoproject/onedataSim.git \ 
-                           && sudo docker run --privileged \
-                              -e ONECLIENT_ACCESS_TOKEN=$TOKEN 
-                              -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \
-                              -it lagocontainer:0.0.1  \
-                              bash -lc "do_sims_onedata.py -t 10 -u 0000-0001-6497-753X -s sac -k 1.5e2 -h QGSII -x" \
-                           &
-```
-
-2. Executing on resurces instantiated by IaaS cloud providers
-
-TBD.
-
-
-## Logging into container for developing purposes
+### Logging into container for developing purposes
 
 1. Runing scripts & attaching a local directory at login.
 

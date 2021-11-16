@@ -6,7 +6,7 @@ pipeline {
     agent any
 
     stages {
-        stage('SQA baseline dynamic stages : code checks') {
+        stage('SQA baseline dynamic stages : plain code checks') {
             steps {
                 catchError {
                     script {
@@ -21,10 +21,23 @@ pipeline {
                 }
             }
         }
-        stage('SQA baseline dynamic stages: build checks') {
+        stage('SQA baseline dynamic stages: build checks for S0') {
             steps {
                 script {
-                    projectConfig = pipelineConfig( configFile: '.sqa/config_build.yml')
+                    projectConfig = pipelineConfig( configFile: '.sqa/config_build_S0.yml')
+                    buildStages(projectConfig)
+                }
+            }
+            post {
+                cleanup {
+                    cleanWs()
+                }
+            }
+        }
+        stage('SQA baseline dynamic stages: build checks for S1') {
+            steps {
+                script {
+                    projectConfig = pipelineConfig( configFile: '.sqa/config_build_S1.yml')
                     buildStages(projectConfig)
                 }
             }

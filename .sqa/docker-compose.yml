@@ -8,14 +8,36 @@ services:
        source: ./onedatasim
        target: /onedatasim-repo
     #command: sleep 3600
-  onedatasim-build:
-    container_name: "onedatasim-build"
+  onedatasim-s0:
+    container_name: "onedatasim-s0"
     build:
       context: "."
       dockerfile: "./Dockerfile"
       args:
-        ONECLIENT_ACCESS_TOKEN_TO_BUILD: ${TOKEN_BUILD}
-        ONECLIENT_PROVIDER_HOST_TO_BUILD: "https://mon01-tic.ciemat.es"
-#   #image: "lagoproject/onedatasim:latest" # image could be at DockerHub (under consideration)
+        # docker-hub releases will not need tokens to build never more
+        # ONECLIENT_ACCESS_TOKEN_TO_BUILD: ${TOKEN_BUILD}
+        # ONECLIENT_PROVIDER_HOST_TO_BUILD: "https://mon01-tic.ciemat.es"
+        # but need a docker image, passed through argument (not by image param)
+        BASE_OS : "lagocollaboration/lago-corsika:77402-dev"
+ #   #image: "lagoproject/onedatasim:latest" # image could be at DockerHub (under consideration)
     command: sleep 900
-
+  onedatasim-s1:
+    container_name: "onedatasim-s1"
+    build:
+      context: "."
+      dockerfile: "./Dockerfile"
+      args:
+        # but need a docker image, passed through argument (not by image param)
+        BASE_OS : "centos:7"
+ #   #image: "lagoproject/onedatasim:latest" # image could be at DockerHub (under consideration)
+    command: sleep 900
+#  onedatasim-s2:
+#    container_name: "onedatasim-s2"
+#    build:
+#      context: "."
+#      dockerfile: "./Dockerfile"
+#      args:
+#        # but need a docker image, passed through argument (not by image param)
+#        BASE_OS : "lagocollaboration/lago-geant:TAG"
+# #   #image: "lagoproject/onedatasim:latest" # image could be at DockerHub (under consideration)
+#    command: sleep 900

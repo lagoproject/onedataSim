@@ -65,8 +65,8 @@ def get_sys_args_S1():
     #                    help='Flux time (in seconds) for simulations')
     parser.add_argument('-m', dest='m', required=True, type=int,
                         help='Produce files with the energy distribution of the primary flux per nuclei')
-    parser.add_argument('-j', dest='j',
-                        help='Force paralellize by this number.') 
+    parser.add_argument('-j', dest='j', type=int, default=1,
+                        help='Number of processors to use') 
     #parser.add_argument('-l', dest='l',
     #                    help='Execute locally. (If not, only produces .run files for posterior batch processing)')
     parser.add_argument('-?', action='help', help='Shows this help and exit.')
@@ -119,7 +119,8 @@ def get_sys_args_S1():
     #flux time in seconds
     args_dict.update({'t': splitted[2]})
     # site altitude in m a.s.l.  #OJO BUG, SOLO FUNCIONARIA SI NO ES LA ALTURA DEFAULT
-    args_dict.update({'k': splitted[3]})
+    # MUY PELIGROSO
+    args_dict.update({'k': int(float(splitted[3]))})
     
 
     return (codename, args_dict, _get_arti_params_json_md(args_dict))

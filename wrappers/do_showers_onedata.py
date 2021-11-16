@@ -147,7 +147,18 @@ def producer_S1_pri_sec(catcodename, arti_params):
     # clean a possible previous simulation
     if os.path.exists(catcodename):
         shutil.rmtree(catcodename, ignore_errors=True)
-
+    
+    # remove -u user 
+    try: 
+        param_list=arti_params.split(' ')
+        i = param_list.index('-u')
+        param_list.pop(i) # - u    
+        param_list.pop(i) # the user
+        arti_params = ' '.join(param_list)   
+    except:
+        print("ERROR: ORCID is missed")
+        raise
+        
     cmd = 'do_showers.sh ' + arti_params
     osUtils.run_Popen_interactive(cmd)
 
@@ -181,7 +192,7 @@ def producer_S1_shw(catcodename, arti_params):
     #osUtils.run_Popen_interactive(cmd)
 
 
-    with open('./' + catcodename + '/'+ catcodename + 'swh.run', 'r') as file1:
+    with open('./' + catcodename + '/'+ catcodename + '.shw.run', 'r') as file1:
         print(file1)
         for z in file1.readlines():
             if z != "":
@@ -208,7 +219,7 @@ def producer_S1_prt(catcodename, arti_params):
     #osUtils.run_Popen_interactive(cmd)
 
 
-    with open('./' + catcodename + '/'+ catcodename + 'pri.run', 'r') as file1:
+    with open('./' + catcodename + '/'+ catcodename + '.pri.run', 'r') as file1:
         print(file1)
         for z in file1.readlines():
             if z != "":
@@ -232,13 +243,13 @@ simulation = ARTIwrapper(args_showers.get_sys_args_S1, get_dataset_metadata_S1_p
                          producer_S1_pri_sec)
 simulation.run()
 
-simulation = ARTIwrapper(args_showers.get_sys_args_S1, get_dataset_metadata_S1_shw,
-                         producer_S1_shw)
-simulation.run()
-
-simulation = ARTIwrapper(args_showers.get_sys_args_S1, get_dataset_metadata_S1_prt,
-                         producer_S1_prt)
-simulation.run()
+#simulation = ARTIwrapper(args_showers.get_sys_args_S1, get_dataset_metadata_S1_shw,
+#                         producer_S1_shw)
+#simulation.run()
+#
+#simulation = ARTIwrapper(args_showers.get_sys_args_S1, get_dataset_metadata_S1_prt,
+#                         producer_S1_prt)
+#simulation.run()
 
 
 
