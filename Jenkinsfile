@@ -29,7 +29,7 @@ pipeline {
             }
             steps {
                 script {
-                    projectConfig = pipelineConfig( configFile: '.sqa/config_build-S0.yml')
+                    projectConfig = pipelineConfig( configFile: '.sqa/config_build_S0.yml')
                     buildStages(projectConfig)
                 }
             }
@@ -47,7 +47,7 @@ pipeline {
             }
             steps {
                 script {
-                    projectConfig = pipelineConfig( configFile: '.sqa/config_build-S1.yml')
+                    projectConfig = pipelineConfig( configFile: '.sqa/config_build_S1.yml')
                     buildStages(projectConfig)
                 }
             }
