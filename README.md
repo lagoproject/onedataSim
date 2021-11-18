@@ -109,7 +109,7 @@ sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
                 -it <container name> bash -lc "do_*_onedata.py <ARTI do_* params>"
 ```
 
-### Running simulations (S0)
+### Running simulations (generating S0 data)
 
 1. Export credentials
 
@@ -126,7 +126,7 @@ sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
                 -it onedatasim-s0:dev  bash -lc "do_sims_onedata.py -?"
 ```
 
-. Simple simulation example:
+3. Simple simulation example:
 
 ```sh
 sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
@@ -144,9 +144,7 @@ sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
                 -it <container name> bash -lc "do_sims_onedata.py <other ARTI do_* params> -j <procs>"
 ```
 
-### Analysing S0 datasets
-
-
+### Analysing S0 datasets (generating S1 data)
 
 1. Export credentials
 
