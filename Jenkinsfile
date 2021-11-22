@@ -4,7 +4,6 @@ def projectConfigPlain
 def projectConfigS0
 def projectConfigS1
 
-
 pipeline {
     agent any
 
@@ -13,7 +12,7 @@ pipeline {
             steps {
                 catchError {
                     script {
-                        projectConfigPlain = pipelineConfig(configFile: '.sqa/config.yml')
+                        projectConfigPlain = pipelineConfig(configFile: '.sqa/config_plain.yml')
                         buildStages(projectConfigPlain)
                     }
                 }
