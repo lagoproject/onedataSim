@@ -1,6 +1,9 @@
 @Library(['github.com/indigo-dc/jenkins-pipeline-library@release/2.1.0']) _
 
-def projectConfig
+def projectConfigPlain
+def projectConfigS0
+def projectConfigS1
+
 
 pipeline {
     agent any
@@ -10,8 +13,8 @@ pipeline {
             steps {
                 catchError {
                     script {
-                        projectConfig = pipelineConfig()
-                        buildStages(projectConfig)
+                        projectConfig = pipelineConfig(configFile: '.sqa/config.yml')
+                        buildStages(projectConfigPlain)
                     }
                 }
             }
@@ -29,8 +32,8 @@ pipeline {
             }
             steps {
                 script {
-                    projectConfig = pipelineConfig( configFile: '.sqa/config_build_S0.yml')
-                    buildStages(projectConfig)
+                    projectConfig = pipelineConfig(configFile: '.sqa/config_build_S0.yml')
+                    buildStages(projectConfigS0)
                 }
             }
             post {
@@ -47,8 +50,8 @@ pipeline {
             }
             steps {
                 script {
-                    projectConfig = pipelineConfig( configFile: '.sqa/config_build_S1.yml')
-                    buildStages(projectConfig)
+                    projectConfig = pipelineConfig(configFile: '.sqa/config_build_S1.yml')
+                    buildStages(projectConfigS1)
                 }
             }
             post {
