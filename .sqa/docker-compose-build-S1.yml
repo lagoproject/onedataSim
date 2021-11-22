@@ -1,3 +1,5 @@
+version: "3.6"
+services:
   onedatasim-s1:
     container_name: "onedatasim-s1"
     build:
