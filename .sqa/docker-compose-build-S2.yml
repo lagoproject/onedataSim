@@ -1,0 +1,11 @@
+#  onedatasim-s2:
+#    container_name: "onedatasim-s2"
+#    build:
+#      context: "."
+#      dockerfile: "./Dockerfile"
+#      args:
+#        # but need a docker image, passed through argument (not by image param)
+#        BASE_OS : "lagocollaboration/lago-geant:TAG"
+#        ONEDATASIM_BRANCH : "dev"
+#        ARTI_BRANCH : "dev"
+#    command: sleep 900
