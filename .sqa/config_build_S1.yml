@@ -20,7 +20,7 @@ config:
 environment:
   # first testing with eoscsynergybot account in dockerhub (synergy_dockerhub_bot_pass)
   #JPL_DOCKERSERVER: "hub.docker.com"
-  JPL_DOCKERPUSH: onedatasim-s0
+  JPL_DOCKERPUSH: onedatasim-s1
   #JPL_DOCKERFORCEBUILD: "True"
 # #  LANG: C.UTF-8
 sqa_criteria:
