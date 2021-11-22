@@ -1,4 +1,5 @@
 config:
+  deploy_template: './sqa/docker-compose-plain.yml'
   project_repos:
     onedatasim:
       repo: 'https://github.com/EOSC-synergy/onedataSim'
