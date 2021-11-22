@@ -13,7 +13,7 @@ pipeline {
             steps {
                 catchError {
                     script {
-                        projectConfig = pipelineConfig(configFile: '.sqa/config.yml')
+                        projectConfigPlain = pipelineConfig(configFile: '.sqa/config.yml')
                         buildStages(projectConfigPlain)
                     }
                 }
@@ -32,7 +32,7 @@ pipeline {
             }
             steps {
                 script {
-                    projectConfig = pipelineConfig(configFile: '.sqa/config_build_S0.yml')
+                    projectConfigS0 = pipelineConfig(configFile: '.sqa/config_build_S0.yml')
                     buildStages(projectConfigS0)
                 }
             }
@@ -50,7 +50,7 @@ pipeline {
             }
             steps {
                 script {
-                    projectConfig = pipelineConfig(configFile: '.sqa/config_build_S1.yml')
+                    projectConfigS1 = pipelineConfig(configFile: '.sqa/config_build_S1.yml')
                     buildStages(projectConfigS1)
                 }
             }
