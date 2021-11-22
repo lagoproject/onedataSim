@@ -2,7 +2,7 @@ config:
   project_repos:
     onedatasim:
       repo: 'https://github.com/EOSC-synergy/onedataSim'
-      branch: ${GIT_LOCAL_BRANCH##*/}  # I'd like to be a variable i.e GIT_BRANCH
+      branch: 'dev'
   credentials:
     # not necessary with docker-images
     #- id: onedata-token-build-ajrm
