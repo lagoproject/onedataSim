@@ -13,4 +13,6 @@ services:
         BASE_OS : "lagocollaboration/lago-corsika:77402-dev"
         ONEDATASIM_BRANCH : "dev"
         ARTI_BRANCH : "dev"
+    # image, post-build is where it is stored
+    image: "lagocollaboration/onedatasim-s0:dev"
     command: sleep 900
