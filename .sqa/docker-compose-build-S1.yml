@@ -1,4 +1,4 @@
-version: "3.6"
+version: "3.7"
 services:
   onedatasim-s1:
     container_name: "onedatasim-s1"
@@ -10,4 +10,7 @@ services:
         BASE_OS : "centos:7"
         ONEDATASIM_BRANCH : "dev"
         ARTI_BRANCH : "dev"
+    # image, post-build is where it is stored
+    image: "lagocollaboration/onedatasim-s1:dev"
     command: sleep 900
+    
