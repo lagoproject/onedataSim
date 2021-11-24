@@ -61,7 +61,8 @@ sqa_criteria:
             #bandit -r /opt/onedataSim -x tests -s B404,B602,B603
             pip3 install bandit && python3 -m bandit -r /opt/onedataSim -x tests -s B404,B602,B603
           #- bandit -r /onedatasim-repo -x tests
-  qc_fair:
+#  qc_fair: # it is not defined yet in JePL library, we have to use qc_doc
+  qc_doc:
     repos:
       fair:
         container: fair_eva
