@@ -13,4 +13,10 @@ services:
     # image, post-build is where it is stored
     image: "lagocollaboration/onedatasim-s1:dev"
     command: sleep 900
-    
+  fair_eva:
+    image: ferag/fair_eva:fair
+    volumes:
+    - source: ./
+      target: /sqaaas-build
+      type: bind
+    working_dir: /sqaaas-build
