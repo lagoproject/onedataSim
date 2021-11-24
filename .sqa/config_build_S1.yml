@@ -66,9 +66,13 @@ sqa_criteria:
     repos:
       fair:
         container: fair_eva
+        # Onedata has Verbs as petition of LAGO: http://datahub.egi.eu/oai_pmh?verb=ListSets
+        # Then the whole OAI-PMH repository is
+        # http://datahub.egi.eu/oai_pmh?verb=ListRecords&metadataPrefix=oai_dc&set=986fe2ab97a6b749fac17eb9e9b38c37chb045
+        # however, to check the build we only check a the testing catalog generated in qc_functional
         commands:
-        - '/bin/curl -H ''Content-Type: application/json'' -X POST -d  ''{"id": "10261/2765",
-          "repo": "oai-pmh", "oai_base": "http://digital.csic.es/dspace-oai/request"}''
+        - '/bin/curl -H ''Content-Type: application/json'' -X POST -d  ''{"id": "21.12145/V6CkywE",
+          "repo": "oai-pmh", "oai_base": "http://datahub.egi.eu/oai_pmh?verb=ListRecords&metadataPrefix=oai_dc"}''
           http://localhost:9090/v1.0/rda/rda_all'
 
 timeout: 900
