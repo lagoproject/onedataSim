@@ -20,4 +20,4 @@ services:
       target: /sqaaas-build
       type: bind
     working_dir: /sqaaas-build
-    command: sleep 900
+    command:  /FAIR_eva/fair.py && /FAIR_eva/web.py
