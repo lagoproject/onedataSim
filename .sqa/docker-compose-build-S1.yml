@@ -20,3 +20,4 @@ services:
       target: /sqaaas-build
       type: bind
     working_dir: /sqaaas-build
+    command: sleep 900
