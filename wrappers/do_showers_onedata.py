@@ -156,7 +156,7 @@ def producer_S1_pri_sec(catcodename, arti_params):
         param_list.pop(i)  # - u
         param_list.pop(i)  # the user
         arti_params = ' '.join(param_list)
-    except:
+    except Exception as inst:
         print("ERROR: ORCID is missed")
         raise
 
@@ -218,10 +218,10 @@ def producer_S1_prt(catcodename, arti_params):
                 filecode = z.split("echo DAT")[1].split(" ")[0]
                 task = z
                 q.put((filecode, task))
-
     return q
 
 # ---- MAIN run ----
+
 
 simulation = ARTIwrapper(args_showers.get_sys_args_S1,
                          get_dataset_metadata_S1_pri_sec, producer_S1_pri_sec)
