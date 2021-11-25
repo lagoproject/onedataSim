@@ -30,28 +30,28 @@ def _get_corsika_version():
 def _get_arti_params_json_md(arti_dict):
 
     dict_aux = {
-         "@id": "/"+arti_dict['p'] + "#artiParams",
-         "@type": "lago:ArtiParams",
-         "lago:fluxTime": "P" + str(arti_dict['t']) + "S",
-         "lago:highEnergyIntModel": arti_dict['h'],
-         "lago:detectorSite":
-             "https://github.com/lagoproject/DMP/blob/1.1/defs/sitesLago.jsonld#"
-             + arti_dict['s'],
-         "lago:obsLev": arti_dict['k'],
-         "lago:modatm": arti_dict['c'],
-         "lago:rigidity": arti_dict['b'],
-         "lago:tMin": arti_dict['m'],
-         "lago:tMax": arti_dict['n'],
-         "lago:llimit": arti_dict['r'],
-         "lago:ulimit": arti_dict['i'],
-         "lago:bx": arti_dict['o'],
-         "lago:bz": arti_dict['q'],
-         "lago:flatArray": not arti_dict['y'],
-         "lago:cherenkov": arti_dict['e'],
-         "lago:debug": arti_dict['d'],
-         "lago:defaults": arti_dict['x'],
-         "lago:highEnergyCutsSecondaries": arti_dict['a']
-         }
+                "@id": "/" + arti_dict['p'] + "#artiParams",
+                "@type": "lago:ArtiParams",
+                "lago:fluxTime": "P" + str(arti_dict['t']) + "S",
+                "lago:highEnergyIntModel": arti_dict['h'],
+                "lago:detectorSite":
+                    "https://github.com/lagoproject/DMP/blob/1.1/defs/sitesLago.jsonld#"
+                    + arti_dict['s'],
+                "lago:obsLev": arti_dict['k'],
+                "lago:modatm": arti_dict['c'],
+                "lago:rigidity": arti_dict['b'],
+                "lago:tMin": arti_dict['m'],
+                "lago:tMax": arti_dict['n'],
+                "lago:llimit": arti_dict['r'],
+                "lago:ulimit": arti_dict['i'],
+                "lago:bx": arti_dict['o'],
+                "lago:bz": arti_dict['q'],
+                "lago:flatArray": not arti_dict['y'],
+                "lago:cherenkov": arti_dict['e'],
+                "lago:debug": arti_dict['d'],
+                "lago:defaults": arti_dict['x'],
+                "lago:highEnergyCutsSecondaries": arti_dict['a']
+               }
 
     # create JSON removing empty values
 
