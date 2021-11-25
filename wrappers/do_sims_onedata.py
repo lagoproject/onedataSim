@@ -25,32 +25,32 @@ import osUtils
 
 
 from ARTIwrapper import ARTIwrapper
-    
-        
+
+
 # ---- specific metadata for S0 datasets (corsika files) ----
 
 def _get_input_metadata(filecode):
 
-    args=['common_activity.json', 'dataset_corsika_input.json']
+    args = ['common_activity.json', 'dataset_corsika_input.json']
     s = mdUtils.get_metadata_for_dataset(args)
     s = s.replace('FILENAME', 'DAT'+filecode+'.input')
     # DCAT2 distribution:format & mediaType
-    s = s.replace('FORMAT', 'TXT')  
-    s = s.replace('MEDIATYPE', 'text') 
+    s = s.replace('FORMAT', 'TXT')
+    s = s.replace('MEDIATYPE', 'text')
     # warning, corsikainput metadata must be included also...
     return s
 
 
 def _get_bin_output_metadata(filecode):
 
-    args=['common_dataset_corsika_output.json',
-          'dataset_corsika_bin_output.json']
+    args = ['common_dataset_corsika_output.json',
+            'dataset_corsika_bin_output.json']
     s = mdUtils.get_metadata_for_dataset(args)
     runnr = filecode.split('-')[0]
     s = s.replace('FILENAME', 'DAT'+runnr+'.bz2')
     # DCAT2 distribution:format & mediaType
-    s = s.replace('FORMAT', 'BIN')  
-    s = s.replace('MEDIATYPE', 'octet-stream') 
+    s = s.replace('FORMAT', 'BIN')
+    s = s.replace('MEDIATYPE', 'octet-stream')
     return s
 
 
@@ -68,7 +68,7 @@ def _get_lst_output_metadata(filecode):
 
 
 def get_dataset_metadata_S0(catcodename, filecode, startdate, end_date,
-                         arti_params_dict):
+                            arti_params_dict):
 
     mdlistaux = [_get_bin_output_metadata(filecode),
                  _get_lst_output_metadata(filecode),
@@ -99,18 +99,18 @@ def producerS0(catcodename, arti_params):
     aux_list = arti_params.split(' ')
     corsika_ver = aux_list[aux_list.index('-v') + 1]
     try:
-       ver_only_num = corsika_ver.split('-')[0]
-       for file in os.listdir():
-           if file.startswith("corsika") and not os.path.islink(file):
-              link = file.replace(ver_only_num, corsika_ver)
-              if not os.path.exists(link):
-                  cmd = 'ln -s ' + file + ' ' + link
-                  osUtils.run_Popen_interactive(cmd)
-                  print('Link created: ' + link)
+        ver_only_num = corsika_ver.split('-')[0]
+        for file in os.listdir():
+            if file.startswith("corsika") and not os.path.islink(file):
+                link = file.replace(ver_only_num, corsika_ver)
+                if not os.path.exists(link):
+                    cmd = 'ln -s ' + file + ' ' + link
+                    osUtils.run_Popen_interactive(cmd)
+                    print('Link created: ' + link)
     except:
         pass
-    
-    # generate tasks    
+
+    # generate tasks
     cmd = 'do_sims.sh ' + arti_params
     osUtils.run_Popen_interactive(cmd)
 
@@ -118,7 +118,7 @@ def producerS0(catcodename, arti_params):
     cmd = "sed 's/screen -d -m -a -S \$name \$script; screen -ls/\$script/' " + \
        " rain.pl -i"
     osUtils.run_Popen(cmd)
-    
+
     # WARNING, I HAD TO PATCH rain.pl FOR AVOID .long files !!!
     # 20210519 not necessary since arti@d8f8caa
     # cmd = "sed 's/\$llongi /F /' rain.pl -i"
@@ -143,9 +143,9 @@ def producerS0(catcodename, arti_params):
             s_aux = z_aux[1].replace('/', '')
             s_aux = z_aux[1].replace('.run', '')
             z_aux = s_aux.split('-')
-            # runnr has at least 6 characters, but can has more    
+            # runnr has at least 6 characters, but can has more
             runnr_6 = str(int(runnr)).zfill(6)
-            filecode = runnr_6 + '-' +prmpar +'-' + z_aux[1]
+            filecode = runnr_6 + '-' +prmpar + '-' + z_aux[1]
             q.put((filecode, task))
 
     return q
@@ -156,8 +156,3 @@ def producerS0(catcodename, arti_params):
 simulation = ARTIwrapper(args_sims.get_sys_args_S0, get_dataset_metadata_S0,
                          producerS0)
 simulation.run()
-
-
-
-
-
