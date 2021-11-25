@@ -14,8 +14,8 @@
 # or yum install -y python36-pyxattr
 
 # EXAMPLE of possible standard modules needed
-import xattr
-import json
+# import xattr
+# import json
 import os
 import shutil
 
@@ -78,7 +78,7 @@ def _get_prt_metadata(filecode):
 def get_dataset_metadata_S1_pri_sec(catcodename, filecode, startdate, end_date,
                                     arti_params_dict):
 
-    #TO BE DONE  (only illustrative)
+    # TO BE DONE  (only illustrative)
 
     mdlistaux = [_get_pri_metadata(filecode),
                  _get_sec_metadata(filecode)]
@@ -93,11 +93,10 @@ def get_dataset_metadata_S1_pri_sec(catcodename, filecode, startdate, end_date,
     return mdlist
 
 
-
 def get_dataset_metadata_S1_shw(catcodename, filecode, startdate, end_date,
                                 arti_params_dict):
 
-    #TO BE DONE  (only illustrative)
+    # TO BE DONE  (only illustrative)
 
     mdlistaux = [_get_shw_metadata(filecode)]
 
@@ -112,11 +111,10 @@ def get_dataset_metadata_S1_shw(catcodename, filecode, startdate, end_date,
     return mdlist
 
 
-
 def get_dataset_metadata_S1_prt(catcodename, filecode, startdate, end_date,
                                 arti_params_dict):
 
-    #TO BE DONE  (only illustrative)
+    # TO BE DONE  (only illustrative)
 
     mdlistaux = [_get_prt_metadata(filecode)]
     mdlist = []
@@ -129,8 +127,8 @@ def get_dataset_metadata_S1_prt(catcodename, filecode, startdate, end_date,
         mdlist.append(s)
     return mdlist
 
-# ---- END: specific metadata for S1 datasets (ARTI analyisis files) ----
 
+# ---- END: specific metadata for S1 datasets (ARTI analyisis files) ----
 
 # ---- specific producer for S1 datasets (arti) ----
 
@@ -138,7 +136,7 @@ def get_dataset_metadata_S1_prt(catcodename, filecode, startdate, end_date,
 # codename.run (DATxxxx.bz2 -> xxx.pri/sec.bz2)
 # codename.shw.run (*.sec.bz2 -> codename.shw)
 # codename.pri.run (*<element>.pri.bz2 -> <element>.prt)
-    
+
 def producer_S1_pri_sec(catcodename, arti_params):
 
     # it is need, this queue will be returned for the function
@@ -147,14 +145,14 @@ def producer_S1_pri_sec(catcodename, arti_params):
     # clean a possible previous simulation
     if os.path.exists(catcodename):
         shutil.rmtree(catcodename, ignore_errors=True)
-    
-    # remove -u user 
-    try: 
+
+    # remove -u user
+    try:
         param_list = arti_params.split(' ')
         i = param_list.index('-u')
-        param_list.pop(i) # - u    
+        param_list.pop(i) # - u
         param_list.pop(i) # the user
-        arti_params = ' '.join(param_list)   
+        arti_params = ' '.join(param_list)
     except:
         print("ERROR: ORCID is missed")
         raise
