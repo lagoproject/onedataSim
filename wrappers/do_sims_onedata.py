@@ -107,7 +107,7 @@ def producerS0(catcodename, arti_params):
                     cmd = 'ln -s ' + file + ' ' + link
                     osUtils.run_Popen_interactive(cmd)
                     print('Link created: ' + link)
-    except:
+    except Exception as inst:
         pass
 
     # generate tasks
@@ -145,7 +145,7 @@ def producerS0(catcodename, arti_params):
             z_aux = s_aux.split('-')
             # runnr has at least 6 characters, but can has more
             runnr_6 = str(int(runnr)).zfill(6)
-            filecode = runnr_6 + '-' +prmpar + '-' + z_aux[1]
+            filecode = runnr_6 + '-' + prmpar + '-' + z_aux[1]
             q.put((filecode, task))
 
     return q
