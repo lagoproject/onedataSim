@@ -13,7 +13,7 @@
 # apt-get install python3-xattr
 # or yum install -y python36-pyxattr
 
-#EXAMPLE of possible standard modules needed
+# EXAMPLE of possible standard modules needed
 import xattr
 import json
 import os
@@ -35,7 +35,7 @@ from ARTIwrapper import ARTIwrapper
 # output primaries
 def _get_pri_metadata(filecode):
 
-    args=['common_activity.json', 'dataset_arti_pri_output.json']
+    args = ['common_activity.json', 'dataset_arti_pri_output.json']
     s = mdUtils.get_metadata_for_dataset(args)
     s = s.replace('FILENAME', filecode +'.pri.bz2')
     # DCAT2 distribution:format & mediaType
@@ -45,33 +45,33 @@ def _get_pri_metadata(filecode):
 
 def _get_sec_metadata(filecode):
 
-    args=['common_activity.json', 'dataset_arti_sec_output.json']
+    args = ['common_activity.json', 'dataset_arti_sec_output.json']
     s = mdUtils.get_metadata_for_dataset(args)
     s = s.replace('FILENAME', filecode + '.sec.bz2')
     # DCAT2 distribution:format & mediaType
-    s = s.replace('FORMAT', 'TXT')  ## BIN or TXT
-    s = s.replace('MEDIATYPE', 'text')  ## octect-stream or text
+    s = s.replace('FORMAT', 'TXT')  # BIN or TXT
+    s = s.replace('MEDIATYPE', 'text')  # octect-stream or text
     return s
 
 def _get_shw_metadata(filecode):
 
-    args=['common_activity.json', 'dataset_arti_shw_output.json']
+    args = ['common_activity.json', 'dataset_arti_shw_output.json']
     s = mdUtils.get_metadata_for_dataset(args)
     s = s.replace('FILENAME', filecode + '.shw.bz2')
     # DCAT2 distribution:format & mediaType
-    s = s.replace('FORMAT', 'TXT')  ## BIN or TXT
-    s = s.replace('MEDIATYPE', 'text')  ## octect-stream or text
+    s = s.replace('FORMAT', 'TXT')  # BIN or TXT
+    s = s.replace('MEDIATYPE', 'text')  # octect-stream or text
     return s
 
 
 def _get_prt_metadata(filecode):
 
-    args=['common_activity.json', 'dataset_arti_prt_output.json']
+    args = ['common_activity.json', 'dataset_arti_prt_output.json']
     s = mdUtils.get_metadata_for_dataset(args)
     s = s.replace('FILENAME', filecode + '.prt.bz2')
     # DCAT2 distribution:format & mediaType
-    s = s.replace('FORMAT', 'TXT')  ## BIN or TXT
-    s = s.replace('MEDIATYPE', 'text')  ## octect-stream or text
+    s = s.replace('FORMAT', 'TXT')  # BIN or TXT
+    s = s.replace('MEDIATYPE', 'text')  # octect-stream or text
     return s
 
 
@@ -150,7 +150,7 @@ def producer_S1_pri_sec(catcodename, arti_params):
     
     # remove -u user 
     try: 
-        param_list=arti_params.split(' ')
+        param_list = arti_params.split(' ')
         i = param_list.index('-u')
         param_list.pop(i) # - u    
         param_list.pop(i) # the user
@@ -184,15 +184,7 @@ def producer_S1_shw(catcodename, arti_params):
     # it is need, this queue will be returned for the function
     q = Queue()
 
-    # clean a possible previous simulation
-    # if os.path.exists(catcodename):
-    #    shutil.rmtree(catcodename, ignore_errors=True)
-
-    # cmd = 'do_showers.sh ' + arti_params
-    # osUtils.run_Popen_interactive(cmd)
-
-
-    with open('./' + catcodename + '/'+ catcodename + '.shw.run', 'r') as file1:
+    with open('./' + catcodename + '/' + catcodename + '.shw.run', 'r') as file1:
         print(file1)
         for z in file1.readlines():
             if z != "":
@@ -242,14 +234,21 @@ def producer_S1_prt(catcodename, arti_params):
 simulation = ARTIwrapper(args_showers.get_sys_args_S1,
                          get_dataset_metadata_S1_pri_sec,
                          producer_S1_pri_sec)
+
+
 simulation.run()
 
 # simulation = ARTIwrapper(args_showers.get_sys_args_S1,
 #                          get_dataset_metadata_S1_shw,
 #                          producer_S1_shw)
+#
+#
 # simulation.run()
-# 
+#
+#
 # simulation = ARTIwrapper(args_showers.get_sys_args_S1,
 #                          get_dataset_metadata_S1_prt,
 #                          producer_S1_prt)
+#
+#
 # simulation.run()
