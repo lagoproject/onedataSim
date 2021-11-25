@@ -19,13 +19,13 @@ import sys
 
 # this script only runs in "/opt/lago-corsika-CORSIKA_VER/run" directory
 def _get_corsika_version():
-    
+
     try:
         return os.getcwd().split("/opt/lago-corsika-")[1].split("/run")[0]
     except:
         print("Please, execute in the /opt/lago-corsika-CORSIKA_VER/run directory")
         sys.exit(1)
-    
+
 
 def _get_arti_params_json_md(arti_dict):
 
@@ -225,7 +225,7 @@ def get_sys_args_S0():
         codename += '_Cherenk'
 
     if args_dict['a'] is True:
-        codename += '_HEcuts'+ str(args_dict['a'])
+        codename += '_HEcuts' + str(args_dict['a'])
 
     if args_dict['x'] is True:
         codename += '_defaults'
@@ -235,6 +235,5 @@ def get_sys_args_S0():
     # working dir
 
     args_dict.update({'w': '/opt/lago-corsika-'+CORSIKA_VER+'/run/'})
-
 
     return (codename, args_dict, _get_arti_params_json_md(args_dict))
