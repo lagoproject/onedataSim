@@ -32,6 +32,7 @@ from ARTIwrapper import ARTIwrapper
 
 # ---- specific metadata for S1 datasets (ARTI analyisis files) ----
 
+
 # output primaries
 def _get_pri_metadata(filecode):
 
@@ -43,6 +44,7 @@ def _get_pri_metadata(filecode):
     s = s.replace('MEDIATYPE', 'text')  ## octect-stream or text
     return s
 
+
 def _get_sec_metadata(filecode):
 
     args = ['common_activity.json', 'dataset_arti_sec_output.json']
@@ -52,6 +54,7 @@ def _get_sec_metadata(filecode):
     s = s.replace('FORMAT', 'TXT')  # BIN or TXT
     s = s.replace('MEDIATYPE', 'text')  # octect-stream or text
     return s
+
 
 def _get_shw_metadata(filecode):
 
@@ -150,16 +153,15 @@ def producer_S1_pri_sec(catcodename, arti_params):
     try:
         param_list = arti_params.split(' ')
         i = param_list.index('-u')
-        param_list.pop(i) # - u
-        param_list.pop(i) # the user
+        param_list.pop(i)  # - u
+        param_list.pop(i)  # the user
         arti_params = ' '.join(param_list)
     except:
         print("ERROR: ORCID is missed")
         raise
-        
+
     cmd = 'do_showers.sh ' + arti_params
     osUtils.run_Popen_interactive(cmd)
-
 
     with open('./' + catcodename + '/' + catcodename + '.run', 'r') as file1:
         print(file1)
@@ -200,14 +202,6 @@ def producer_S1_prt(catcodename, arti_params):
 
     # it is need, this queue will be returned for the function
     q = Queue()
-
-    # clean a possible previous simulation
-    # if os.path.exists(catcodename):
-    #    shutil.rmtree(catcodename, ignore_errors=True)
-
-    # cmd = 'do_showers.sh ' + arti_params
-    # osUtils.run_Popen_interactive(cmd)
-
 
     with open('./' + catcodename + '/' + catcodename + '.pri.run', 'r') as file1:
         print(file1)
