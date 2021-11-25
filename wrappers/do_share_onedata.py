@@ -48,22 +48,21 @@ oai_dc_content = 'xmlns:oai_dc=' + xmlns_oaci_dc + ' xmlns:dc=' + xmlns_dc + ' x
 
 def folder0_content (folder0_id, host, token):
     """
-    
     Modules
     -------
     request, json
-    
+    ----------
     Parameters
     ----------
     folder0_id : Onedata folder level 0 id containing the data to publish.
     host : OneData provider (e.g., ceta-ciemat-02.datahub.egi.eu).
     token : OneData personal access token.
-
+    -------
     Returns
     -------
     all_level0: "name" and "id" of the folders contained in the folder defined by "folder0_id"
-
     """
+    
     OneData_urlchildren = "https://" + host + '/api/v3/oneprovider/data/' + folder0_id + "/children"
     request_param = {'X-Auth-Token': token}
     r_level0 = requests.get(OneData_urlchildren, headers=request_param)    
@@ -74,23 +73,23 @@ def folder0_content (folder0_id, host, token):
 
 def OneData_sharing (filename, file_id, host, token):
     """
-
+    -------
     Modules
     -------
     request
-    
+    ----------
     Parameters
     ----------
     filename : Folder name to share and handle.
     file_id : OneData folder id containing the data to publish.
     host : OneData provider (e.g., ceta-ciemat-02.datahub.egi.eu).
     token : OneData personal access token.
-
+    -------
     Returns
     -------
     share_level1: share info
-
     """
+    
     OneData_Header = "application/json"
     OneData_urlcreateShare = "https://" + host + '/api/v3/oneprovider/shares'
     request_param = {'X-Auth-Token': token, "Content-Type": OneData_Header}
@@ -104,11 +103,11 @@ def OneData_sharing (filename, file_id, host, token):
 
 def OneData_createhandle (handleservice_id, share_id, local_path, filename, host, token):
     """
-
+    -------
     Modules
     -------
     request
-    
+    ----------
     Parameters
     ----------
     handleservice_id : OneData handle service id
@@ -117,11 +116,10 @@ def OneData_createhandle (handleservice_id, share_id, local_path, filename, host
     filename : Folder name to share and handle.
     host : OneData provider (e.g., ceta-ciemat-02.datahub.egi.eu).
     token : OneData personal access token.
-
+    -------
     Returns
     -------
     handle_level1: handle info
-
     """
     OneData_urlregisterHandle = "https://datahub.egi.eu/api/v3/onezone/user/handles"
     OneData_Header = "application/json"
@@ -139,11 +137,11 @@ def OneData_createhandle (handleservice_id, share_id, local_path, filename, host
 
 def folder1_getattrs (handleservice_id, local_path, folder1_id, host, token):
     """
-
+    -------
     Modules
     -------
     request, json
-    
+    -----------   
     Description
     -----------
     This function gets the attributes of the files to share and handle.
@@ -152,7 +150,7 @@ def folder1_getattrs (handleservice_id, local_path, folder1_id, host, token):
     Then, it checks if the share already has a handle and, if not, creates one.
     If the file has not been shared, then returns and empty file:
     shareinfo_level1=[]
-    
+    ----------
     Parameters
     ----------
     handleservice_id : OneData handle service id
@@ -160,12 +158,12 @@ def folder1_getattrs (handleservice_id, local_path, folder1_id, host, token):
     folder1_id : Onedata folder level 1 id (contained in level 0 folder).
     host : OneData provider (e.g., ceta-ciemat-02.datahub.egi.eu).
     token : OneData personal access token.
-
+    -------
     Returns
     -------
     shareinfo_level1: Get the basic information about the shared folder level 1
-
     """
+    
     OneData_urlgetAttrs = "https://" + host + '/api/v3/oneprovider/data/' + folder1_id + "?attribute=shares"
     request_param = {'X-Auth-Token': token}
     shareid_level1 = requests.get(OneData_urlgetAttrs, headers=request_param)
