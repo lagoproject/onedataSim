@@ -62,9 +62,10 @@ def replace_common_patterns(s, catcodename, arti_params_dict):
 
     s = s.replace('CATCODENAME', catcodename)
     s = s.replace('ORCID', arti_params_dict['u'])
-    if 'v' in arti_params_dict :
+    if 'v' in arti_params_dict:
         s = s.replace('CORSIKA_VER', arti_params_dict['v'])
-        s = s.replace('COMMITSHACORSIKA', arti_params_dict['priv_corsikacommit'])
+        s = s.replace('COMMITSHACORSIKA', 
+                      arti_params_dict['priv_corsikacommit'])
     # other private generated without arguments (arg_xxx.py)
     s = s.replace('COMMITSHAARTI', arti_params_dict['priv_articommit'])
     s = s.replace('COMMITSHAODSIM', arti_params_dict['priv_odsimcommit'])
@@ -78,10 +79,10 @@ template_path = os.path.dirname(os.path.abspath(__file__)) + '/json_tpl/'
 
 
 def get_metadata_for_dataset(args=[]):
-    
+
     common = ['common_context.json', 'common_dataset.json']
     templates = common + args
-    j={}
+    j = {}
     for temp in templates:
         with open(template_path + temp, 'r') as file_aux:
             j = add_json(j, json.loads(file_aux.read()))
@@ -101,7 +102,8 @@ def get_first_catalog_metadata_json(catcodename, arti_params_dict):
             return json.loads(s)
 
 
-def get_catalog_metadata_activity(startdate, enddate, catcodename, arti_params_dict):
+def get_catalog_metadata_activity(startdate, enddate, catcodename, 
+                                  arti_params_dict):
 
     with open(template_path+'common_activity.json', 'r') as file1:
         j = json.loads(file1.read())
