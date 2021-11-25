@@ -64,7 +64,7 @@ def replace_common_patterns(s, catcodename, arti_params_dict):
     s = s.replace('ORCID', arti_params_dict['u'])
     if 'v' in arti_params_dict:
         s = s.replace('CORSIKA_VER', arti_params_dict['v'])
-        s = s.replace('COMMITSHACORSIKA', 
+        s = s.replace('COMMITSHACORSIKA',
                       arti_params_dict['priv_corsikacommit'])
     # other private generated without arguments (arg_xxx.py)
     s = s.replace('COMMITSHAARTI', arti_params_dict['priv_articommit'])
@@ -102,7 +102,7 @@ def get_first_catalog_metadata_json(catcodename, arti_params_dict):
             return json.loads(s)
 
 
-def get_catalog_metadata_activity(startdate, enddate, catcodename, 
+def get_catalog_metadata_activity(startdate, enddate, catcodename,
                                   arti_params_dict):
 
     with open(template_path+'common_activity.json', 'r') as file1:
