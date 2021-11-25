@@ -189,7 +189,7 @@ def folder1_getattrs(handleservice_id, local_path, folder1_id, host, token):
                 print("extra share deleted")
     else:
         shareinfo_level1 = []
-        print("folder not shared yet")        
+        print("folder not shared yet")
 
     return (shareinfo_level1)
 
@@ -250,9 +250,7 @@ for p in all_level0['children']:
                     with tag('dc:publisher'):
                         text('LAGO Collaboration')
 
-            result = indent(doc.getvalue(),
-                            indentation = ' '*4,
-                            newline = '\n')
+            result = indent(doc.getvalue(), indentation = ' '*4, newline = '\n')
 
             file_object = open(catalog_path_temp + p['name'] + '.xml', 'w')
             file_object.write(result)
