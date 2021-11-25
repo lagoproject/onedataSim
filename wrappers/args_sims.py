@@ -30,13 +30,13 @@ def _get_corsika_version():
 def _get_arti_params_json_md(arti_dict):
 
     dict_aux = {
-         "@id": "/"+arti_dict['p']+"#artiParams",
+         "@id": "/"+arti_dict['p'] + "#artiParams",
          "@type": "lago:ArtiParams",
-         "lago:fluxTime": "P"+str(arti_dict['t'])+"S",
+         "lago:fluxTime": "P" + str(arti_dict['t']) + "S",
          "lago:highEnergyIntModel": arti_dict['h'],
          "lago:detectorSite":
-         "https://github.com/lagoproject/DMP/blob/1.1/defs/sitesLago.jsonld#"
-         + arti_dict['s'],
+             "https://github.com/lagoproject/DMP/blob/1.1/defs/sitesLago.jsonld#"
+             + arti_dict['s'],
          "lago:obsLev": arti_dict['k'],
          "lago:modatm": arti_dict['c'],
          "lago:rigidity": arti_dict['b'],
