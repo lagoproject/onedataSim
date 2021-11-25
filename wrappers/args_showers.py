@@ -15,6 +15,7 @@
 import argparse
 import os
 
+
 def _get_arti_params_json_md(arti_dict):
     dict_aux = {
          "@id": "/"+arti_dict['p']+"#artiParams",
@@ -29,7 +30,7 @@ def _get_arti_params_json_md(arti_dict):
          # "lago:fluxTime": arti_dict['t'],
          "lago:binsPerDecade": arti_dict['m'],
          }
-    
+
     # create JSON removing empty values
     j = {"@graph": [
         {k: v for k, v in dict_aux.items() if v is not None}
@@ -44,7 +45,7 @@ def get_sys_args_S1():
     results in OneData'
     # epilog= "this can be ASCII art"
     parser = argparse.ArgumentParser(description=disclaimer, add_help=False)
-    
+
     parser.add_argument('-o', dest='o', required=True,
                         help='Origin dir, where the DAT files are located')
     # parser.add_argument('-r', dest='r', required=True,
@@ -66,7 +67,7 @@ def get_sys_args_S1():
     parser.add_argument('-m', dest='m', required=True, type=int,
                         help='Produce files with the energy distribution of the primary flux per nuclei')
     parser.add_argument('-j', dest='j', type=int, default=1,
-                        help='Number of processors to use') 
+                        help='Number of processors to use')
     # parser.add_argument('-l', dest='l',
     #                     help='Execute locally. (If not, only produces .run files for posterior batch processing)')
     parser.add_argument('-?', action='help', help='Shows this help and exit.')
@@ -81,8 +82,8 @@ def get_sys_args_S1():
     args_dict = vars(args)
 
     # ---- customise parameters for ARTI and onedataSim ----
-    # 
-    # the most important is the "project name" that it is used 
+    #
+    # the most important is the "project name" that it is used
     # for onedataSim as "codename"
     #
     # the other are the version of external software used
@@ -99,9 +100,9 @@ def get_sys_args_S1():
     # codename is identical to the S0 origin, but begins with S1
     S0_codename_full = args_dict['o']
     S0_codename = S0_codename_full.split("/")
-    S0_codename = S0_codename[-1] # last in list
+    S0_codename = S0_codename[-1]  # last in list
 
-    codename = 'S1_' + S0_codename.replace('S0_','',1)
+    codename = 'S1_' + S0_codename.replace('S0_', '', 1)
 
     args_dict.update({'p': codename})
 
