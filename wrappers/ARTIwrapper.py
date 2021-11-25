@@ -59,7 +59,7 @@ class ARTIwrapper():
                         osUtils._write_file(onedata_path + id_hidden + '.jsonld', md)
                     else:
                         print('CAUTION: ' + id + ' is not in onedata, requeuing...')
-                        raise inst
+                        raise NameError('The ID is not in OneData')
                     # thus, I can remove local file
                     cmd = "rm -f ." + id
                     osUtils.run_Popen(cmd)
@@ -76,7 +76,6 @@ class ARTIwrapper():
                 # always add 1 to lenght but really we are re-queing and
                 # size remains the same
                 self._q_onedata.task_done()
-
 
     def _run_check_and_copy_results(self, catcodename, filecode, task, onedata_path,
                                     arti_params_dict):
@@ -128,14 +127,14 @@ class ARTIwrapper():
             (filecode, task) = self._q.get()
             try:
                 self._run_check_and_copy_results(catcodename, filecode, task,
-                                            onedata_path, arti_params_dict)
+                                                 onedata_path, arti_params_dict)
                 print('Completed NRUN: ' + str(filecode) + '  ' + task)
                 self._q.task_done()
             except Exception as inst:
                 self._q.put((filecode, task))
                 # we have to substract 1 to queue lenght because q.put
-                # always add 1 to lenght but really we are re-queing and 
-                # size remains the same  
+                # always add 1 to lenght but really we are re-queing and
+                # size remains the same
                 self._q.task_done()
 
     # ---- END: producer/consumer of executions ---------
@@ -155,22 +154,21 @@ class ARTIwrapper():
         # Now I can add extra info (without changing s)
         #
         # if 'v' is defined, is because CORSIKA is used
-        if 'v' in args_dict :
+        if 'v' in args_dict:
             args_dict['priv_corsikacommit'] = mdUtils.get_git_commit('/opt/lago-corsika-' + args_dict['v'])
         args_dict['priv_articommit'] = mdUtils.get_git_commit(os.environ['LAGO_ARTI'])
         args_dict['priv_odsimcommit'] = mdUtils.get_git_commit(os.environ['LAGO_ONEDATASIM'])
 
-        # WARNING temporarily the main HANDLE ref will be the current OneProvider 
-        handleaux='https://' + os.environ['ONECLIENT_PROVIDER_HOST']
+        # WARNING temporarily the main HANDLE ref will be the current OneProvider
+        handleaux = 'https://' + os.environ['ONECLIENT_PROVIDER_HOST']
         args_dict['priv_handlejsonapi'] = handleaux + '/api/v3/oneprovider/metadata/json'
         args_dict['priv_handlecdmi'] = handleaux + '/cdmi'
- 
+
         # dcat:accessURL corresponds to the landing page and it can only be set when the
         # data will be officially published, thus temporarily we firstly use a dummy url
         args_dict['priv_landingpage'] = 'https://datahub.egi.eu/not_published_yet'
 
         return args_dict
-
 
     # ---- MAIN PROGRAM ---------
 
@@ -222,7 +220,8 @@ class ARTIwrapper():
             t.start()
 
         q_aux = self._producer(catcodename, arti_params)
-        for i in q_aux.queue:self._q.put(i)
+        for i in q_aux.queue: 
+            self._q.put(i)
 
         t = Thread(target=self._consumer_onedata_cp, args=(onedata_path,))
         t.daemon = True
@@ -237,10 +236,10 @@ class ARTIwrapper():
         md['dataset'] = ["/" + catcodename + "/" + s for s in
                          os.listdir(catalog_path) if not s.startswith('.')]
 
-        md = mdUtils.add_json(md,json.loads(mdUtils.get_catalog_metadata_activity(main_start_date,
-                                                                                  mdUtils.xsd_dateTime(),
-                                                                                  catcodename,
-                                                                                  arti_params_dict)))
+        md = mdUtils.add_json(md, json.loads(mdUtils.get_catalog_metadata_activity(main_start_date,
+                                                                                   mdUtils.xsd_dateTime(),
+                                                                                   catcodename,
+                                                                                   arti_params_dict)))
 
         osUtils._write_file(catalog_path + '/.metadata/.' + catcodename +
                             '.jsonld', json.dumps(md))
