@@ -38,10 +38,10 @@ def _get_pri_metadata(filecode):
 
     args = ['common_activity.json', 'dataset_arti_pri_output.json']
     s = mdUtils.get_metadata_for_dataset(args)
-    s = s.replace('FILENAME', filecode +'.pri.bz2')
+    s = s.replace('FILENAME', filecode + '.pri.bz2')
     # DCAT2 distribution:format & mediaType
-    s = s.replace('FORMAT', 'TXT')  ## BIN or TXT
-    s = s.replace('MEDIATYPE', 'text')  ## octect-stream or text
+    s = s.replace('FORMAT', 'TXT')  # BIN or TXT
+    s = s.replace('MEDIATYPE', 'text')  # octect-stream or text
     return s
 
 
@@ -224,23 +224,20 @@ def producer_S1_prt(catcodename, arti_params):
 # ---- MAIN run ----
 
 simulation = ARTIwrapper(args_showers.get_sys_args_S1,
-                         get_dataset_metadata_S1_pri_sec,
-                         producer_S1_pri_sec)
+                         get_dataset_metadata_S1_pri_sec, producer_S1_pri_sec)
 
 
 simulation.run()
 
 # simulation = ARTIwrapper(args_showers.get_sys_args_S1,
-#                          get_dataset_metadata_S1_shw,
-#                          producer_S1_shw)
+#                          get_dataset_metadata_S1_shw, producer_S1_shw)
 #
 #
 # simulation.run()
 #
 #
 # simulation = ARTIwrapper(args_showers.get_sys_args_S1,
-#                          get_dataset_metadata_S1_prt,
-#                          producer_S1_prt)
+#                          get_dataset_metadata_S1_prt, producer_S1_prt)
 #
 #
 # simulation.run()
