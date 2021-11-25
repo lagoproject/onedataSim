@@ -31,7 +31,7 @@ def run_Popen(command, timeout=None):
     p.wait(timeout)
     res = ""
     if p.returncode != 0:
-        print("Return code: "+str(res)+'\n')
+        print("Return code: " + str(res) + '\n')
     else:
         res = p.communicate()[0]
     return res
