@@ -33,7 +33,7 @@ def _get_input_metadata(filecode):
 
     args = ['common_activity.json', 'dataset_corsika_input.json']
     s = mdUtils.get_metadata_for_dataset(args)
-    s = s.replace('FILENAME', 'DAT'+filecode+'.input')
+    s = s.replace('FILENAME', 'DAT' + filecode + '.input')
     # DCAT2 distribution:format & mediaType
     s = s.replace('FORMAT', 'TXT')
     s = s.replace('MEDIATYPE', 'text')
@@ -47,7 +47,7 @@ def _get_bin_output_metadata(filecode):
             'dataset_corsika_bin_output.json']
     s = mdUtils.get_metadata_for_dataset(args)
     runnr = filecode.split('-')[0]
-    s = s.replace('FILENAME', 'DAT'+runnr+'.bz2')
+    s = s.replace('FILENAME', 'DAT' + runnr + '.bz2')
     # DCAT2 distribution:format & mediaType
     s = s.replace('FORMAT', 'BIN')
     s = s.replace('MEDIATYPE', 'octet-stream')
@@ -59,7 +59,7 @@ def _get_lst_output_metadata(filecode):
     args = ['common_dataset_corsika_output.json',
             'dataset_corsika_lst_output.json']
     s = mdUtils.get_metadata_for_dataset(args)
-    s = s.replace('FILENAME', 'DAT'+filecode+'.lst.bz2')
+    s = s.replace('FILENAME', 'DAT' + filecode + '.lst.bz2')
     # DCAT2 distribution:format & mediaType
     s = s.replace('FORMAT', 'TXT')
     s = s.replace('MEDIATYPE', 'text')
