@@ -30,7 +30,7 @@ def xsd_dateTime():
     # xsd:dateTime
     # CCYY-MM-DDThh:mm:ss.sss[Z|(+|-)hh:mm]
     # The time zone may be specified as Z (UTC) or (+|-)hh:mm.
-    return str(datetime.datetime.utcnow()).replace(' ', 'T')+'Z'
+    return str(datetime.datetime.utcnow()).replace(' ', 'T') + 'Z'
 
 
 # j is adding j_new terms to existing keys or adding keys.
@@ -93,8 +93,8 @@ def get_metadata_for_dataset(args=[]):
 # warning: this returns json.loads
 def get_first_catalog_metadata_json(catcodename, arti_params_dict):
 
-    with open(template_path+'common_context.json', 'r') as file1:
-        with open(template_path+'common_catalog.json', 'r') as file2:
+    with open(template_path + 'common_context.json', 'r') as file1:
+        with open(template_path + 'common_catalog.json', 'r') as file2:
             j = json.loads(file1.read())
             j = add_json(j, json.loads(file2.read()))
             s = json.dumps(j)
@@ -105,7 +105,7 @@ def get_first_catalog_metadata_json(catcodename, arti_params_dict):
 def get_catalog_metadata_activity(startdate, enddate, catcodename,
                                   arti_params_dict):
 
-    with open(template_path+'common_activity.json', 'r') as file1:
+    with open(template_path + 'common_activity.json', 'r') as file1:
         j = json.loads(file1.read())
         s = json.dumps(j)
         s = s.replace('STARTDATE', startdate)
