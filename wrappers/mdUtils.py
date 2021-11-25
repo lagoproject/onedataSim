@@ -11,8 +11,9 @@ import os
 import json
 import datetime
 
-#own modules
+# own modules
 import osUtils
+
 
 def get_git_commit(repopath):
 
@@ -22,7 +23,7 @@ def get_git_commit(repopath):
         return str(lines[0])
     else:
         raise Exception("Git release of software not found")
-      
+
 
 def xsd_dateTime():
 
@@ -56,6 +57,7 @@ def add_json(j, j_new):
     # I change to list and call recursiveness
     return add_json([j], j_new)
 
+
 def replace_common_patterns(s, catcodename, arti_params_dict):
 
     s = s.replace('CATCODENAME', catcodename)
@@ -74,16 +76,18 @@ def replace_common_patterns(s, catcodename, arti_params_dict):
 
 template_path = os.path.dirname(os.path.abspath(__file__)) + '/json_tpl/'
 
+
 def get_metadata_for_dataset(args=[]):
     
-    common = ['common_context.json','common_dataset.json']
+    common = ['common_context.json', 'common_dataset.json']
     templates = common + args
     j={}
     for temp in templates:
         with open(template_path + temp, 'r') as file_aux:
             j = add_json(j, json.loads(file_aux.read()))
     s = json.dumps(j)
-    return s    
+    return s
+
 
 # warning: this returns json.loads
 def get_first_catalog_metadata_json(catcodename, arti_params_dict):
@@ -106,4 +110,3 @@ def get_catalog_metadata_activity(startdate, enddate, catcodename, arti_params_d
         s = s.replace('ENDDATE', enddate)
         s = replace_common_patterns(s, catcodename, arti_params_dict)
         return s
-
