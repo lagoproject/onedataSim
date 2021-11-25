@@ -61,8 +61,8 @@ def _get_lst_output_metadata(filecode):
     s = mdUtils.get_metadata_for_dataset(args)
     s = s.replace('FILENAME', 'DAT'+filecode+'.lst.bz2')
     # DCAT2 distribution:format & mediaType
-    s = s.replace('FORMAT', 'TXT')  
-    s = s.replace('MEDIATYPE', 'text') 
+    s = s.replace('FORMAT', 'TXT')
+    s = s.replace('MEDIATYPE', 'text')
     # falta comprimir si fuera necesario
     return s
 
@@ -116,7 +116,7 @@ def producerS0(catcodename, arti_params):
 
     # WARNING, I HAD TO PATCH rain.pl FOR AVOID SCREEN !!!!
     cmd = "sed 's/screen -d -m -a -S \$name \$script; screen -ls/\$script/' " + \
-       " rain.pl -i"
+          " rain.pl -i"
     osUtils.run_Popen(cmd)
 
     # WARNING, I HAD TO PATCH rain.pl FOR AVOID .long files !!!
