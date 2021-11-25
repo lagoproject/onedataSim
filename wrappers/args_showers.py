@@ -18,7 +18,7 @@ import os
 
 def _get_arti_params_json_md(arti_dict):
     dict_aux = {
-         "@id": "/"+arti_dict['p']+"#artiParams",
+         "@id": "/" + arti_dict['p'] + "#artiParams",
          "@type": "lago:ArtiParams",
          # "lago:detectorSite":
          # "https://github.com/lagoproject/DMP/blob/1.1/defs/sitesLago.jsonld#"+arti_dict['priv_site'], # OJO quizás no es necesario con el origen
@@ -28,13 +28,11 @@ def _get_arti_params_json_md(arti_dict):
          # "lago:obsLev": arti_dict['k'],
          "lago:typeFilterSec": arti_dict['s'],
          # "lago:fluxTime": arti_dict['t'],
-         "lago:binsPerDecade": arti_dict['m'],
-         }
+         "lago:binsPerDecade": arti_dict['m'] }
 
     # create JSON removing empty values
     j = {"@graph": [
-        {k: v for k, v in dict_aux.items() if v is not None}
-        ]}
+        {k: v for k, v in dict_aux.items() if v is not None} ] }
 
     return j
 
