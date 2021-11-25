@@ -220,7 +220,7 @@ class ARTIwrapper():
             t.start()
 
         q_aux = self._producer(catcodename, arti_params)
-        for i in q_aux.queue: 
+        for i in q_aux.queue:
             self._q.put(i)
 
         t = Thread(target=self._consumer_onedata_cp, args=(onedata_path,))
