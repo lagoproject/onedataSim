@@ -16,6 +16,7 @@ import argparse
 import os
 import sys
 
+
 # this script only runs in "/opt/lago-corsika-CORSIKA_VER/run" directory
 def _get_corsika_version():
     
@@ -107,10 +108,10 @@ def get_sys_args_S0():
     #  echo -e "  -s <site> : \
     #    Location (several options)"
     parser.add_argument('-s', dest='s', required=True,
-                        #choices=[ "QUIE","and","asu","ber","bga","brc","bue",
-                        #          "cha","chia","cpv","cuz","gua","kna","lim",
-                        #          "lpb","lsc","mapi","mge","pam","sac","sao",
-                        #          "sawb","serb","sng","tac","tuc","vcp" ],
+                        # choices=[ "QUIE","and","asu","ber","bga","brc","bue",
+                        #           "cha","chia","cpv","cuz","gua","kna","lim",
+                        #           "lpb","lsc","mapi","mge","pam","sac","sao",
+                        #           "sawb","serb","sng","tac","tuc","vcp" ],
                         help='Predefined LAGO site')
     #  echo -e "  -j <procs> : \
     #    Number of processors to use"
@@ -191,20 +192,18 @@ def get_sys_args_S0():
     # }
 
     args = parser.parse_args()
-
     args_dict = vars(args)
-    
-    
+
     # ---- customise parameters for ARTI and onedataSim ----
-    # 
-    # the most important is the "project name" that it is used 
+    #
+    # the most important is the "project name" that it is used
     # for onedataSim as "codename"
     #
     # the other are the version of external software used
     # and the working dir
-     
+
     # version of external software (Corsika version)
-    CORSIKA_VER = _get_corsika_version()    
+    CORSIKA_VER = _get_corsika_version()
     args_dict.update({'v': CORSIKA_VER})
 
     # project a.k.a codename
@@ -234,8 +233,8 @@ def get_sys_args_S0():
     args_dict.update({'p': codename})
 
     # working dir
-    
+
     args_dict.update({'w': '/opt/lago-corsika-'+CORSIKA_VER+'/run/'})
 
- 
+
     return (codename, args_dict, _get_arti_params_json_md(args_dict))
