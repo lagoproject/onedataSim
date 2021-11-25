@@ -144,9 +144,9 @@ class ARTIwrapper():
         s = ''
         for (key, value) in args_dict.items():
             if value is not None:
-                s += ' -'+key
+                s += ' -' + key
                 if value is not True:
-                    s += ' '+str(value)
+                    s += ' ' + str(value)
         return s
 
     def _add_private_info_to_dict(self, args_dict):
