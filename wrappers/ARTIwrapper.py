@@ -14,7 +14,7 @@
 import os
 import xattr
 import json
-import shutil
+# import shutil
 import time
 
 from threading import Thread
@@ -55,16 +55,16 @@ class ARTIwrapper():
                     # test if effectively copied to copy metadata
                     if os.path.exists(onedata_path + id):
                         xattr.setxattr(onedata_path + id, 'onedata_json', md)
-                        id_hidden = '/' + id.lstrip('/').replace('/','/.metadata/.')
+                        id_hidden = '/' + id.lstrip('/').replace('/', '/.metadata/.')
                         osUtils._write_file(onedata_path + id_hidden + '.jsonld', md)
                     else:
-                        print('CAUTION: '+ id +' is not in onedata, requeuing...' )
+                        print('CAUTION: ' + id + ' is not in onedata, requeuing...')
                         raise inst
                     # thus, I can remove local file
                     cmd = "rm -f ." + id
                     osUtils.run_Popen(cmd)
                 else:
-                    print('ERROR: '+ id +' was not calculated')
+                    print('ERROR: ' + id + ' was not calculated')
 
                 self._q_onedata.task_done()
 
@@ -116,13 +116,12 @@ class ARTIwrapper():
     # ---- END: queued operations through OneClient -----------
 
     # ---- producer/consumer of executions ---------
-    
+
     # Introduced as param in init()
     # function inputs: catcodename, arti_params
     #          output: Queue() with (filecode, task) elements
-    #def _producer(self, catcodename, arti_params):
-    #    pass
-
+    # def _producer(self, catcodename, arti_params):
+    #     pass
 
     def _consumer(self, catcodename, onedata_path, arti_params_dict):
         while True:
@@ -174,7 +173,7 @@ class ARTIwrapper():
 
 
     # ---- MAIN PROGRAM ---------
-    
+
     def run(self):
 
         main_start_date = mdUtils.xsd_dateTime()
@@ -203,13 +202,13 @@ class ARTIwrapper():
                     # osUtils.write_file(catalog_path + '/.metadata/.' + catcodename + '.jsonld',
                     #             json.dumps(md))
                     osUtils._write_file(catalog_path + '/.metadata/.' + catcodename + '.jsonld',
-                                json.dumps(md))
+                                        json.dumps(md))
                     xattr.setxattr(catalog_path, 'onedata_json', json.dumps(md))
-                else: 
+                else:
                     if not os.access(catalog_path, os.W_OK):
                         # It is needed managing this with some kind of versioning
                         # or completion of failed simulations
-                        raise Exception("Simulation blocked by other user in" + \
+                        raise Exception("Simulation blocked by other user in" +
                                         " OneData: " + catalog_path)
             else:
                 raise Exception("OneData not mounted")
@@ -239,10 +238,10 @@ class ARTIwrapper():
                          os.listdir(catalog_path) if not s.startswith('.')]
 
         md = mdUtils.add_json(md,json.loads(mdUtils.get_catalog_metadata_activity(main_start_date,
-                                                                    mdUtils.xsd_dateTime(),
-                                                                    catcodename,
-                                                                    arti_params_dict)))
+                                                                                  mdUtils.xsd_dateTime(),
+                                                                                  catcodename,
+                                                                                  arti_params_dict)))
 
-        osUtils._write_file(catalog_path + '/.metadata/.' + catcodename + \
+        osUtils._write_file(catalog_path + '/.metadata/.' + catcodename +
                             '.jsonld', json.dumps(md))
         xattr.setxattr(catalog_path, 'onedata_json', json.dumps(md))
