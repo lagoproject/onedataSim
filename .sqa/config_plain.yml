@@ -17,16 +17,14 @@ sqa_criteria:
           # "The error code of flake8 are E***, W*** used in pep8 and F*** and C9**"   
           #  Alternative: hacking is a flake8' plug-in, based on OpenStack Style Guidlines, 
           #               which are based on Google Python Style Guide.
-          #- flake8 /onedatasim-repo
-          - ls
+          - flake8 --max-line-length=162 /onedatasim-repo
   qc_security:
     repos:
       onedatasim:
         # preliminary check of security, only plain code without execution
         container: onedatasim-testing
         commands: 
-          #- bandit -r /onedatasim-repo
-          - ls
+          - bandit -r /onedatasim-repo -x tests -s B404,B602,B603
 #  qc_doc:
 #    repos:
 #      onedatasim:
