@@ -168,9 +168,12 @@ def producer_S1_pri_sec(catcodename, arti_params):
         for z in file1.readlines():
             if z != "":
                 # YOU OBTAIN SOMETHING SIMILAR TO:
-                # "bzip2 -d -k $i; echo $j | ${arti_path}/analysis/lagocrkread | ${arti_path}/analysis/analysis -p ${u}; rm ${j}"
+                # "bzip2 -d -k $i; echo $j | ${arti_path}/analysis/lagocrkread | \
+                #      ${arti_path}/analysis/analysis -p ${u}; rm ${j}"
                 # else if .run is generated:
-                # "cd $wdir; while ! cp -a $i ./; do sleep 5; done; bzip2 -d $j.bz2; echo $j | ${arti_path}/analysis/lagocrkread | ${arti_path}/analysis/analysis -p ${u}; rm ${j}; cd .."
+                # "cd $wdir; while ! cp -a $i ./; do sleep 5; done; bzip2 -d $j.bz2; echo $j | \
+                #               ${arti_path}/analysis/lagocrkread | \
+                #               ${arti_path}/analysis/analysis -p ${u}; rm ${j}; cd .."
                 print(z)
                 filecode = z.split("echo DAT")[1].split(" ")[0]
                 task = z
