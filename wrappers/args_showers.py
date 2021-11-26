@@ -28,11 +28,13 @@ def _get_arti_params_json_md(arti_dict):
          # "lago:obsLev": arti_dict['k'],
          "lago:typeFilterSec": arti_dict['s'],
          # "lago:fluxTime": arti_dict['t'],
-         "lago:binsPerDecade": arti_dict['m'] }
+         "lago:binsPerDecade": arti_dict['m']
+    }
 
     # create JSON removing empty values
     j = {"@graph": [
-        {k: v for k, v in dict_aux.items() if v is not None} ] }
+        {k: v for k, v in dict_aux.items() if v is not None}
+    ]}
 
     return j
 
