@@ -24,7 +24,7 @@ sqa_criteria:
         # preliminary check of security, only plain code without execution
         container: onedatasim-testing
         commands: 
-          - bandit -r /onedatasim-repo -x tests -s B404,B602,B603
+          - bandit -r /onedatasim-repo -x tests -s B110,B404,B602,B603
 #  qc_doc:
 #    repos:
 #      onedatasim:
