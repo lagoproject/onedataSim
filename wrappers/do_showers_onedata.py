@@ -222,7 +222,7 @@ def producer_S1_prt(catcodename, arti_params):
                 #                      } \
                 #                END{printf("# # # prt\n"); \
                 #             printf("# # Primary energy histogram for %06d using %d bins per decade\n", id, bins); \
-                #             printf("# # Three column format is:\n# # energy_bin total_per_bin fraction_per_bin\n"); \ 
+                #             printf("# # Three column format is:\n# # energy_bin total_per_bin fraction_per_bin\n"); \
                 #             for (i in t) {print 10**(i/bins), t[i], t[i]*1./n; frc+=t[i]*1./n;} \
                 #             printf("# # Total primaries: %ld (%.2f) Emin=%.2f GeV; Emax=%.2f GeV\n", n, frc, 10**mine, 10**maxe);}' > "00${i}.prt ; \
                 #  rm ??${i}.pri.bz2; cd .."
