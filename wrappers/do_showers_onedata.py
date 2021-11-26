@@ -213,8 +213,18 @@ def producer_S1_prt(catcodename, arti_params):
                 # YOU OBTAIN SOMETHING SIMILAR TO:
                 # "primaries.sh -w ${wdir} -r ${arti_path} -m ${prims}"
                 # else if pri.run is generated, per element ${i}:
-                # "cd $wdir; while ! cp -a ??$i ./; do sleep 5; done; \\
-                #  bzcat ??${i}.pri.bz2 | grep -v "#" | awk '{print log($2)/log(10.)}' | sort -g |	awk -v bins=${prims} -v id=${i} 'BEGIN{n=0; mine=100000; maxe=-100000; bins = bins * 1.}{t[int($1*bins)]++; n++; if ($1 < mine) mine=$1; if ($1 > maxe) maxe=$1;}END{printf("# # # prt\n");printf("# # Primary energy histogram for %06d using %d bins per decade\n", id, bins);printf("# # Three column format is:\n# # energy_bin total_per_bin fraction_per_bin\n"); for (i in t) {print 10**(i/bins), t[i], t[i]*1./n; frc+=t[i]*1./n;} printf("# # Total primaries: %ld (%.2f) Emin=%.2f GeV; Emax=%.2f GeV\n", n, frc, 10**mine, 10**maxe);}' > "00${i}.prt ; \\
+                # "cd $wdir; while ! cp -a ??$i ./; do sleep 5; done; \
+                #  bzcat ??${i}.pri.bz2 | grep -v "#" | awk '{print log($2)/log(10.)}' | sort -g |	\
+                #            awk -v bins=${prims} -v id=${i} 'BEGIN{n=0; mine=100000; maxe=-100000; bins = bins * 1.}{ \
+                #                      t[int($1*bins)]++; n++; \
+                #                      if ($1 < mine) mine=$1; \
+                #                      if ($1 > maxe) maxe=$1; \
+                #                      } \
+                #                END{printf("# # # prt\n"); \
+                #             printf("# # Primary energy histogram for %06d using %d bins per decade\n", id, bins); \
+                #             printf("# # Three column format is:\n# # energy_bin total_per_bin fraction_per_bin\n"); \ 
+                #             for (i in t) {print 10**(i/bins), t[i], t[i]*1./n; frc+=t[i]*1./n;} \
+                #             printf("# # Total primaries: %ld (%.2f) Emin=%.2f GeV; Emax=%.2f GeV\n", n, frc, 10**mine, 10**maxe);}' > "00${i}.prt ; \
                 #  rm ??${i}.pri.bz2; cd .."
 
                 print(z)
