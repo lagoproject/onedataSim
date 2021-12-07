@@ -1,4 +1,4 @@
-@Library(['github.com/indigo-dc/jenkins-pipeline-library@release/2.1.0']) _
+@Library(['github.com/indigo-dc/jenkins-pipeline-library@release/2.1.1']) _
 
 def projectConfigPlain
 def projectConfigS0
@@ -13,7 +13,10 @@ pipeline {
                 catchError {
                     script {
                         projectConfigPlain = pipelineConfig(
-                            configFile: '.sqa/config_plain.yml')
+                            configFile: '.sqa/config_plain.yml',
+                            scmConfigs: [ localBranch: true ],
+                            validatorDockerImage: 'eoscsynergy/jpl-validator:1.2.0'
+                        )
                         buildStages(projectConfigPlain)
                     }
                 }
