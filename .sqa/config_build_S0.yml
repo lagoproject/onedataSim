@@ -1,9 +1,9 @@
 config:
   deploy_template: '.sqa/docker-compose-build-S0.yml'
-  #project_repos:
-  #  onedatasim:
-  #    repo: 'https://github.com/EOSC-synergy/onedataSim'
-  #    branch: 'dev'
+  project_repos:
+    onedatasim:
+      repo: 'https://github.com/EOSC-synergy/onedataSim'
+      branch: 'dev'
   credentials:
     # not necessary with pre-uploaded docker-images with corsika
     #- id: onedata-token-build-ajrm
