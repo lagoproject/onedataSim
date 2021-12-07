@@ -12,7 +12,10 @@ pipeline {
             steps {
                 catchError {
                     script {
-                        projectConfigPlain = pipelineConfig(configFile: '.sqa/config_plain.yml')
+                        projectConfigPlain = pipelineConfig(
+                            configFile: '.sqa/config_plain.yml',
+                            scmConfigs: [ localBranch: true ]
+                        )
                         buildStages(projectConfigPlain)
                     }
                 }
