@@ -14,7 +14,7 @@ services:
     image: "lagocollaboration/onedatasim-s1:dev"
     command: sleep 900
   fair_eva:
-    image: ferag/fair_eva:fair
+    image: ferag/fair_eva:latest
     volumes:
     - source: ./
       target: /sqaaas-build
