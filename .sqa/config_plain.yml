@@ -1,9 +1,9 @@
 config:
   deploy_template: '.sqa/docker-compose-plain.yml'
-  project_repos:
-    onedatasim:
-      repo: 'https://github.com/EOSC-synergy/onedataSim'
-      #branch: 'dev'
+  #project_repos:
+  #  onedatasim:
+  #    repo: 'https://github.com/EOSC-synergy/onedataSim'
+  #    branch: 'dev'
       #branch: ${GIT_LOCAL_BRANCH##*/} # I'd like to be a variable i.e GIT_BRANCH
       #branch: ${GIT_LOCAL_BRANCH}
       #branch: ${GIT_BRANCH##origin/}
