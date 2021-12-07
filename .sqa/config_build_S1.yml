@@ -1,9 +1,9 @@
 config:
   deploy_template: '.sqa/docker-compose-build-S1.yml'
-  project_repos:
-    onedatasim:
-      repo: 'https://github.com/EOSC-synergy/onedataSim'
-      branch: 'dev'
+  #project_repos:
+  #  onedatasim:
+  #    repo: 'https://github.com/EOSC-synergy/onedataSim'
+  #    branch: 'dev'
   credentials:
     # not necessary with docker-images
     #- id: onedata-token-build-ajrm
