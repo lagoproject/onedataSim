@@ -3,14 +3,15 @@ config:
   project_repos:
     onedatasim:
       repo: 'https://github.com/EOSC-synergy/onedataSim'
-      branch: main
+      #branch: main
       #branch: 'dev'
       #branch: ${GIT_LOCAL_BRANCH##*/} # I'd like to be a variable i.e GIT_BRANCH
       #branch: ${GIT_LOCAL_BRANCH}
       #branch: ${GIT_BRANCH##origin/}
       #branch: ${GIT_BRANCH}
 sqa_criteria:
-  qc_style:
+  #qc_style:
+  QC.Sty
     repos:
       onedatasim:
         container: onedatasim-testing
@@ -20,7 +21,8 @@ sqa_criteria:
           #  Alternative: hacking is a flake8' plug-in, based on OpenStack Style Guidlines, 
           #               which are based on Google Python Style Guide.
           - flake8 --max-line-length=162 /onedatasim-repo
-  qc_security:
+  #qc_security:
+  QC.Sec
     repos:
       onedatasim:
         # preliminary check of security, only plain code without execution
