@@ -13,9 +13,7 @@ pipeline {
                 catchError {
                     script {
                         projectConfigPlain = pipelineConfig(
-                            configFile: '.sqa/config_plain.yml',
-                            scmConfigs: [ localBranch: true ]
-                        )
+                            configFile: '.sqa/config_plain.yml')
                         buildStages(projectConfigPlain)
                     }
                 }
@@ -35,9 +33,7 @@ pipeline {
             steps {
                 script {
                     projectConfigS0 = pipelineConfig(
-                        configFile: '.sqa/config_build_S0.yml',
-                        scmConfigs: [ localBranch: true ]
-                    )
+                        configFile: '.sqa/config_build_S0.yml')
                     buildStages(projectConfigS0)
                 }
             }
@@ -56,9 +52,7 @@ pipeline {
             steps {
                 script {
                     projectConfigS1 = pipelineConfig(
-                        configFile: '.sqa/config_build_S1.yml',
-                        scmConfigs: [ localBranch: true ]
-                    )
+                        configFile: '.sqa/config_build_S1.yml')
                     buildStages(projectConfigS1)
                 }
             }
