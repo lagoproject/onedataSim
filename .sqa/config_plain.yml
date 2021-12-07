@@ -13,7 +13,8 @@ sqa_criteria:
   #qc_style:
   QC.Sty
     repos:
-      onedatasim:
+      #onedatasim:
+      this_repo:
         container: onedatasim-testing
         commands:
           # "Flake 8 is the wrapper which verifies pep8, pyflakes and circular complexity"
@@ -24,7 +25,8 @@ sqa_criteria:
   #qc_security:
   QC.Sec
     repos:
-      onedatasim:
+      #onedatasim:
+      this_repo:
         # preliminary check of security, only plain code without execution
         container: onedatasim-testing
         commands: 
