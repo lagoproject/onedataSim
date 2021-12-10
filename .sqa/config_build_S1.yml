@@ -74,10 +74,10 @@ sqa_criteria:
         # http://datahub.egi.eu/oai_pmh?verb=GetRecord&metadataPrefix=oai_dc&identifier=oai:datahub.egi.eu:f11ab6c1168399bc6f062d043c3c97f6ch693a
         # which handle is http://hdl.handle.net/21.12145/V6CkywE
         commands:
-        - apt-get install -y curl && curl -H ''Content-Type: application/json'' 
+        - 'apt-get install -y curl' && 'curl -H ''Content-Type: application/json'' 
           -X POST -d  ''{"id": "f11ab6c1168399bc6f062d043c3c97f6ch693a",
           "repo": "oai-pmh", "oai_base": "http://datahub.egi.eu/oai_pmh"}''
-          http://localhost:9090/v1.0/rda/rda_all
+          http://localhost:9090/v1.0/rda/rda_all'
       FAIR_UJI:
         container: fair_uji
         commands:
