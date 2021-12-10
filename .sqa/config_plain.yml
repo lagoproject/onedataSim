@@ -1,20 +1,18 @@
 config:
   deploy_template: '.sqa/docker-compose-plain.yml'
-  #project_repos:
-  #  onedatasim:
-  #    repo: 'https://github.com/EOSC-synergy/onedataSim'
+  project_repos:
+    onedatasim:
+      repo: 'https://github.com/EOSC-synergy/onedataSim'
+      branch: 'dev'
       #branch: main
-      #branch: 'dev'
       #branch: ${GIT_LOCAL_BRANCH##*/} # I'd like to be a variable i.e GIT_BRANCH
       #branch: ${GIT_LOCAL_BRANCH}
       #branch: ${GIT_BRANCH##origin/}
       #branch: ${GIT_BRANCH}
 sqa_criteria:
-  #qc_style:
-  QC.Sty
+  qc_style:
     repos:
-      #onedatasim:
-      this_repo:
+      onedatasim:
         container: onedatasim-testing
         commands:
           # "Flake 8 is the wrapper which verifies pep8, pyflakes and circular complexity"
@@ -22,11 +20,9 @@ sqa_criteria:
           #  Alternative: hacking is a flake8' plug-in, based on OpenStack Style Guidlines, 
           #               which are based on Google Python Style Guide.
           - flake8 --max-line-length=162 /onedatasim-repo
-  #qc_security:
-  QC.Sec
+  qc_security:
     repos:
-      #onedatasim:
-      this_repo:
+      onedatasim:
         # preliminary check of security, only plain code without execution
         container: onedatasim-testing
         commands: 
