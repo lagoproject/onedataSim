@@ -21,6 +21,7 @@ services:
       type: bind
     working_dir: /sqaaas-build
     #command:  apt-get install -y curl && /FAIR_eva/fair.py && /FAIR_eva/web.py
+    command: /FAIR_eva/start.sh
   fair_uji:
     image: steinsteiny/fuji:fair
     volumes:
