@@ -13,10 +13,7 @@ pipeline {
                 catchError {
                     script {
                         projectConfigPlain = pipelineConfig(
-                            configFile: '.sqa/config_plain.yml',
-                            scmConfigs: [ localBranch: true ],
-                            validatorDockerImage: 'eoscsynergy/jpl-validator:1.2.0'
-                        )
+                            configFile: '.sqa/config_plain.yml')
                         buildStages(projectConfigPlain)
                     }
                 }
