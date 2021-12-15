@@ -9,6 +9,7 @@ pipeline {
     agent {
         dockerfile {
             additionalBuildArgs "--no-cache"
+        }
     }
 
     stages {
