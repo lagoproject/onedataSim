@@ -134,9 +134,9 @@ def get_sys_args_S0():
     # added by HA - Now -a option expect the ecut value in GeV. 04/OCT/2021
     # parser.add_argument('-a', action='store_true', default=None,
     #                    help='Enable high energy cuts for secondaries')
-    parser.add_argument('-a', dest='a', type=float, default=0.0,
+    parser.add_argument('-a', dest='a', type=float, 
                         help='Enable and set high energy cuts for secondaries, \
-                        0 = disabled; value in GeV = enabled')
+                        value in GeV = enabled')
     #  echo -e "  -k <altitude, in cm> : \
     #    Fix altitude, even for predefined sites"
     parser.add_argument('-k', dest='k', type=float,
@@ -150,9 +150,8 @@ def get_sys_args_S0():
                         module')
     #  echo -e "  -b <rigidity cutoff> : \
     #    Rigidity cutoff; 0 = disabled; value in GV = enabled"
-    parser.add_argument('-b', dest='b', default=0.0,
-                        help='Rigidity cutoff; 0 = disabled; value in GV = \
-                        enabled')
+    parser.add_argument('-b', dest='b',
+                        help='Rigidity cutoff; value in GV = enabled')
     #  echo -e "  -m <Low edge zenith angle> : \
     #    Low edge of zenith angle (THETAP) [deg]"
     parser.add_argument('-m', dest='m', type=float,
