@@ -5,7 +5,11 @@ def projectConfigS0
 def projectConfigS1
 
 pipeline {
-    agent any
+
+    agent {
+        dockerfile {
+            additionalBuildArgs "--no-cache"
+    }
 
     stages {
         stage('SQA : plain code checks') {
