@@ -6,12 +6,8 @@ def projectConfigS1
 
 pipeline {
 
-    agent {
-        dockerfile {
-            additionalBuildArgs "--no-cache"
-        }
-    }
-
+    agent any
+    
     stages {
         stage('SQA : plain code checks') {
             steps {
