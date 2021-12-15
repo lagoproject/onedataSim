@@ -10,7 +10,7 @@ services:
         # ONECLIENT_ACCESS_TOKEN_TO_BUILD: ${TOKEN_BUILD}
         # ONECLIENT_PROVIDER_HOST_TO_BUILD: "https://mon01-tic.ciemat.es"
         # but need a docker image, passed through argument (not by image param)
-        BASE_OS : "lagocollaboration/lago-corsika:77402-dev"
+        BASE_OS : "lagocollaboration/lago-corsika:77402"
         ONEDATASIM_BRANCH : "dev"
         ARTI_BRANCH : "dev"
     # image, post-build is where it is stored
