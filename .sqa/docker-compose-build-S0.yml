@@ -14,5 +14,5 @@ services:
         ONEDATASIM_BRANCH : "dev"
         ARTI_BRANCH : "dev"
     # image, post-build is where it is stored
-    image: "lagocollaboration/onedatasim-s0:dev"
+    image: "lagocollaboration/onedatasim-s0:latest"
     command: sleep 900
