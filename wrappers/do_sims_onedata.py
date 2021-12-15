@@ -122,11 +122,11 @@ def producerS0(catcodename, arti_params):
     old_j = int(params_aux[:params_aux.find("-")])
 
     aux_j = int(int(flux_time)/900)
-    if aux_j == 0: 
+    if aux_j == 0:
         aux_j = 1
     if aux_j > 12:
         aux_j = 12
-    arti_params = arti_params[:arti_params.find("-j")] + "-j " + str(aux_j) +" " + params_aux[params_aux.find("-"):]
+    arti_params = arti_params[:arti_params.find("-j")] + "-j " + str(aux_j) + " " + params_aux[params_aux.find("-"):]
 
     print("PATCH: change -j : " + str(old_j) + " by :" + str(aux_j) + " to generate tasks")
 
