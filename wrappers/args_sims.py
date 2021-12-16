@@ -222,7 +222,7 @@ def get_sys_args_S0():
     if args_dict['e'] is True:
         codename += '_Cherenk'
 
-    if args_dict['a'] is True:
+    if args_dict['a'] is not None:
         codename += '_HEcuts' + str(args_dict['a'])
 
     if args_dict['x'] is True:
