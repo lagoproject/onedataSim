@@ -115,7 +115,7 @@ sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
 
 ```sh
 export TOKEN="MDAxY...LAo"
-export ONEPROVIDER="mon01-tic.ciemat.es"
+export ONEPROVIDER="ceta-ciemat-01.datahub.egi.eu"
 ```
 
 2. Showing parameters:
@@ -123,7 +123,7 @@ export ONEPROVIDER="mon01-tic.ciemat.es"
 ```sh
 sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
                 -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \
-                -it onedatasim-s0:dev  bash -lc "do_sims_onedata.py -?"
+                -it lagocollaboration/onedatasim-s0:dev  bash -lc "do_sims_onedata.py -?"
 ```
 
 3. Simple simulation example:
@@ -131,7 +131,7 @@ sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
 ```sh
 sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
                 -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \
-                -it onedatasim-s0:dev  bash -lc "do_sims_onedata.py -t 10 -u 0000-0001-6497-753X -s and -k 2.0e2 -h QGSII -x"
+                -it lagocollaboration/onedatasim-s0:dev  bash -lc "do_sims_onedata.py -t 10 -u 0000-0001-6497-753X -s and -k 2.0e2 -h QGSII -x"
 ```
 
 3. Executing on a multi-processor server
@@ -150,7 +150,7 @@ sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
 
 ```sh
 export TOKEN="MDAxY...LAo"
-export ONEPROVIDER="mon01-tic.ciemat.es"
+export ONEPROVIDER="ceta-ciemat-01.datahub.egi.eu"
 ```
 
 2. Showing parameters:
@@ -158,7 +158,7 @@ export ONEPROVIDER="mon01-tic.ciemat.es"
 ```sh
 sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
                 -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \
-                -it onedatasim-s0:dev  bash -lc "do_showers_onedata.py -?"
+                -it lagocollaboration/onedatasim-s1:dev  bash -lc "do_showers_onedata.py -?"
 ```
 
 
@@ -200,7 +200,7 @@ sudo docker rm $(docker ps -aq)
 sudo docker load -i -o  /home/cloudadm/onedatasim-s0.tar
 sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
                 -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \ 
-                -it <container name> bash -lc "do_*_onedata.py <ARTI do_* params>"
+                -it onedatasim-s0:dev bash -lc "do_*_onedata.py <ARTI do_* params>"
 ```
 
 
@@ -229,7 +229,7 @@ Then, you can launch simulations through ``sbatch``. The environment varialbles 
 
 ```sh
 export TOKEN="MDAxY...LAo"
-export ONEPROVIDER="mon01-tic.ciemat.es"
+export ONEPROVIDER="ceta-ciemat-01.datahub.egi.eu"
 cd /home/cloudadm
 sbatch simulation.sbatch
 ```
@@ -351,8 +351,23 @@ drwxr-xr-x 1 1034995 638198 0 Sep 13 16:17 S0_sac_60_200.0_75600_QGSII_flat
 ...
 ```
 
+### Storing data on testing spaces based on OneData:
+  
+You can use testing spaces such as ``test8`` to store testing runs during development. For this purpose you shoud set corretly the OneData provider and use the the ``--onedata_path`` parameter to select the correct. 
+  
+For ``test8``, you should choose ceta-ciemat-**02**.datahub.egi.eu and any directory <dir> under ``--onedata_path /mnt/datahub.egi.eu/test8/<dir>``:  
+  
+```sh
+export TOKEN="MDAxY...LAo"
+export ONEPROVIDER="ceta-ciemat-02.datahub.egi.eu"  
+  
+[pepe@mypc tmp]# sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN="$TOKEN" \
+            -e ONECLIENT_PROVIDER_HOST="$ONEPROVIDER" \
+            -it lagocollaboration/onedatasim-s0:dev bash
+  
+[root@9db2578a3e28 run]# do_sims_onedata.py -t 13 -u 0000-0001-6497-753X -s and -k 2.0e2 -h QGSII -x --onedata_path /mnt/datahub.egi.eu/test8/LAGOSIM_test_20220210 -j 4 
 
-
+```
 ## Acknowledgment 
 
 This work is financed by [EOSC-Synergy](https://www.eosc-synergy.eu/) project (EU H2020 RI Grant No 857647), but it is also currently supported by human and computational resources under the [EOSC](https://www.eosc-portal.eu/) umbrella (specially [EGI](https://www.egi.eu), [GEANT](https://geant.org) ) and the [members](http://lagoproject.net/collab.html) of the LAGO Collaboration.
