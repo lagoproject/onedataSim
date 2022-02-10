@@ -177,7 +177,7 @@ class ARTIwrapper():
         main_start_date = mdUtils.xsd_dateTime()
         (catcodename, arti_params_dict, arti_params_json_md) = self._get_sys_args()
         onedata_path = arti_params_dict.pop('onedata_path', None)
-        #default storage in production
+        # default storage in production
         if onedata_path is None:
             onedata_path = '/mnt/datahub.egi.eu/LAGOsim'
         # onedata_path = '/mnt/datahub.egi.eu/test8/LAGOSIM'
