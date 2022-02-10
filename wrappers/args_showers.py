@@ -67,7 +67,7 @@ def get_sys_args_S1():
     parser.add_argument('-m', dest='m', required=True, type=int,
                         help='Produce files with the energy distribution of the primary flux per nuclei.')
     parser.add_argument('-j', dest='j', type=int, default=1,
-                        help='Number of processors to use.') 
+                        help='Number of processors to use.')
     # parser.add_argument('-l', dest='l',
     #                     help='Execute locally. (If not, only produces .run files for posterior batch processing).')
     parser.add_argument('-?', action='help', help='Shows this help and exit.')
