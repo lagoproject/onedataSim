@@ -155,7 +155,7 @@ def producer_S1_pri_sec(catcodename, arti_params):
         i = param_list.index('-u')
         param_list.pop(i)  # -u
         param_list.pop(i)  # the user
-        i = param_list.index('-j') # -j
+        i = param_list.index('-j')  # -j
         if i > -1:
             param_list.pop(i+1)  # <procs>
         arti_params = ' '.join(param_list)
