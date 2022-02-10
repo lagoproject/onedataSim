@@ -75,8 +75,8 @@ onedataSim, ARTI and required software (CORSIKA, GEANT4, ROOT) are built, tested
 
 Depending on the type of data that you want generate and/or processs (i.e. [S0, S1, S2](https://lagoproject.github.io/DMP/DMP/#types-and-formats-of-generatedcollected-data)), you should pull different image, because their size.
 
-- **``onedatasim-s0``** is mainly for generate S0 datasets (simulations with ``do_sims_onedata.py``), but also allows S1 analysis. Therefore it includes the modified CORSIKA for LAGO, which it results in a heavy image (~700 MB).  
-- **``onedatasim-s1``** is only for generate S1 datasets (analysis with ``do_showers_onedata.py``), but the image is very small (~XXXMB).  
+- **``onedatasim-s0``** is mainly for generate S0 datasets (simulations with ``do_sims_onedata.py``), but also allows S1 analysis. Therefore it includes the modified CORSIKA for LAGO, which it results in a heavy image (~911.7 MB).  
+- **``onedatasim-s1``** is only for generate S1 datasets (analysis with ``do_showers_onedata.py``), but the image is smaller (currently, ~473.29 MB).  
 - ( Future: ``onedatasim-s2`` will be mainly for generate S2 datasets (detector response). It will include GEANt4/ROOT, and consequently, heaviest (~ 1GB)).  
 
 
