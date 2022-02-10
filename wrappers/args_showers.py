@@ -76,9 +76,9 @@ def get_sys_args_S1():
     parser.add_argument('-u', dest='u', required=True,
                         help='ORCID code describing user, plain usernames are \
                         no allowed for publication.')
-    
+
     parser.add_argument('--onedata_path', dest='onedata_path',
-                        help='Changing storage path only for testing purposes.')
+                        help='Changing storage path, only for testing purposes.')
 
     args = parser.parse_args()
 
