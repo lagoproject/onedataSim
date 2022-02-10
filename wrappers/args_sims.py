@@ -186,6 +186,11 @@ def get_sys_args_S0():
     #  echo
     # }
 
+    #added, not equiv in do_showers:
+
+    parser.add_argument('--onedata_path', dest='onedata_path',
+                        help='Changing storage path, only for testing purposes.')
+
     args = parser.parse_args()
 
     args_dict = vars(args)
