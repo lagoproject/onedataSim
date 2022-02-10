@@ -353,9 +353,9 @@ drwxr-xr-x 1 1034995 638198 0 Sep 13 16:17 S0_sac_60_200.0_75600_QGSII_flat
 
 ### Storing data on testing spaces based on OneData:
   
-You can use testing spaces such as ``test8`` to store testing runs during development. For this purpose you shoud set corretly the OneData provider and use the the ``--onedata_path`` parameter to select the correct. 
+You can use testing spaces such as ``test8`` to store testing runs during development. For this purpose you should the suitable OneData provider and use the the ``--onedata_path`` parameter to select the correct path. 
   
-For ``test8``, you should choose ceta-ciemat-**02**.datahub.egi.eu and any directory <dir> under ``--onedata_path /mnt/datahub.egi.eu/test8/<dir>``:  
+For ``test8``, you should choose ceta-ciemat-**02**.datahub.egi.eu and any directory <dir> under the ``--onedata_path /mnt/datahub.egi.eu/test8/<dir>`` path:  
   
 ```sh
 export TOKEN="MDAxY...LAo"
