@@ -1,9 +1,10 @@
 # LAGO onedataSim : packed tools for [ARTI](https://github.com/lagoproject/arti) simulation and analisys on [OneData](https://github.com/onedata)
 
-dev branch: [![Build Status](https://jenkins.eosc-synergy.eu/buildStatus/icon?job=eosc-synergy-org%2FonedataSim%2Fdev)](https://jenkins.eosc-synergy.eu/job/eosc-synergy-org/job/onedataSim/job/dev/)
+Plain tests in dev branch: [![Build Status](https://jenkins.eosc-synergy.eu/buildStatus/icon?job=eosc-synergy-org%2FonedataSim%2Fdev)](https://jenkins.eosc-synergy.eu/job/eosc-synergy-org/job/onedataSim/job/dev/)
 
-master branch: [![Build Status](https://jenkins.eosc-synergy.eu/buildStatus/icon?job=eosc-synergy-org%2FonedataSim%2Fmaster)](https://jenkins.eosc-synergy.eu/job/eosc-synergy-org/job/onedataSim/job/master/)
+Build tests for building onedatasim-s0 image: [![Build Status](https://jenkins.eosc-synergy.eu/buildStatus/icon?job=eosc-synergy-org%2FonedataSim%2Fbuild-S0)](https://jenkins.eosc-synergy.eu/job/eosc-synergy-org/job/onedataSim/job/build-S0/)
 
+Build tests for building onedatasim-s1 image: [![Build Status](https://jenkins.eosc-synergy.eu/buildStatus/icon?job=eosc-synergy-org%2FonedataSim%2Fbuild-S1)](https://jenkins.eosc-synergy.eu/job/eosc-synergy-org/job/onedataSim/job/build-S1/)
 
 
 ## Description
@@ -108,7 +109,7 @@ sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
                 -it <container name> bash -lc "do_*_onedata.py <ARTI do_* params>"
 ```
 
-### Running simulations (S0)
+### Running simulations (generating S0 data)
 
 1. Export credentials
 
@@ -125,7 +126,7 @@ sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
                 -it onedatasim-s0:dev  bash -lc "do_sims_onedata.py -?"
 ```
 
-. Simple simulation example:
+3. Simple simulation example:
 
 ```sh
 sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
@@ -143,9 +144,7 @@ sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
                 -it <container name> bash -lc "do_sims_onedata.py <other ARTI do_* params> -j <procs>"
 ```
 
-### Analysing S0 datasets
-
-
+### Analysing S0 datasets (generating S1 data)
 
 1. Export credentials
 
@@ -245,7 +244,7 @@ A simulation.sbatch file for testing functionality can be one that will write th
 date
 hostname
 sudo apt-get -y update
-sudo apt-get install -y  docker.io
+sudo apt-get install -y docker.io
 sudo docker stop $(docker ps -aq)
 sudo docker rm $(docker ps -aq)
 sudo docker load -i -o  /home/cloudadm/onedatasim-s0.tar
@@ -258,49 +257,38 @@ sudo docker run --privileged -e ONECLIENT_ACCESS_TOKEN=$TOKEN -e ONECLIENT_PROVI
 
 ### Building the onedataSim container
 
-To build the container is needed had a OneData token and to indicate any provider enroled as LAGO repository. This is so because ARTI currently calls [CORSIKA 7](https://www.ikp.kit.edu/corsika/79.php), which is licensed only for internal use of LAGO collaborators. As this software is stored at LAGO repository with closed permisions, its download requires to previously check if the user belongs to LAGO Virtual Organisation. 
+Every container has different requrirements. To build the ``onedatasim-s0`` container is needed to provide as parameter an official ``lago-corsika`` image as base installation. This is so because ARTI simulations currently call [CORSIKA 7](https://www.ikp.kit.edu/corsika/79.php), which source code is licensed only for the internal use of LAGO collaborators. On the other hand, ``onedatasim-s2`` requires GEANT4/Root, and other official images must be used. 
 
-#### Building from **master** branch
+On the other hand, other parameters allow choosing ARTI and onedataSim branches, which is fundamental for developing.  
 
-If you have the newer releases of *git* installed in your machine, you can build the container with one command:  
+#### Example: building images from default branches (currently "dev"):
 
+You must indicate the BASE_OS parameter if you want creating S0 or S2 images:  
+  
 ```sh
-sudo docker build --no-cache --build-arg ONECLIENT_ACCESS_TOKEN_TO_BUILD="<personal OneData token>" \ 
-                  --build-arg ONECLIENT_PROVIDER_HOST_TO_BUILD="<nearest OneData provider>" \
-                  -t  <container name> https://github.com/lagoproject/onedataSim.git
+sudo docker build --build-arg BASE_OS="lagocollaboration/lago-corsika:77402" \
+                  -t onedatasim-s1:local-test https://github.com/lagoproject/onedatasim.git
 ```
-
-If not, you should download first the Dockerfile
-
 ```sh
-wget https://raw.githubusercontent.com/lagoproject/onedataSim/master/Dockerfile
-sudo docker build --no-cache --build-arg ONECLIENT_ACCESS_TOKEN_TO_BUILD="<personal OneData token>" \ 
-                  --build-arg ONECLIENT_PROVIDER_HOST_TO_BUILD="<nearest OneData provider>" \
-                  -t  <container name> - < ./Dockerfile
+sudo docker build -t onedatasim-s1:local-test https://github.com/lagoproject/onedatasim.git
 ```
-
-As an example:
-
 ```sh
-sudo docker build --no-cache --build-arg ONECLIENT_ACCESS_TOKEN_TO_BUILD="MDAxY2xv...iXm8jowGgo" \
-                  --build-arg ONECLIENT_PROVIDER_HOST_TO_BUILD="https://mon01-tic.ciemat.es" \
-                  -t lagocontainer:0.0.1  https://github.com/lagoproject/onedataSim.git
-```
+sudo docker build --build-arg BASE_OS="lagocollaboration/geant4:TBD" \
+                  -t onedatasim-s2:local-test https://github.com/lagoproject/onedatasim.git
+```  
+  
+#### Example: building ``onedatasim-s0`` from featured branches:
 
-#### Building from **develop** branch
-
-You can also create a container with the developing release (unstable) of onedataSim software. For this task,
-you must add ``--build-arg ONEDATASIM_BRANCH="develop"`` as argument and to append ``#develop`` at the end of 
-the repository link. For example:
-
+If you have the newer releases of *git* installed in your machine, you can build the container with one command. Note that afther the *.git* link, there hare an '#' followed of again the ONEDATASIM_BRANCH name.  
+  
 ```sh
-sudo docker build --no-cache --build-arg ONEDATASIM_BRANCH="develop" \
-                  --build-arg ONECLIENT_ACCESS_TOKEN_TO_BUILD="MDV...o" \ 
-                  --build-arg ONECLIENT_PROVIDER_HOST_TO_BUILD="https://mon01-tic.ciemat.es" \ 
-                  -t lagocontainer:0.0.1  https://github.com/lagoproject/onedataSim.git#develop
+sudo docker build --build-arg ONEDATASIM_BRANCH="dev-ajrubio-montero" \
+                  --build-arg ARTI_BRANCH="dev-asoreyh" \
+                  --build-arg BASE_OS="lagocollaboration/lago-corsika:77402-dev" 
+                  -t onedatasim-s0:dev-ajrubio-montero \
+                  https://github.com/lagoproject/onedatasim.git#dev-ajrubio-montero
 ```
-
-
+  
 
 ### Logging into container for developing purposes
 

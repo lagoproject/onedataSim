@@ -11,8 +11,9 @@ import os
 import json
 import datetime
 
-#own modules
+# own modules
 import osUtils
+
 
 def get_git_commit(repopath):
 
@@ -22,14 +23,14 @@ def get_git_commit(repopath):
         return str(lines[0])
     else:
         raise Exception("Git release of software not found")
-      
+
 
 def xsd_dateTime():
 
     # xsd:dateTime
     # CCYY-MM-DDThh:mm:ss.sss[Z|(+|-)hh:mm]
     # The time zone may be specified as Z (UTC) or (+|-)hh:mm.
-    return str(datetime.datetime.utcnow()).replace(' ', 'T')+'Z'
+    return str(datetime.datetime.utcnow()).replace(' ', 'T') + 'Z'
 
 
 # j is adding j_new terms to existing keys or adding keys.
@@ -56,13 +57,15 @@ def add_json(j, j_new):
     # I change to list and call recursiveness
     return add_json([j], j_new)
 
+
 def replace_common_patterns(s, catcodename, arti_params_dict):
 
     s = s.replace('CATCODENAME', catcodename)
     s = s.replace('ORCID', arti_params_dict['u'])
-    if 'v' in arti_params_dict :
+    if 'v' in arti_params_dict:
         s = s.replace('CORSIKA_VER', arti_params_dict['v'])
-        s = s.replace('COMMITSHACORSIKA', arti_params_dict['priv_corsikacommit'])
+        s = s.replace('COMMITSHACORSIKA',
+                      arti_params_dict['priv_corsikacommit'])
     # other private generated without arguments (arg_xxx.py)
     s = s.replace('COMMITSHAARTI', arti_params_dict['priv_articommit'])
     s = s.replace('COMMITSHAODSIM', arti_params_dict['priv_odsimcommit'])
@@ -74,22 +77,24 @@ def replace_common_patterns(s, catcodename, arti_params_dict):
 
 template_path = os.path.dirname(os.path.abspath(__file__)) + '/json_tpl/'
 
+
 def get_metadata_for_dataset(args=[]):
-    
-    common = ['common_context.json','common_dataset.json']
+
+    common = ['common_context.json', 'common_dataset.json']
     templates = common + args
-    j={}
+    j = {}
     for temp in templates:
         with open(template_path + temp, 'r') as file_aux:
             j = add_json(j, json.loads(file_aux.read()))
     s = json.dumps(j)
-    return s    
+    return s
+
 
 # warning: this returns json.loads
 def get_first_catalog_metadata_json(catcodename, arti_params_dict):
 
-    with open(template_path+'common_context.json', 'r') as file1:
-        with open(template_path+'common_catalog.json', 'r') as file2:
+    with open(template_path + 'common_context.json', 'r') as file1:
+        with open(template_path + 'common_catalog.json', 'r') as file2:
             j = json.loads(file1.read())
             j = add_json(j, json.loads(file2.read()))
             s = json.dumps(j)
@@ -97,13 +102,13 @@ def get_first_catalog_metadata_json(catcodename, arti_params_dict):
             return json.loads(s)
 
 
-def get_catalog_metadata_activity(startdate, enddate, catcodename, arti_params_dict):
+def get_catalog_metadata_activity(startdate, enddate, catcodename,
+                                  arti_params_dict):
 
-    with open(template_path+'common_activity.json', 'r') as file1:
+    with open(template_path + 'common_activity.json', 'r') as file1:
         j = json.loads(file1.read())
         s = json.dumps(j)
         s = s.replace('STARTDATE', startdate)
         s = s.replace('ENDDATE', enddate)
         s = replace_common_patterns(s, catcodename, arti_params_dict)
         return s
-

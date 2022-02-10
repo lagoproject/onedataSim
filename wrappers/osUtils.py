@@ -16,37 +16,28 @@ import shlex
 
 def run_Popen_interactive(command):
 
-    print(command+'\n')
+    print(command + '\n')
     p = subprocess.Popen(shlex.split(command), env=os.environ,
                          stdin=sys.stdin, stdout=sys.stdout,
                          stderr=sys.stderr)
     p.wait()
 
+
 def run_Popen(command, timeout=None):
 
-    print(command+'\n')
+    print(command + '\n')
     p = subprocess.Popen(command + ' 2>&1', shell=True, env=os.environ,
                          stdin=subprocess.PIPE, stdout=subprocess.PIPE)
     p.wait(timeout)
     res = ""
     if p.returncode != 0:
-        print("Return code: "+str(res)+'\n')
+        print("Return code: " + str(res) + '\n')
     else:
         res = p.communicate()[0]
     return res
 
 
 def _write_file(filepath, txt):
-    
+
     with open(filepath, 'w+') as file1:
         file1.write(txt)
-        
-
-
-
-
-
-
-
-
-

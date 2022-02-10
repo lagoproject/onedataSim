@@ -1,8 +1,9 @@
 config:
+  deploy_template: '.sqa/docker-compose-build-S1.yml'
   project_repos:
     onedatasim:
       repo: 'https://github.com/EOSC-synergy/onedataSim'
-      branch: ${GIT_LOCAL_BRANCH##*/}  # I'd like to be a variable i.e GIT_BRANCH
+      branch: 'dev'
   credentials:
     # not necessary with docker-images
     #- id: onedata-token-build-ajrm
@@ -11,16 +12,16 @@ config:
     - id: onedata-token-test4-ajrm
       variable: TOKEN_RUN
 # If we will want a private DockerHub
-    # first testing with eoscsynergybot account in dockerhub (synergy_dockerhub_bot_pass)
-    #- id: dockerhub-token-ajrm  
-    - id: synergy_dockerhub_bot_pass
+    # first testing with eoscsynergybot account in dockerhub (synergy_dockerhub_bot_pass) 
+    #- id: synergy_dockerhub_bot_pass
+    - id: repoimage-lago-ajrm
       username_var: JPL_DOCKERUSER
       password_var: JPL_DOCKERPASS
 environment:
   # first testing with eoscsynergybot account in dockerhub (synergy_dockerhub_bot_pass)
   #JPL_DOCKERSERVER: "hub.docker.com"
-  JPL_DOCKERPUSH: onedatasim-s0
-  #JPL_DOCKERFORCEBUILD: "True"
+  JPL_DOCKERPUSH: onedatasim-s1
+  JPL_DOCKERFORCEBUILD: "True"
 # #  LANG: C.UTF-8
 sqa_criteria:
   qc_functional:
@@ -60,5 +61,31 @@ sqa_criteria:
             #bandit -r /opt/onedataSim -x tests -s B404,B602,B603
             pip3 install bandit && python3 -m bandit -r /opt/onedataSim -x tests -s B404,B602,B603
           #- bandit -r /onedatasim-repo -x tests
+#  qc_fair: # it is not defined yet in JePL library, we have to use qc_doc
+  qc_doc:
+    repos:
+      FAIR_EVAL:
+        container: fair_eva
+        # Onedata has Verbs as petition of LAGO: http://datahub.egi.eu/oai_pmh?verb=ListSets
+        # Then the whole OAI-PMH repository is
+        # http://datahub.egi.eu/oai_pmh?verb=ListRecords&metadataPrefix=oai_dc&set=986fe2ab97a6b749fac17eb9e9b38c37chb045
+        # however, to check the build we only check a the testing catalog generated in qc_functional
+        # as an example we can use: 
+        # http://datahub.egi.eu/oai_pmh?verb=GetRecord&metadataPrefix=oai_dc&identifier=oai:datahub.egi.eu:f11ab6c1168399bc6f062d043c3c97f6ch693a
+        # which handle is http://hdl.handle.net/21.12145/V6CkywE
+        commands:
+        - 'curl -H ''Content-Type: application/json'' -X POST 
+          -d ''{"id": "f11ab6c1168399bc6f062d043c3c97f6ch693a",
+          "repo": "oai-pmh", "oai_base": "http://datahub.egi.eu/oai_pmh"}''
+          http://localhost:9090/v1.0/rda/rda_all'
+      FAIR_UJI:
+        container: fair_uji
+        commands:
+        - 'curl -H ''Accept: application/json'' -H ''Content-Type: application/json''
+          -H ''Authorization: Basic bWFydmVsOndvbmRlcndvbWFu'' -X POST 
+          -d ''{"metadata_service_endpoint":"http://datahub.egi.eu/oai_pmh",
+          "metadata_service_type":"oai_pmh","object_identifier":"http://hdl.handle.net/21.12145/V6CkywE",
+          "test_debug":true,"use_datacite":false}''
+          http://localhost:1071/fuji/api/v1/evaluate'
 
 timeout: 900

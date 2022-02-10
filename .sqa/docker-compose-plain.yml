@@ -1,0 +1,10 @@
+version: "3.7"
+services:
+  onedatasim-testing:
+    image: "indigodatacloud/ci-images:python3.6"
+    container_name: "onedatasim-testing"
+    volumes:
+     - type: bind
+       source: ./onedatasim
+       target: /onedatasim-repo
+    #command: sleep 3600

@@ -16,41 +16,41 @@ import argparse
 import os
 import sys
 
+
 # this script only runs in "/opt/lago-corsika-CORSIKA_VER/run" directory
 def _get_corsika_version():
-    
+
     try:
         return os.getcwd().split("/opt/lago-corsika-")[1].split("/run")[0]
-    except:
+    except Exception as inst:
         print("Please, execute in the /opt/lago-corsika-CORSIKA_VER/run directory")
         sys.exit(1)
-    
+
 
 def _get_arti_params_json_md(arti_dict):
 
     dict_aux = {
-         "@id": "/"+arti_dict['p']+"#artiParams",
-         "@type": "lago:ArtiParams",
-         "lago:fluxTime": "P"+str(arti_dict['t'])+"S",
-         "lago:highEnergyIntModel": arti_dict['h'],
-         "lago:detectorSite":
-         "https://github.com/lagoproject/DMP/blob/1.1/defs/sitesLago.jsonld#"
-         + arti_dict['s'],
-         "lago:obsLev": arti_dict['k'],
-         "lago:modatm": arti_dict['c'],
-         "lago:rigidity": arti_dict['b'],
-         "lago:tMin": arti_dict['m'],
-         "lago:tMax": arti_dict['n'],
-         "lago:llimit": arti_dict['r'],
-         "lago:ulimit": arti_dict['i'],
-         "lago:bx": arti_dict['o'],
-         "lago:bz": arti_dict['q'],
-         "lago:flatArray": not arti_dict['y'],
-         "lago:cherenkov": arti_dict['e'],
-         "lago:debug": arti_dict['d'],
-         "lago:defaults": arti_dict['x'],
-         "lago:highEnergyCutsSecondaries": arti_dict['a']
-         }
+                "@id": "/" + arti_dict['p'] + "#artiParams",
+                "@type": "lago:ArtiParams",
+                "lago:fluxTime": "P" + str(arti_dict['t']) + "S",
+                "lago:highEnergyIntModel": arti_dict['h'],
+                "lago:detectorSite":
+                "https://github.com/lagoproject/DMP/blob/1.1/defs/sitesLago.jsonld#" + arti_dict['s'],
+                "lago:obsLev": arti_dict['k'],
+                "lago:modatm": arti_dict['c'],
+                "lago:rigidity": arti_dict['b'],
+                "lago:tMin": arti_dict['m'],
+                "lago:tMax": arti_dict['n'],
+                "lago:llimit": arti_dict['r'],
+                "lago:ulimit": arti_dict['i'],
+                "lago:bx": arti_dict['o'],
+                "lago:bz": arti_dict['q'],
+                "lago:flatArray": not arti_dict['y'],
+                "lago:cherenkov": arti_dict['e'],
+                "lago:debug": arti_dict['d'],
+                "lago:defaults": arti_dict['x'],
+                "lago:highEnergyCutsSecondaries": arti_dict['a']
+               }
 
     # create JSON removing empty values
 
@@ -107,10 +107,10 @@ def get_sys_args_S0():
     #  echo -e "  -s <site> : \
     #    Location (several options)"
     parser.add_argument('-s', dest='s', required=True,
-                        #choices=[ "QUIE","and","asu","ber","bga","brc","bue",
-                        #          "cha","chia","cpv","cuz","gua","kna","lim",
-                        #          "lpb","lsc","mapi","mge","pam","sac","sao",
-                        #          "sawb","serb","sng","tac","tuc","vcp" ],
+                        # choices=[ "QUIE","and","asu","ber","bga","brc","bue",
+                        #           "cha","chia","cpv","cuz","gua","kna","lim",
+                        #           "lpb","lsc","mapi","mge","pam","sac","sao",
+                        #           "sawb","serb","sng","tac","tuc","vcp" ],
                         help='Predefined LAGO site')
     #  echo -e "  -j <procs> : \
     #    Number of processors to use"
@@ -131,8 +131,12 @@ def get_sys_args_S0():
                         help='Enable DEBUG mode')
     #  echo -e "  -a : \
     #    Enable high energy cuts for secondaries"
-    parser.add_argument('-a', action='store_true', default=None,
-                        help='Enable high energy cuts for secondaries')
+    # added by HA - Now -a option expect the ecut value in GeV. 04/OCT/2021
+    # parser.add_argument('-a', action='store_true', default=None,
+    #                    help='Enable high energy cuts for secondaries')
+    parser.add_argument('-a', dest='a', type=float, 
+                        help='Enable and set high energy cuts for secondaries, \
+                        value in GeV = enabled')
     #  echo -e "  -k <altitude, in cm> : \
     #    Fix altitude, even for predefined sites"
     parser.add_argument('-k', dest='k', type=float,
@@ -147,8 +151,7 @@ def get_sys_args_S0():
     #  echo -e "  -b <rigidity cutoff> : \
     #    Rigidity cutoff; 0 = disabled; value in GV = enabled"
     parser.add_argument('-b', dest='b',
-                        help='Rigidity cutoff; 0 = disabled; value in GV = \
-                        enabled')
+                        help='Rigidity cutoff; value in GV = enabled')
     #  echo -e "  -m <Low edge zenith angle> : \
     #    Low edge of zenith angle (THETAP) [deg]"
     parser.add_argument('-m', dest='m', type=float,
@@ -192,20 +195,18 @@ def get_sys_args_S0():
                         help='Changing storage path, only for testing purposes.')
 
     args = parser.parse_args()
-
     args_dict = vars(args)
-    
-    
+
     # ---- customise parameters for ARTI and onedataSim ----
-    # 
-    # the most important is the "project name" that it is used 
+    #
+    # the most important is the "project name" that it is used
     # for onedataSim as "codename"
     #
     # the other are the version of external software used
     # and the working dir
-     
+
     # version of external software (Corsika version)
-    CORSIKA_VER = _get_corsika_version()    
+    CORSIKA_VER = _get_corsika_version()
     args_dict.update({'v': CORSIKA_VER})
 
     # project a.k.a codename
@@ -226,8 +227,8 @@ def get_sys_args_S0():
     if args_dict['e'] is True:
         codename += '_Cherenk'
 
-    if args_dict['a'] is True:
-        codename += '_HEcuts'
+    if args_dict['a'] is not None:
+        codename += '_HEcuts' + str(args_dict['a'])
 
     if args_dict['x'] is True:
         codename += '_defaults'
@@ -235,8 +236,7 @@ def get_sys_args_S0():
     args_dict.update({'p': codename})
 
     # working dir
-    
+
     args_dict.update({'w': '/opt/lago-corsika-'+CORSIKA_VER+'/run/'})
 
- 
     return (codename, args_dict, _get_arti_params_json_md(args_dict))
