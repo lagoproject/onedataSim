@@ -134,7 +134,7 @@ def get_sys_args_S0():
     # added by HA - Now -a option expect the ecut value in GeV. 04/OCT/2021
     # parser.add_argument('-a', action='store_true', default=None,
     #                    help='Enable high energy cuts for secondaries')
-    parser.add_argument('-a', dest='a', type=float, 
+    parser.add_argument('-a', dest='a', type=float,
                         help='Enable and set high energy cuts for secondaries, \
                         value in GeV = enabled')
     #  echo -e "  -k <altitude, in cm> : \
@@ -189,7 +189,7 @@ def get_sys_args_S0():
     #  echo
     # }
 
-    #added, not equiv in do_showers:
+    # added, not equiv in do_showers:
 
     parser.add_argument('--onedata_path', dest='onedata_path',
                         help='Changing storage path, only for testing purposes.')
