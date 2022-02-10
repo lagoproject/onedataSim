@@ -48,28 +48,28 @@ def get_sys_args_S1():
 
     parser.add_argument('-o', dest='o', required=True,
                         help='Origin dir, where the DAT files are located.')
-    #parser.add_argument('-r', dest='r', required=True,
-    #                    help='ARTI installation directory, generally pointed by \$LAGO_ARTI (default).')
-    #parser.add_argument('-w', dest='w', required=True,
-    #                    help='Working dir, where the analysis will be done (default is current directory, ${wdir}).')
+    # parser.add_argument('-r', dest='r', required=True,
+    #                     help='ARTI installation directory, generally pointed by \$LAGO_ARTI (default).')
+    # parser.add_argument('-w', dest='w', required=True,
+    #                     help='Working dir, where the analysis will be done (default is current directory, ${wdir}).')
     parser.add_argument('-e', dest='e', required=True, type=int,
                         help='Number of energy secondary bins (default: $energy_bins).')
     parser.add_argument('-d', dest='d', required=True, type=int,
                         help='Number of distance secondary bins (default: $distance_bins).')
-    #parser.add_argument('-p', dest='p',
-    #                    help='Base name for identification of S1 files (do not use spaces). Default: odir basename.')
-    #parser.add_argument('-k', dest='k', required=True, type=int,
-    #                    help='For curved mode (default), site altitude in m a.s.l. (mandatory).')
+    # parser.add_argument('-p', dest='p',
+    #                     help='Base name for identification of S1 files (do not use spaces). Default: odir basename.')
+    # parser.add_argument('-k', dest='k', required=True, type=int,
+    #                     help='For curved mode (default), site altitude in m a.s.l. (mandatory).')
     parser.add_argument('-s', dest='s', required=True, type=int,
                         help='Filter secondaries by type: 1: EM, 2: MU, 3: HD.')
-    #parser.add_argument('-t', dest='t', required=True, type=int,
-    #                    help='Flux time (in seconds) for simulations.')
+    # parser.add_argument('-t', dest='t', required=True, type=int,
+    #                     help='Flux time (in seconds) for simulations.')
     parser.add_argument('-m', dest='m', required=True, type=int,
                         help='Produce files with the energy distribution of the primary flux per nuclei.')
     parser.add_argument('-j', dest='j', type=int, default=1,
                         help='Number of processors to use.') 
-    #parser.add_argument('-l', dest='l',
-    #                    help='Execute locally. (If not, only produces .run files for posterior batch processing).')
+    # parser.add_argument('-l', dest='l',
+    #                     help='Execute locally. (If not, only produces .run files for posterior batch processing).')
     parser.add_argument('-?', action='help', help='Shows this help and exit.')
 
     # added, not equiv in do_showers:
