@@ -4,37 +4,16 @@
 #          CIEMAT - Sci-Track Group (http://rdgroups.ciemat.es/web/sci-track),#
 #          for the EOSC-Synergy project (EU H2020 RI Grant No 857647).        #
 # License (SPDX): BSD-3-Clause (https://opensource.org/licenses/BSD-3-Clause) #
-# Copyright (c): 2021-today, The LAGO Collaboration (http://lagoproject.net)  #
+# Copyright (c): 2020-today, The LAGO Collaboration (http://lagoproject.net)  #
 ###############################################################################
 
 
 # additional modules needed
+import argparse
 import requests
 import json
 from yattag import Doc, indent
 
-
-# External arguments for command line use
-# parser = argparse.ArgumentParser(description='Arguments for publishing data')
-# parser.add_argument("--token")
-# parser.add_argument("--host")
-# parser.add_argument("--folder_id" )
-# parser.add_argument("--local_folder" )
-# parser.add_argument("--handleServiceId" )
-
-# args = parser.parse_args()
-
-# OneData_Token = args.token
-# OneData_Host = args.host
-# OneData_FolderLevel0_id = args.folder_id
-# catalog_path_temp = args.local_folder
-# catalog_path_temp = args.handleServiceId
-
-OneData_Token = ""
-OneData_Host = ""
-OneData_FolderLevel0_id = ""
-catalog_path_temp = ""    # LOCAL FOLDER TO SAVE THE XML FILES
-OneData_handleServiceId = ""
 
 # Data for dublin core format
 xmlns_oaci_dc = '"http://www.openarchives.org/OAI/2.0/oai_dc/"'
@@ -194,76 +173,123 @@ def folder1_getattrs(handleservice_id, local_path, folder1_id, host, token):
     return (shareinfo_level1)
 
 
-# MAIN CODE
 
-all_level0 = folder0_content(OneData_FolderLevel0_id, OneData_Host, OneData_Token)
+def publish_catalog(handleservice_id, local_path, folder1_id, filename, host, token):
+    """
+    -------
+    Modules
+    -------
+    request, json
+    -----------
+    Description
+    -----------
+    ....????
+    ----------
+    Parameters
+    ----------
+    handleservice_id : OneData handle service id
+    local_path : local path where the xlm files are stored
+    folder1_id : Onedata folder level 1 id (contained in level 0 folder).
+    filename : Folder name to share and handle.
+    host : OneData provider (e.g., ceta-ciemat-02.datahub.egi.eu).
+    token : OneData personal access token.
+    -------
+    Returns
+    -------
+    ....????
+    """
 
+    OneData_urljson = "https://" + host + '/api/v3/oneprovider/data/' + folder1_id + "/metadata/json"
+    r_level1 = requests.get(OneData_urljson, headers={'X-Auth-Token': token})
+    all_level1 = json.loads(r_level1.text)
 
-for p in all_level0['children']:
+    if 'dataset' in all_level1:
 
-        OneData_urljson = "https://" + OneData_Host + '/api/v3/oneprovider/data/' + p['id'] + "/metadata/json"
-        r_level1 = requests.get(OneData_urljson, headers={'X-Auth-Token': OneData_Token})
-        all_level1 = json.loads(r_level1.text)
+        doc, tag, text = Doc().tagtext()
 
-        if 'dataset' in all_level1:
+        with tag('metadata'):
+            with tag('oai_dc:dc', oai_dc_content):
+                with tag('dc:title'):
+                    text(all_level1['title'])
+                with tag('dc:creator'):
+                    text(all_level1["creator"]['@id'])
+                with tag('dc:date'):
+                    text(all_level1["@graph"][1]['prov:endedAtTime'])
+                with tag('dc:subject'):
+                    text('High energy astrophysics')
+                with tag('dc:subject'):
+                    text('http://astrothesaurus.org/uat/739')
+                with tag('dc:subject'):
+                    text('Particle astrophysics')
+                with tag('dc:subject'):
+                    text('http://astrothesaurus.org/uat/96')
+                with tag('dc:subject'):
+                    text('Astronomical simulations')
+                with tag('dc:subject'):
+                    text('http://astrothesaurus.org/uat/1857')
+                with tag('dc:rights'):
+                    text('CC BY 4.0')
+                with tag('dc:rights'):
+                    text('https://creativecommons.org/licenses/by/4.0/')
+                with tag('dc:rights'):
+                    text('LAGO rights')
+                with tag('dc:rights'):
+                    text('https://raw.githubusercontent.com/lagoproject/DMP/1.1/rights/lagoCommonRights.jsonld')
+                with tag('dc:description'):
+                    text(all_level1["description"])
+                with tag('dc:contributor'):
+                    text('EGI Datahub')
+                with tag('dc:instrument'):
+                    text('LAGO Observatory')
+                with tag('dc:contact'):
+                    text('lago-eosc(at)lagoproject.net')
+                with tag('dc:discipline'):
+                    text('Astrophysics and Astronomy')
+                with tag('dc:publisher'):
+                    text('LAGO Collaboration')
 
-            doc, tag, text = Doc().tagtext()
+        result = indent(doc.getvalue(), indentation=' '*4, newline='\n')
 
-            with tag('metadata'):
-                with tag('oai_dc:dc', oai_dc_content):
-                    with tag('dc:title'):
-                        text(all_level1['title'])
-                    with tag('dc:creator'):
-                        text(all_level1["creator"]['@id'])
-                    with tag('dc:date'):
-                        text(all_level1["@graph"][1]['prov:endedAtTime'])
-                    with tag('dc:subject'):
-                        text('High energy astrophysics')
-                    with tag('dc:subject'):
-                        text('http://astrothesaurus.org/uat/739')
-                    with tag('dc:subject'):
-                        text('Particle astrophysics')
-                    with tag('dc:subject'):
-                        text('http://astrothesaurus.org/uat/96')
-                    with tag('dc:subject'):
-                        text('Astronomical simulations')
-                    with tag('dc:subject'):
-                        text('http://astrothesaurus.org/uat/1857')
-                    with tag('dc:rights'):
-                        text('CC BY 4.0')
-                    with tag('dc:rights'):
-                        text('https://creativecommons.org/licenses/by/4.0/')
-                    with tag('dc:rights'):
-                        text('LAGO rights')
-                    with tag('dc:rights'):
-                        text('https://raw.githubusercontent.com/lagoproject/DMP/1.1/rights/lagoCommonRights.jsonld')
-                    with tag('dc:description'):
-                        text(all_level1["description"])
-                    with tag('dc:contributor'):
-                        text('EGI Datahub')
-                    with tag('dc:instrument'):
-                        text('LAGO Observatory')
-                    with tag('dc:contact'):
-                        text('lago-eosc(at)lagoproject.net')
-                    with tag('dc:discipline'):
-                        text('Astrophysics and Astronomy')
-                    with tag('dc:publisher'):
-                        text('LAGO Collaboration')
+        file_object = open(local_path + filename + '.xml', 'w')
+        file_object.write(result)
+        file_object.close()
+        print(filename + " XML file created")
 
-            result = indent(doc.getvalue(), indentation=' '*4, newline='\n')
+        shareinfo_level1 = folder1_getattrs(handleServiceId, local_path, folder1_id, host, token)
 
-            file_object = open(catalog_path_temp + p['name'] + '.xml', 'w')
-            file_object.write(result)
-            file_object.close()
-            print(p['name'] + " XML file created")
-
-            shareinfo_level1 = folder1_getattrs(OneData_handleServiceId, catalog_path_temp, p['id'], OneData_Host, OneData_Token)
-
-            if shareinfo_level1:
-                pass
-            else:
-                share_level1 = OneData_sharing(p['name'], p['id'], OneData_Host, OneData_Token)
-                OneData_createhandle(OneData_handleServiceId, json.loads(share_level1.text)["shareId"], catalog_path_temp, p['name'], OneData_Host, OneData_Token)
-                print('share and handle just created')
+        if shareinfo_level1:
+            pass
         else:
-            print(p['name'] + " Calculation not completed")
+            share_level1 = OneData_sharing(filename, folder1_id, host, token)
+            OneData_createhandle(OneData_handleServiceId, json.loads(share_level1.text)["shareId"], local_path, filename, host, token)
+            print('share and handle just created')
+    else:
+        print(p['name'] + " Calculation not completed")
+
+
+
+# ###############
+# MAIN CODE
+# ###############
+
+
+# External arguments for command line use
+parser = argparse.ArgumentParser(description='Arguments for publishing data')
+parser.add_argument('--token', help ='')
+parser.add_argument('--host', help ='')  # OneData Provider !!!
+parser.add_argument('--folder_id', help ='' )
+parser.add_argument('--local_path', help ='' )   # LOCAL FOLDER TO SAVE THE XML FILES (si no se guardan en remoto...para que me vale este param...)
+parser.add_argument('--handleservice_id', help ='' )
+parser.add_argument('--recursive', action='store_true', default=None,
+                     help="Enable finding sub-catalogs and sharing the ones that weren\'t shared)")
+
+args = parser.parse_args()
+
+all_level0 = folder0_content(args.folder_id, args.host, args.token)
+
+if args.recursive is True:
+    publish_catalog(args.handleservice_id, args.local_path, args.folder_id, all_level0['name'], args.host, args.token)
+else:
+    for p in all_level0['children']:
+        publish_catalog(args.handleservice_id, args.local_path, p[id], p['name'], args.host, args.token)
+
