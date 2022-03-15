@@ -14,14 +14,6 @@ import requests
 import json
 from yattag import Doc, indent
 
-
-# Data for dublin core format
-xmlns_oaci_dc = '"http://www.openarchives.org/OAI/2.0/oai_dc/"'
-xmlns_dc = '"http://purl.org/dc/elements/1.1/"'
-xmlns_xsi = '"http://www.w3.org/2001/XMLSchema-instance"'
-xsi_schemaLocation = '"http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd"'
-oai_dc_content = 'xmlns:oai_dc=' + xmlns_oaci_dc + ' xmlns:dc=' + xmlns_dc + ' xmlns:xsi=' + xmlns_xsi + ' xsi:schemaLocation=' + xsi_schemaLocation
-
 # own functions
 
 def create_dublincore_xml_file(all_level1, local_path, filename):
@@ -46,6 +38,13 @@ def create_dublincore_xml_file(all_level1, local_path, filename):
     -------
     ....????
     """
+
+    # Data for dublin core format
+    xmlns_oaci_dc = '"http://www.openarchives.org/OAI/2.0/oai_dc/"'
+    xmlns_dc = '"http://purl.org/dc/elements/1.1/"'
+    xmlns_xsi = '"http://www.w3.org/2001/XMLSchema-instance"'
+    xsi_schemaLocation = '"http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd"'
+    oai_dc_content = 'xmlns:oai_dc=' + xmlns_oaci_dc + ' xmlns:dc=' + xmlns_dc + ' xmlns:xsi=' + xmlns_xsi + ' xsi:schemaLocation=' + xsi_schemaLocation
 
     doc, tag, text = Doc().tagtext()
 
