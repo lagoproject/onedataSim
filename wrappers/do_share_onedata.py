@@ -209,10 +209,11 @@ def had_it_published(handleservice_id, folder1_id, host, token, remove_unused_sh
     folder1_id : Onedata folder level 1 id (contained in level 0 folder).
     host : OneData provider (e.g., ceta-ciemat-02.datahub.egi.eu).
     token : OneData personal access token.
+    remove_unused_shares : if you want to erase unpublished shares (without handle PiD)
     -------
     Returns
     -------
-    shareinfo_level1: Get the basic information about the shared folder level 1
+    shareinfo: Get the basic information about the published folder/file
     """
 
     OneData_urlgetAttrs = "https://" + host + '/api/v3/oneprovider/data/' + folder1_id + "?attribute=shares"
@@ -220,6 +221,7 @@ def had_it_published(handleservice_id, folder1_id, host, token, remove_unused_sh
     shareid_level1 = requests.get(OneData_urlgetAttrs, headers=request_param)
     attrs_level1 = json.loads(shareid_level1.text)
 
+    shareinfo = []
     if attrs_level1['shares']:
         for ii in range(len(attrs_level1['shares'])):
             n = len(attrs_level1['shares']) - 1
@@ -229,18 +231,17 @@ def had_it_published(handleservice_id, folder1_id, host, token, remove_unused_sh
             if allinfo_level1['handleId']:
                 print('handle exist already, it is already published!!!')
                 print(allinfo_level1['handleId'])
+                shareinfo = shareinfo_level1
             else:
                 print('handle is missing')
                 if remove_unused_shares:
                     OneData_urldeleteShare = "https://" + host + '/api/v3/oneprovider/shares/' + attrs_level1['shares'][n-ii]
                     requests.delete(OneData_urldeleteShare, headers=request_param)
                     print("extra share deleted")
-                    shareinfo_level1 = []
     else:
-        shareinfo_level1 = []
         print("folder not shared yet")
 
-    return (shareinfo_level1)
+    return (shareinfo)
 
 
 
@@ -278,10 +279,9 @@ def publish_catalog(handleservice_id, local_path, folder1_id, filename, host, to
     # falta: una funcion que devuelva true o false si pasa o no unos minimos requisitos. 
     if 'dataset' in all_level1:
         
-        # falta: is it published?
-        shareinfo_level1 = folder1_getattrs(handleServiceId, local_path, folder1_id, host, token)
-        if shareinfo_level1:
-            pass
+        # is it published?
+        if folder1_getattrs(handleServiceId, local_path, folder1_id, host, token)
+            print('It had been published before.')
         else:
             share_level1 = OneData_sharing(filename, folder1_id, host, token)
             create_dublincore_xml_file(all_level1, local_path, filename)
