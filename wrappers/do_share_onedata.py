@@ -188,7 +188,7 @@ def OneData_createhandle(handleservice_id, share_id, local_path, filename, host,
     return (OneData_metadata)
 
 
-def folder1_getattrs(handleservice_id, local_path, folder1_id, host, token):
+def had_it_published(handleservice_id, folder1_id, host, token, remove_unused_shares=False):
     """
     -------
     Modules
@@ -197,17 +197,15 @@ def folder1_getattrs(handleservice_id, local_path, folder1_id, host, token):
     -----------
     Description
     -----------
-    This function gets the attributes of the files to share and handle.
-    If the file has been shared already, checks if more than once.
-    In that case, only leaves one and deletes the rest (leaves the oldest).
-    Then, it checks if the share already has a handle and, if not, creates one.
-    If the file has not been shared, then returns and empty file:
-    shareinfo_level1=[]
+    This function tests and gets the last publication attributes for a 
+    folder_id (or file_id), this is, its sharing and handling information). 
+    Otherwise, if it was not published, it returns a empty list [].
+    If the file has been shared several times, the function can delete the ones 
+    without associated handle PiD.
     ----------
     Parameters
     ----------
     handleservice_id : OneData handle service id
-    local_path : local path where the xlm files are stored
     folder1_id : Onedata folder level 1 id (contained in level 0 folder).
     host : OneData provider (e.g., ceta-ciemat-02.datahub.egi.eu).
     token : OneData personal access token.
@@ -225,19 +223,19 @@ def folder1_getattrs(handleservice_id, local_path, folder1_id, host, token):
     if attrs_level1['shares']:
         for ii in range(len(attrs_level1['shares'])):
             n = len(attrs_level1['shares']) - 1
-            if ii < 1:
-                OneData_urlgetShareinfo = "https://" + host + '/api/v3/oneprovider/shares/' + attrs_level1['shares'][n-ii]
-                shareinfo_level1 = requests.get(OneData_urlgetShareinfo, headers=request_param)
-                allinfo_level1 = json.loads(shareinfo_level1.text)
-                if allinfo_level1['handleId']:
-                    print('handle exist already, it is already published!!!')
-                    print(allinfo_level1['handleId'])
-                else:
-                    print('handle is missing')
+            OneData_urlgetShareinfo = "https://" + host + '/api/v3/oneprovider/shares/' + attrs_level1['shares'][n-ii]
+            shareinfo_level1 = requests.get(OneData_urlgetShareinfo, headers=request_param)
+            allinfo_level1 = json.loads(shareinfo_level1.text)
+            if allinfo_level1['handleId']:
+                print('handle exist already, it is already published!!!')
+                print(allinfo_level1['handleId'])
             else:
-                OneData_urldeleteShare = "https://" + host + '/api/v3/oneprovider/shares/' + attrs_level1['shares'][n-ii]
-                requests.delete(OneData_urldeleteShare, headers=request_param)
-                print("extra share deleted")
+                print('handle is missing')
+                if remove_unused_shares:
+                    OneData_urldeleteShare = "https://" + host + '/api/v3/oneprovider/shares/' + attrs_level1['shares'][n-ii]
+                    requests.delete(OneData_urldeleteShare, headers=request_param)
+                    print("extra share deleted")
+                    shareinfo_level1 = []
     else:
         shareinfo_level1 = []
         print("folder not shared yet")
