@@ -230,12 +230,10 @@ def folder1_getattrs(handleservice_id, local_path, folder1_id, host, token):
                 shareinfo_level1 = requests.get(OneData_urlgetShareinfo, headers=request_param)
                 allinfo_level1 = json.loads(shareinfo_level1.text)
                 if allinfo_level1['handleId']:
-                    print('handle exist already')
+                    print('handle exist already, it is already published!!!')
                     print(allinfo_level1['handleId'])
                 else:
-                    print('creating handle')
-                    # UNCOMMENT FOR CREATING ALL MISSING HANDLES (NOT TESTED)
-                    # OneData_createhandle(handleservice_id, allinfo_level1['shareId'], local_path, allinfo_level1['name'], host, token)
+                    print('handle is missing')
             else:
                 OneData_urldeleteShare = "https://" + host + '/api/v3/oneprovider/shares/' + attrs_level1['shares'][n-ii]
                 requests.delete(OneData_urldeleteShare, headers=request_param)
@@ -282,18 +280,17 @@ def publish_catalog(handleservice_id, local_path, folder1_id, filename, host, to
     # falta: una funcion que devuelva true o false si pasa o no unos minimos requisitos. 
     if 'dataset' in all_level1:
         
-        create_dublincore_xml_file(all_level1, local_path, filename)
-        # falta : hay que ver por que necesita el fichero xml esta funcion, tampoco entiendo que quiera llamar a createhandle dentro
+        # falta: is it published?
         shareinfo_level1 = folder1_getattrs(handleServiceId, local_path, folder1_id, host, token)
-
         if shareinfo_level1:
             pass
         else:
             share_level1 = OneData_sharing(filename, folder1_id, host, token)
+            create_dublincore_xml_file(all_level1, local_path, filename)
             OneData_createhandle(OneData_handleServiceId, json.loads(share_level1.text)["shareId"], local_path, filename, host, token)
             print('share and handle just created')
     else:
-        print(p['name'] + " Calculation not completed")
+        print(filename + " Calculation not completed")
 
 
 
@@ -314,11 +311,9 @@ parser.add_argument('--recursive', action='store_true', default=None,
 
 args = parser.parse_args()
 
-all_level0 = folder0_content(args.folder_id, args.host, args.token)
-
 if args.recursive is True:
-    publish_catalog(args.handleservice_id, args.local_path, args.folder_id, all_level0['name'], args.host, args.token)
-else:
+    all_level0 = folder0_content(args.folder_id, args.host, args.token)
     for p in all_level0['children']:
-        publish_catalog(args.handleservice_id, args.local_path, p[id], p['name'], args.host, args.token)
-
+        publish_catalog(args.handleservice_id, args.local_path, p['id'], p['name'], args.host, args.token)
+else:
+    publish_catalog(args.handleservice_id, args.local_path, args.folder_id, XXXX, args.host, args.token)
