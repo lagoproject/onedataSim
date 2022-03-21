@@ -123,6 +123,26 @@ def folder0_content(folder0_id, host, token):
 
     return (all_level0)
 
+        
+def get_folder_id(myspace_path, host, token):
+    
+    OneData_urlfolder_id = "https://" + host + '/api/v3/oneprovider/lookup-file-id' + myspace_path
+    request_param = {'X-Auth-Token': token}
+    r_id = requests.post(OneData_urlfolder_id, headers=request_param)
+    folder_id = json.loads(r_id.text)['fileid']
+    
+    return folder_id
+
+def get_filename(folder0_id, host, token):
+
+    OneData_urlfolder_name = "https://" + host + '/api/v3/oneprovider/data/' + folder0_id + '?attribute=name'
+    request_param = {'X-Auth-Token': token}
+    r_id = requests.post(OneData_urlfolder_name, headers=request_param)
+    filename = json.loads(r_id.text)['name']    
+    return filename
+
+
+
 
 def OneData_sharing(filename, file_id, host, token):
     """
@@ -178,6 +198,7 @@ def OneData_createhandle(handleservice_id, share_id, local_path, filename, host,
     OneData_Header = "application/json"
     request_param = {'X-Auth-Token': token, "Content-Type": OneData_Header}
 
+    create_dublincore_xml_file(all_level1, local_path, filename)
     with open(local_path + filename + '.xml', 'r') as file:
         OneData_metadata = file.read()
 
@@ -280,15 +301,16 @@ def publish_catalog(handleservice_id, local_path, folder1_id, filename, host, to
     if 'dataset' in all_level1:
         
         # is it published?
-        if folder1_getattrs(handleServiceId, local_path, folder1_id, host, token)
+        if had_it_published(handleServiceId, local_path, folder1_id, host, token)
             print('It had been published before.')
         else:
             share_level1 = OneData_sharing(filename, folder1_id, host, token)
-            create_dublincore_xml_file(all_level1, local_path, filename)
             OneData_createhandle(OneData_handleServiceId, json.loads(share_level1.text)["shareId"], local_path, filename, host, token)
             print('share and handle just created')
     else:
         print(filename + " Calculation not completed")
+
+
 
 
 
@@ -301,7 +323,8 @@ def publish_catalog(handleservice_id, local_path, folder1_id, filename, host, to
 parser = argparse.ArgumentParser(description='Arguments for publishing data')
 parser.add_argument('--token', help ='')
 parser.add_argument('--host', help ='')  # OneData Provider !!!
-parser.add_argument('--folder_id', help ='' )
+parser.add_argument('--folder_id', help ='' ) #INCOMPATIBLE CON --myspace_path
+parser.add_argument('--myspace_path', help ='' ) #INCOMPATIBLE CON --folder_id
 parser.add_argument('--local_path', help ='' )   # LOCAL FOLDER TO SAVE THE XML FILES (si no se guardan en remoto...para que me vale este param...)
 parser.add_argument('--handleservice_id', help ='' )
 parser.add_argument('--recursive', action='store_true', default=None,
@@ -309,9 +332,14 @@ parser.add_argument('--recursive', action='store_true', default=None,
 
 args = parser.parse_args()
 
+if args.myspace_path:
+    args.folder_id = get_folder_id(args.myspace_path, args.host, args.token) 
+
 if args.recursive is True:
     all_level0 = folder0_content(args.folder_id, args.host, args.token)
     for p in all_level0['children']:
         publish_catalog(args.handleservice_id, args.local_path, p['id'], p['name'], args.host, args.token)
 else:
-    publish_catalog(args.handleservice_id, args.local_path, args.folder_id, XXXX, args.host, args.token)
+    if args.folder_id:
+        filename = get_filename(args.folder_id, args.host, args.token)
+    publish_catalog(args.handleservice_id, args.local_path, args.folder_id, filename, args.host, args.token)
