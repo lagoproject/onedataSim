@@ -38,62 +38,56 @@ def create_dublincore_xml_file(all_level1, local_path, filename):
     -------
     ....????
     """
-    
-    # ajrm 2022: currently OneData includes itself headers for DublinCore metadata
+
     # Data for dublin core format
-    # xmlns_oaci_dc = '"http://www.openarchives.org/OAI/2.0/oai_dc/"'
-    # xmlns_dc = '"http://purl.org/dc/elements/1.1/"'
-    # xmlns_xsi = '"http://www.w3.org/2001/XMLSchema-instance"'
-    # xsi_schemaLocation = '"http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd"'
-    # oai_dc_content = 'xmlns:oai_dc=' + xmlns_oaci_dc + ' xmlns:dc=' + xmlns_dc + ' xmlns:xsi=' + xmlns_xsi + ' xsi:schemaLocation=' + xsi_schemaLocation
-
-
-    # ajrm 2022 thus these first lines are not necessary:
-    # doc, tag, text = Doc().tagtext()
-    # with tag('metadata'):
-    #     with tag('oai_dc:dc', oai_dc_content):
-    #         with tag('dc:title'):
+    xmlns_oaci_dc = '"http://www.openarchives.org/OAI/2.0/oai_dc/"'
+    xmlns_dc = '"http://purl.org/dc/elements/1.1/"'
+    xmlns_xsi = '"http://www.w3.org/2001/XMLSchema-instance"'
+    xsi_schemaLocation = '"http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd"'
+    oai_dc_content = 'xmlns:oai_dc=' + xmlns_oaci_dc + ' xmlns:dc=' + xmlns_dc + ' xmlns:xsi=' + xmlns_xsi + ' xsi:schemaLocation=' + xsi_schemaLocation
 
     doc, tag, text = Doc().tagtext()
-    
-    with tag('dc:title'):
-        text(all_level1['title'])
-    with tag('dc:creator'):
-        text(all_level1["creator"]['@id'])
-    with tag('dc:date'):
-        text(all_level1["@graph"][1]['prov:endedAtTime'])
-    with tag('dc:subject'):
-        text('High energy astrophysics')
-    with tag('dc:subject'):
-        text('http://astrothesaurus.org/uat/739')
-    with tag('dc:subject'):
-        text('Particle astrophysics')
-    with tag('dc:subject'):
-        text('http://astrothesaurus.org/uat/96')
-    with tag('dc:subject'):
-        text('Astronomical simulations')
-    with tag('dc:subject'):
-        text('http://astrothesaurus.org/uat/1857')
-    with tag('dc:rights'):
-        text('CC BY 4.0')
-    with tag('dc:rights'):
-        text('https://creativecommons.org/licenses/by/4.0/')
-    with tag('dc:rights'):
-        text('LAGO rights')
-    with tag('dc:rights'):
-        text('https://raw.githubusercontent.com/lagoproject/DMP/1.1/rights/lagoCommonRights.jsonld')
-    with tag('dc:description'):
-        text(all_level1["description"])
-    with tag('dc:contributor'):
-        text('EGI Datahub')
-    with tag('dc:instrument'):
-        text('LAGO Observatory')
-    with tag('dc:contact'):
-        text('lago-eosc(at)lagoproject.net')
-    with tag('dc:discipline'):
-        text('Astrophysics and Astronomy')
-    with tag('dc:publisher'):
-        text('LAGO Collaboration')
+
+    with tag('metadata'):
+        with tag('oai_dc:dc', oai_dc_content):
+            with tag('dc:title'):
+                text(all_level1['title'])
+            with tag('dc:creator'):
+                text(all_level1["creator"]['@id'])
+            with tag('dc:date'):
+                text(all_level1["@graph"][1]['prov:endedAtTime'])
+            with tag('dc:subject'):
+                text('High energy astrophysics')
+            with tag('dc:subject'):
+                text('http://astrothesaurus.org/uat/739')
+            with tag('dc:subject'):
+                text('Particle astrophysics')
+            with tag('dc:subject'):
+                text('http://astrothesaurus.org/uat/96')
+            with tag('dc:subject'):
+                text('Astronomical simulations')
+            with tag('dc:subject'):
+                text('http://astrothesaurus.org/uat/1857')
+            with tag('dc:rights'):
+                text('CC BY 4.0')
+            with tag('dc:rights'):
+                text('https://creativecommons.org/licenses/by/4.0/')
+            with tag('dc:rights'):
+                text('LAGO rights')
+            with tag('dc:rights'):
+                text('https://raw.githubusercontent.com/lagoproject/DMP/1.1/rights/lagoCommonRights.jsonld')
+            with tag('dc:description'):
+                text(all_level1["description"])
+            with tag('dc:contributor'):
+                text('EGI Datahub')
+            with tag('dc:instrument'):
+                text('LAGO Observatory')
+            with tag('dc:contact'):
+                text('lago-eosc(at)lagoproject.net')
+            with tag('dc:discipline'):
+                text('Astrophysics and Astronomy')
+            with tag('dc:publisher'):
+                text('LAGO Collaboration')
 
     result = indent(doc.getvalue(), indentation=' '*4, newline='\n')
 
