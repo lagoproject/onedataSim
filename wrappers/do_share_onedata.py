@@ -204,7 +204,6 @@ def OneData_createhandle(handleservice_id, share_id, local_path, filename, host,
     OneData_Header = "application/json"
     request_param = {'X-Auth-Token': token, "Content-Type": OneData_Header}
 
-    create_dublincore_xml_file(all_level1, local_path, filename)
     with open(local_path + filename + '.xml', 'r') as file:
         OneData_metadata = file.read()
 
@@ -311,6 +310,7 @@ def publish_catalog(handleservice_id, local_path, folder1_id, filename, host, to
             print('It had been published before.')
         else:
             share_level1 = OneData_sharing(filename, folder1_id, host, token)
+            create_dublincore_xml_file(all_level1, local_path, filename)
             OneData_createhandle(handleservice_id, json.loads(share_level1.text)["shareId"], local_path, filename, host, token)
             print('share and handle just created')
     else:
