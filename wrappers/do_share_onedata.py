@@ -132,7 +132,7 @@ def folder0_content(folder0_id, host, token):
         
 def get_folder_id(myspace_path, host, token):
     
-    OneData_urlfolder_id = "https://" + host + '/api/v3/oneprovider/lookup-file-id' + myspace_path
+    OneData_urlfolder_id = "https://" + host + '/api/v3/oneprovider/lookup-file-id/' + myspace_path
     request_param = {'X-Auth-Token': token}
     r_id = requests.post(OneData_urlfolder_id, headers=request_param)
     folder_id = json.loads(r_id.text)['fileid']
@@ -143,7 +143,7 @@ def get_filename(folder0_id, host, token):
 
     OneData_urlfolder_name = "https://" + host + '/api/v3/oneprovider/data/' + folder0_id + '?attribute=name'
     request_param = {'X-Auth-Token': token}
-    r_id = requests.post(OneData_urlfolder_name, headers=request_param)
+    r_id = requests.get(OneData_urlfolder_name, headers=request_param)
     filename = json.loads(r_id.text)['name']    
     return filename
 
@@ -307,11 +307,11 @@ def publish_catalog(handleservice_id, local_path, folder1_id, filename, host, to
     if 'dataset' in all_level1:
         
         # is it published?
-        if had_it_published(handleServiceId, local_path, folder1_id, host, token)
+        if had_it_published(handleservice_id, local_path, folder1_id, host, token)
             print('It had been published before.')
         else:
             share_level1 = OneData_sharing(filename, folder1_id, host, token)
-            OneData_createhandle(OneData_handleServiceId, json.loads(share_level1.text)["shareId"], local_path, filename, host, token)
+            OneData_createhandle(handleservice_id, json.loads(share_level1.text)["shareId"], local_path, filename, host, token)
             print('share and handle just created')
     else:
         print(filename + " Calculation not completed")
