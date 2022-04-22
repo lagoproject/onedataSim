@@ -89,9 +89,7 @@ def create_dublincore_xml_file(all_level1):
         with tag('dc:contributor'):
             text('LAGO Collaboration') # LAGO es cotributor en todas las publicaciones
         with tag('dc:contributor'):
-            text(all_level1["publisher"]['@id'])  # OJO quizás hay que meterlo en el JSON
-        with tag('dc:contributor'):
-            text('EOSC-Synergy')   
+            text(all_level1["publisher"]['@id'])  # OJO quizás hay que meterlo en el JSON 
         with tag('dc:contributor'):
             text('EOSC-Synergy')  # OJO SERIA MEJOR CAPTURARLO DE METADATOS
         with tag('dc:contributor'):            
@@ -99,7 +97,7 @@ def create_dublincore_xml_file(all_level1):
         with tag('dc:contributor'):
             text('https://www.eosc-synergy.eu/')
         with tag('dc:contributor'):
-            text('EOSC-synergy receives funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No 857647')
+            text('EOSC-synergy receives funding from the European Union\'s Horizon 2020 research and innovation programme under grant agreement No 857647')
         with tag('dc:contributor'):
             text('https://cordis.europa.eu/project/id/857647')
         # aqui podrian entrar otros "contributor": EGI DataHub, CETA-CIEMAT, CIEMAT. recursos cloud....
@@ -121,13 +119,13 @@ def create_dublincore_xml_file(all_level1):
         # OJO coverage... (spatial, temporal, instrument?...)
         # <element ref="dc:coverage"/>
         #   ojo tambien que meto qualifiers...
-        with tag('dc:coverage xsi:type=”dcterms:Spatial”'):
+        with tag('dc:coverage', 'xsi:type=”dcterms:Spatial”'):
             # east=148.26218; north=-36.45746; elevation=2228; name=Mt. Kosciusko (the highest point in Australia);
             text('east=' + all_level1["spatial"]["geometry"]['geo:latitude'] + '; ' +
                  'north=' + all_level1["spatial"]["geometry"]['geo:longitude'] + '; '+
                  'elevation=' + all_level1["spatial"]["geometry"]['geo:altitude'] + ';') # + # OJO aqui el enricher ya la ha cambiado por a la simulada (obsLev)
-                 # 'name=' + all_level1["spatial"][????] + ';')  # de momento no pongo el nombre, puesto que no esta estandarizado DCAT-AP2
-        with tag('dc:coverage xsi:type=”dcterms:Period”'): 
+                # 'name=' + all_level1["spatial"][????] + ';')  # de momento no pongo el nombre, puesto que no esta estandarizado DCAT-AP2
+        with tag('dc:coverage', 'xsi:type=”dcterms:Period”'): 
             # name=The 1960s; start=1960-01-01; end=1969-12-31;
             text('start=' + all_level1["temporalCoverage"]["startDate"] + ';' + 
                   'end=' + all_level1["temporalCoverage"]["endDate"] + ';')
@@ -153,7 +151,7 @@ def create_dublincore_xml_file(all_level1):
         #    text('lago-eosc(at)lagoproject.net')
 
 
-    return indent(doc.getvalue(), indentation=' '*4, newline='\n')
+    return indent(doc.getvalue(), indentation=' '*4, newline='\n').replace('”','"')
 
     
     
@@ -198,10 +196,13 @@ def create_file_in_hidden_metadata_folder(content, filename, folder_id, host, to
     if hiden_metadata_folder_id is None:
         return 
 
+    t = mdUtils.xsd_dateTime().replace('-','').replace(':','')
+    
     OneData_Header = "application/octet-stream"
-    OneData_urlcreatefile = "https://" + host + '/api/v3/oneprovider/data/' + hiden_metadata_folder_id + '/children?name=.' + filename
+    OneData_urlcreatefile = "https://" + host + '/api/v3/oneprovider/data/' + hiden_metadata_folder_id + '/children?name=.' + filename + '.' + t
     request_param = {'X-Auth-Token': token, "Content-Type": OneData_Header}
-    r = requests.post(OneData_urlcreatefile, headers=request_param, data=content)
+    u_content = content.encode('utf-8')
+    r = requests.post(OneData_urlcreatefile, headers=request_param, data=u_content)
 
     r_json = json.loads(r.text)
     print(r_json)
@@ -278,10 +279,11 @@ def OneData_sharing(filename, file_id, description, host, token):
     data_file_share = {'name': filename, "fileId": file_id, "description": description}
     r_share_level1 = requests.post(OneData_urlcreateShare, headers=request_param, json=data_file_share)
     
+    # only returns shareID
     share_level1 = json.loads(r_share_level1.text)
     print(share_level1)
-
-    return (share_level1)
+    
+    return get_share_info(share_level1["shareId"], token)
 
 
 def OneData_createhandle(handleservice_id, share_id, metadata, host, token):
@@ -317,9 +319,9 @@ def OneData_createhandle(handleservice_id, share_id, metadata, host, token):
     # handle_level1 = json.loads(r_handle_level1.text)
     print(r_handle_level1)
     # i have to request again the handle info:
-    shareinfo = get_handle_info(share_id, host, token)
-    handleinfo = get_handle_info(shareinfo['handleId'], host, token)
-    
+    shareinfo = get_share_info(share_id, token)
+    print(shareinfo)
+    handleinfo = get_handle_info(shareinfo['handleId'], token)
     print(handleinfo)
 
     return handleinfo
@@ -361,7 +363,7 @@ def had_it_published(folder1_id, host, token, remove_unused_shares=False):
     if attrs_level1['shares']:
         for ii in range(len(attrs_level1['shares'])):
             n = len(attrs_level1['shares']) - 1
-            shareinfo_level1 = get_share_info(attrs_level1['shares'][n-ii], host, token)
+            shareinfo_level1 = get_share_info(attrs_level1['shares'][n-ii], token)
             if shareinfo_level1['handleId']:
                 print('handle exist already, it is already published!!!')
                 print(shareinfo_level1['publicHandle'])
@@ -379,14 +381,15 @@ def had_it_published(folder1_id, host, token, remove_unused_shares=False):
 
 
 
-def get_share_info(share_id, host, token):
+def get_share_info(share_id, token):
 
-    OneData_urlgetShareinfo = "https://" + host + '/api/v3/oneprovider/shares/' + share_id
+    #OneData_urlgetShareinfo = "https://" + host + '/api/v3/oneprovider/shares/' + share_id
+    OneData_urlgetShareinfo = 'https://datahub.egi.eu/api/v3/onezone/shares/' + share_id
     request_param = {'X-Auth-Token': token}
     shareinfo  = requests.get(OneData_urlgetShareinfo, headers=request_param)
     return json.loads(shareinfo.text)
     
-def get_handle_info(handle_id, host, token):
+def get_handle_info(handle_id, token):
 
     # ojo onezone  
     OneData_urlgetHandleinfo = 'https://datahub.egi.eu/api/v3/onezone/user/handles/' + handle_id
@@ -432,15 +435,17 @@ def publish_catalog(handleservice_id, filename, folder1_id, host, token):
             print('It had been published before.')
         else:
             share_level1 = OneData_sharing(filename, folder1_id, all_level1["description"], host, token)
+            print(share_level1)
             OneData_metadata = create_dublincore_xml_file(all_level1)
             handle_level1 = OneData_createhandle(handleservice_id, share_level1["shareId"], OneData_metadata, host, token)
             print('share and handle just created')
             # OJO, funciona en produccion pero no en ceta-ciemat-02
             # it backups the final DublinCore metadata into a hidden .xml in the hidden .metadata dir
+            print(handle_level1['metadata'])
             create_file_in_hidden_metadata_folder(handle_level1['metadata'], filename + '.xml', folder1_id, host, token)
             print('XML in ./metadata/ created')
             # it modifies the JSON-LD metadata both online (internal kept by OneData) and hidden in .metadata  
-            include_hadle_and_share_in_json_and_hidden_metadata('http://hdl.handle.net/' + handle_level1['publicHandle'], filename, share_level1['"publicUrl'], folder1_id, host, token)
+            include_hadle_and_share_in_json_and_hidden_metadata(handle_level1['publicHandle'], share_level1['publicUrl'], filename, folder1_id, host, token)
             # OJO, funciona en produccion pero no en ceta-ciemat-02
             #if all is correct, data should be read-only forever
             read_only_permissions(folder1_id, host, token)
@@ -455,30 +460,59 @@ def get_json_metadata(onedata_id, host, token):
     r_json = requests.get(OneData_urljson, headers={'X-Auth-Token': token})
     return json.loads(r_json.text)
 
+def put_json_metadata(new_json, onedata_id, host, token):
+    
+    OneData_urljson = "https://" + host + '/api/v3/oneprovider/data/' + onedata_id + "/metadata/json"
+    request_param = {'X-Auth-Token': token, 'Content-Type': 'application/json'}
+    r_id = requests.put(OneData_urljson, headers=request_param, json=new_json)
+    print(r_id)
+
 def updating_terms_in_json_metadata(additional_json, onedata_id, host, token):
 
     old_json = get_json_metadata(onedata_id, host, token)
     new_json = mdUtils.add_json(old_json, additional_json)
-    XXXX PUT JSON in id!!!
+    # careful!!! modifiying metadata
+    put_json_metadata(new_json, onedata_id, host, token)
     return new_json
 
+def updating_id_terms_in_json_metadata(json_dict_id, onedata_id, host, token):
+
+    old_json = get_json_metadata(onedata_id, host, token)
+    new_json = mdUtils.replace_only_json_id_items(old_json, json_dict_id)
+    # careful!!! modifiying metadata
+    put_json_metadata(new_json, onedata_id, host, token)
+    return new_json
 
 def include_hadle_and_share_in_json_and_hidden_metadata(handle_link, share_link, folder_name, folder_id, host, token): 
 
     handle_share_list= [handle_link,share_link]
     
     # Catalogue
-    new_json = updating_terms_in_json_metadata({'homepage': handle_share_list}, folder_id, host, token)
-    filename create_file_in_hidden_metadata_folder(new_json, folder_name + '.json' ,folder_id, host, token) 
+    id_json = {'@id': "/" + folder_name,
+               'homepage': handle_share_list
+               }
+    new_json = updating_id_terms_in_json_metadata(id_json, folder_id, host, token)
+    create_file_in_hidden_metadata_folder(json.dumps(new_json), folder_name + '.jsonld' ,folder_id, host, token) 
 
     # DataSets
     all_level0 = folder0_content(folder_id, host, token)
+    # REMOVE .metadata!!!
     for p in all_level0['children']:
-        new_json = updating_terms_in_json_metadata({'landingPage': handle_share_list}, p['id'], host, token)
+        #new_json = updating_terms_in_json_metadata({'landingPage': handle_share_list}, p['id'], host, token)
+        id_json = {'@id': "/" + folder_name + "/" + p['name'],
+                   'landingPage': handle_share_list
+                   }
+        updating_id_terms_in_json_metadata(id_json, p['id'], host, token)
+        id_json = {'@id': "/" + folder_name + "/" + p['name'] + "#distribution",
+                   'accessURL': handle_share_list
+                   }
+        print(id_json)
+        new_json = updating_id_terms_in_json_metadata(id_json, p['id'], host, token)
         ## * Distribution accessURL !!!!
+        ## "distribution": "/S0_and_100_77402_QGSII_volu_defaults/DAT000703-0703-00000000479.lst.bz2#distribution"
         # dist_json_pruned = ?? new_json[???]
         # new_json = updating_terms_in_json_metadata(dist_json_pruned, folder_id, host, token)
-        create_file_in_hidden_metadata_folder(new_json, p['name'] + '.json', folder_id, host, token)
+        create_file_in_hidden_metadata_folder(json.dumps(new_json), p['name'] + '.jsonld', folder_id, host, token)
 
 
 

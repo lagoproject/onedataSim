@@ -32,6 +32,18 @@ def xsd_dateTime():
     # The time zone may be specified as Z (UTC) or (+|-)hh:mm.
     return str(datetime.datetime.utcnow()).replace(' ', 'T') + 'Z'
 
+# start -> xsd:date YYYY-MM-DD / xsd:dateTime  -> datetime.dateTime
+# elapsed > xsd:duration  PxxxS  (seconds) -> datetime.timedelta
+# return datetime.datetime ->  xsd:dateTime  YYYY-MM-DDThh:mm:ssZ
+def xsd_dateTime_add_elapsed(start, elapsed):
+      
+    dt =  datetime.datetime.fromisoformat(start)
+    # WARNING: currently lago:fluxTime is always in seconds
+    # if changes to xsd:duration with days,months,years, we have 
+    # to use isodate module 
+    delta = datetime.timedelta(seconds=elapsed.strip('P').strip('S'))
+    
+    return str(dt+delta).replace(' ', 'T') + 'Z'
 
 # j is adding j_new terms to existing keys or adding keys.
 # j and j_new must have same structure (pruned) tree
@@ -56,6 +68,57 @@ def add_json(j, j_new):
     # is not a list or a dict, is a term.
     # I change to list and call recursiveness
     return add_json([j], j_new)
+
+# replace only the terms that belongs to j_id dict.
+# j_id ALWAYS A dict {"@id"}
+def replace_only_json_id_items(j, j_id):
+    
+    # due to security reasons
+    #if (type(j_id) is not dict) or ("@id" not in j_id.keys()):
+    #    return j
+    
+    if type(j) is list:
+        for i in range(0,len(j)): 
+            j[i] = replace_only_json_id_items(j[i], j_id)
+             
+    if (type(j) is dict):
+        if ("@id" in j.keys()) and (j["@id"] == j_id["@id"]): 
+            # this could be a dict.update ??       
+            for k, v in j_id.items():
+                print("Replacing or adding "+
+                      "'"+ str(k) +"': '" + str(v) + "'" )
+                j[k] = v
+        else: # searching @id again....
+            for k in j.keys():
+                j[k] = replace_only_json_id_items(j[k], j_id)
+        return j
+
+    # it is not a list or a dict, it is a term
+    # then, stopping recursiveness
+    return j   
+    
+# obtain recursively the dict that has "@id" == identifier or None
+def get_item_by_id(j, identifier):
+    
+    if type(j) is list:
+        for i in range(0,len(j)): 
+            result = get_item_by_id(j[i], identifier)
+            if result is not None: 
+                return result
+            
+    if (type(j) is dict):
+        if ("@id" in j.keys()) and (j["@id"] == identifier):       
+            return j
+        else: # searching @id again....
+            for k in j.keys():
+                result = get_item_by_id(j[k], identifier)
+                if result is not None: 
+                    return result
+
+    # it is not a list or a dict, it is a term
+    # then, stopping recursiveness
+    return None   
+
 
 
 def replace_common_patterns(s, catcodename, arti_params_dict):
