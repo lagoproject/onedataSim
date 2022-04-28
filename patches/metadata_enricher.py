@@ -23,14 +23,18 @@ def find_site_metadata(site):
     # get updated sitesLago.jsonld
     # from https://raw.githubusercontent.com/lagoproject/DMP/dev/defs/sitesLago.jsonld
     
-    return get_item_by_id(j, site)
+    urljson = "https://raw.githubusercontent.com/lagoproject/DMP/dev/defs/sitesLago.jsonld"
+    r_json = mdaux.requests.get(urljson)
+    j =  json.loads(r_json.text)
+    
+    return mdUtils.get_item_by_id(j, site)
 
 def enrich_catalog(folder_name, folder_id, host, token):
     
     # get current metadata
-    old_json = get_json_metadata(folder_id, host, token)
+    old_json = mdaux.get_json_metadata(folder_id, host, token)
     
-    artiparams =  get_item_by_id(j, folder_name + "#artiParams")
+    artiparams =  mdUtils.get_item_by_id(old_json, "/" + folder_name + "#artiParams")
     
 # # example of artiparams
 #     {
@@ -116,14 +120,20 @@ def enrich_catalog(folder_name, folder_id, host, token):
     # new spatial 
     # change default altitude to the one simulated "lago:obsLev" OJO: CM->Meters
     new_spatial = {'geometry': j_site['geometry']}
-    new_spatial['geometry']['geo:altitude'] = artiparams["lago:obsLev"]/100
+    isdefaultalt = False
+    print(artiparams)
+    if "lago:obsLev" in artiparams.keys():
+        new_spatial['geometry']['geo:altitude'] = str(float(artiparams["lago:obsLev"])/100)
+    else: 
+        new_spatial['geometry']['geo:altitude'] = j_site['geo:geometry']['geo:altitude']
+        isdefaultalt = True
     
     #new  temporalCoverage
     # "endDate": "2021-05-19T15:01:26" -> bDate + "lago:fluxTime"
     bDate = j_site["lago:magnet"]["@default"]['lago:bDate']
     new_temporalCoverage = {
             "startDate": bDate,
-            "endDate": xsd_dateTime_add_elapsed(bDate,artiparams["lago:fluxTime"]) 
+            "endDate": mdUtils.xsd_dateTime_add_elapsed(bDate,artiparams["lago:fluxTime"]) 
         }
 
     #
@@ -136,52 +146,85 @@ def enrich_catalog(folder_name, folder_id, host, token):
     sim_type = {'S0' : 'plain simulation',
                 'S1' : 'analyzed simulation',
                 'S2' : 'detector response simulation'}
-
-    sim_desc = {'S0' : 'CORSIKA outputs, which are described in the official documentation.',
-                'S1' : 'ARTI analysis and outputs of previous S0 Datasets, containing the expected flux of secondary particles at the ground).',
-                'S2' : 'outputs of ARTI detector simulation module, containing a complete, detailed and adjustable Geant4 model of the LAGO detectors.The main output is the expected signals in the detector, allowing site characterization and comparison with L2 and L3 data sets at each site).'}
+    sim_desc = {'S0' : 'CORSIKA inputs and outputs, which are described in the official documentation (D. Heck and T. Pierog, "Extensive Air Shower Simulation with CORSIKA: A User\'s Guide", https://web.iap.kit.edu/corsika/usersguide/usersguide.pdf).',
+                'S1' : 'ARTI analysis and outputs of previous S0 Datasets, containing the expected flux of secondary particles at the ground.', 
+                'S2' : 'outputs of ARTI detector simulation module, containing a complete, detailed and adjustable Geant4 model of the LAGO detectors. The main output is the expected signals in the detector, allowing site characterization and comparison with all the measured data sets (L*) at each site.'}
 
     new_desc = "This Catalogue contains a complete LAGO (" + s + ") " + sim_type[s]
     #OJO, SERIA MEJOR TENER UN 'label' en vez de un '@id'
     if j_site["lago:belongsLago"]:
-        new_desc = + " for the LAGO '" + j_site['@id'] + "' site"
+        new_desc += " for the LAGO '" + j_site['@id'] + "' site"
         if  j_site["qualifiedAttribution"]["name"] != "":
-            new_desc = + " managed by the "+ j_site["qualifiedAttribution"]["name"] + " institution; "
+            new_desc += " managed by the "+ j_site["qualifiedAttribution"]["name"] + " institution; "
     else:
-        new_desc = + " for a virtual detector called as '" + j_site['@id'] + "'"
+        new_desc +=  " for a virtual detector called as '" + j_site['@id'] + "'"
 
-    new_desc = + " located in " + j_site['name'] + "; on the " 
-    new_desc = + j_site['geometry']['latitude'] + "latitude, "
-    new_desc = + j_site['geometry']['longitude'] + "longitude "
+    new_desc += " located in " + j_site['name'] + ", on the " 
+    new_desc += j_site['geometry']['geo:latitude'] + " latitude,"
+    new_desc += " " + j_site['geometry']['geo:longitude'] + " longitude"
     
     # altitude vs. obsLevel
-    if artiparams["lago:obsLev"]/100 == j_site['geometry']['altitude']:
-        new_desc = + " and "
+    #if artiparams["lago:obsLev"]/100 == j_site['geometry']['altitude']:
+    if isdefaultalt:
+        new_desc += " and "
     else:
-        new_desc = + ", but using an observation level different to the default, in this case "         
+        new_desc += ", but using an observation level different to the default, in this case "         
 
-    new_desc = + artiparams["lago:obsLev"]/100 + "meters in altitude."    
+    new_desc += new_spatial['geometry']['geo:altitude'] + " meters in altitude."    
     
     # validity vs. temporal coverage vs. geomagnetic coords.
-    new_desc = + " Moreover, the data was generated for the geomagnetic field corresponding to the period between " 
-    new_desc = + new_temporalCoverage["startDate"] + " and "+ new_temporalCoverage["endDate"] + "."  
+    new_desc += " Moreover, the data was generated for the geomagnetic field corresponding to the period between " 
+    new_desc += new_temporalCoverage["startDate"] + " and "+ new_temporalCoverage["endDate"] + "."  
         
-    new_desc = + "The Datasets are " + sim_desc[s]
+    new_desc += " The Datasets are " + sim_desc[s]
     
-    new_desc = + "These Datasets were generated for a flux time of " + artiparams["lago:fluxTime"]
+    new_desc += " These Datasets were generated for a flux time of " + artiparams["lago:fluxTime"]
     
     if "lago:highEnergyIntModel" in artiparams.keys():
-        new_desc = + ", following the high energy integration model " + artiparams["lago:highEnergyIntModel"]
+        new_desc += ", following the high energy integration model " + artiparams["lago:highEnergyIntModel"]
 
     if "lago:flatArray" in artiparams.keys():
-        new_desc = + ", in flat array mode."
+        new_desc += ", in flat array mode."
     else: 
         ", in volumetric detector mode."
-    
-    new_desc = + " A detailed description of the type of Datasets contained in this Catalogue is in the Data Management Plan of LAGO at https://lagoproject.github.io/DMP/DMP/"
-    #new_description + = "Complete simulation performed by onedataSim software, based on ARTI, ... based on Corsika "
 
+    if "lago:highEnergyCutsSecondaries" in artiparams.keys(): 
+        new_desc += " Additionally, high energy cuts for secondaries were used, so there are no secondary particles with energies E < " +  artiparams["lago:highEnergyCutsSecondaries"] + " GeV."    
+
+    if "lago:modatm" in artiparams.keys(): 
+        new_desc += " The " + artiparams["lago:modatm"] + " external atmosphere file was used for this site." 
+    else:
+        new_desc += " The default atmosphere (" + j_site["lago:atmcrd"]["lago:modatm"]["@default"] + ") was used for this site."
+
+    if "lago:tMin" not in artiparams.keys():
+        # artiparams["lago:tMin"] = schema["lago:tMin"]["@default"]
+        artiparams["lago:tMin"] = "0"
+    if "lago:tMax" not in artiparams.keys(): 
+        # artiparams["lago:tMax"] = schema["lago:tMax"]["@default"]
+        artiparams["lago:tMax"] = "90"
+
+    new_desc += " The zenith range used was set to [" + artiparams["lago:tMin"] + "," + artiparams["lago:tMax"] +"] degrees."    
+
+#BUG llimit ulimit -> lLimit uLimit
+    # lower and upper limit and rigidity:
+    if "lago:lLimit" not in artiparams.keys():
+        # artiparams["lago:lLimit" ] = schema["lago:lLimit" ]["@default"]  
+        artiparams["lago:lLimit" ] = "5"   
+     
+    if "lago:uLimit" not in artiparams.keys(): 
+        # artiparams["lago:uLimit" ] = schema["lago:lLimit" ]["@default"]
+        artiparams["lago:uLimit" ] = "1e6"
+     
+    new_desc += " The primary integration energy range used was set to [" + artiparams["lago:lLimit" ] + "," + artiparams["lago:uLimit"] +"] GeV."
+        
+    # la rigidez es GV y no GeV (porque la rigidez se define como función de la carga: E_cut = p * c * Z, donde p es el momento de la partícula, c la velocidad de la luz, 1, y Z es la carga). 
+    if "lago:rigidity" in artiparams.keys(): 
+        new_desc += " The local rigidity cutoff was set to " + artiparams["lago:rigidity" ] + " GV."
+
+    new_desc += " The completeness of the simulation and the requirements for its storing and publishing was guaranteed by the onedataSim software (https://github.com/lagoproject/onedataSim/), relying on the ARTI software (https://github.com/lagoproject/arti/)."
+    new_desc += " A detailed description of the type and generation of the Datasets and Metadata contained in this Catalogue is in the Data Management Plan of LAGO at https://lagoproject.github.io/DMP/"
     
+        
     # Enrich metadata Catalogue
     id_json = {'@id': "/" + folder_name,
                'description': new_desc,
@@ -214,8 +257,8 @@ if args.myspace_path:
 if args.recursive is True:
     all_level0 = mdaux.folder0_content(args.folder_id, args.host, args.token)
     for p in all_level0['children']:
-        enrich_catalog(args.handleservice_id, p['name'], p['id'], args.host, args.token)
+        enrich_catalog(p['name'], p['id'], args.host, args.token)
 else:
     if args.folder_id:
         filename = mdaux.get_filename(args.folder_id, args.host, args.token)
-    enrich_catalog(args.handleservice_id, filename, args.folder_id, args.host, args.token)
+    enrich_catalog(filename, args.folder_id, args.host, args.token)

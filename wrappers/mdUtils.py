@@ -41,7 +41,7 @@ def xsd_dateTime_add_elapsed(start, elapsed):
     # WARNING: currently lago:fluxTime is always in seconds
     # if changes to xsd:duration with days,months,years, we have 
     # to use isodate module 
-    delta = datetime.timedelta(seconds=elapsed.strip('P').strip('S'))
+    delta = datetime.timedelta(seconds=int(elapsed.strip('P').strip('S')))
     
     return str(dt+delta).replace(' ', 'T') + 'Z'
 
