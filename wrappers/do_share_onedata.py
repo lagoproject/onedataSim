@@ -241,7 +241,8 @@ def get_folder_id(myspace_path, host, token):
     OneData_urlfolder_id = "https://" + host + '/api/v3/oneprovider/lookup-file-id/' + myspace_path
     request_param = {'X-Auth-Token': token}
     r_id = requests.post(OneData_urlfolder_id, headers=request_param)
-    folder_id = json.loads(r_id.text)['fileid']
+    print(r_id.text)
+    folder_id = json.loads(r_id.text)['fileId']
     
     return folder_id
 
@@ -430,7 +431,7 @@ def publish_catalog(handleservice_id, filename, folder1_id, host, token):
     all_level1 = get_json_metadata(folder1_id, host, token)
 
     # falta: una funcion que devuelva true o false si pasa o no unos minimos requisitos. 
-    if 'dataset' in all_level1:
+    if ('dataset' in all_level1) and (filename.split('_')[0] == "S0"):
         
         # is it published?
         if had_it_published(folder1_id, host, token):
