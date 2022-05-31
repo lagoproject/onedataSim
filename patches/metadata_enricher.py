@@ -23,7 +23,7 @@ def find_site_metadata(site):
     # get updated sitesLago.jsonld
     # from https://raw.githubusercontent.com/lagoproject/DMP/dev/defs/sitesLago.jsonld
     
-    urljson = "https://raw.githubusercontent.com/lagoproject/DMP/dev/defs/sitesLago.jsonld"
+    urljson = "https://raw.githubusercontent.com/lagoproject/DMP/1.1.0/defs/sitesLago.1.1.jsonld"
     r_json = mdaux.requests.get(urljson)
     j =  json.loads(r_json.text)
     
@@ -32,7 +32,7 @@ def find_site_metadata(site):
 def enrich_catalog(only_test, folder_name, folder_id, host, token):
     
     # get current schema
-    r_json = mdaux.requests.get("https://raw.githubusercontent.com/lagoproject/DMP/dev/schema/lagoSchema.jsonld")
+    r_json = mdaux.requests.get("https://raw.githubusercontent.com/lagoproject/DMP/1.1.0/schema/lagoSchema.1.1.jsonld")
     schema = json.loads(r_json.text)
     
     # get current metadata

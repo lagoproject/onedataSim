@@ -11,7 +11,7 @@
 #
 # 1- NO me gusta - ¿cambiar tag 1.1 POR el commit?????? NO SACA LO MISMO QUE DEV, QUE ESTÁ MEJORADO!!!!
 # 2- https://github.com/lagoproject/DMP/blob/1.1/defs/sitesLago.jsonld#and -> 
-#        https://raw.githubusercontent.com/lagoproject/DMP/1.1/defs/sitesLago.jsonld
+#        "https://raw.githubusercontent.com/lagoproject/DMP/1.1/defs/sitesLago.jsonld"
 # 3- y codigos anadir /LAGOsim  -> PERO SI AÑADO LAGOsim no va a funcionar ni la mitad de los wrappers..., es un cambio mayor!!!
 # 4- "prov:wasAssociatedWith": {"@id": "HANDLETOCDMI/LAGOsoft/corsika/corsika-75600-lago.tar.gz", -> SE HACE una ñapa y se 
 #     SE CONTINUA EN OTRO PATCHER2
@@ -21,6 +21,8 @@
 # 8 - Ojo se ha cambiado los codigos: pozn -> psnc ; juli-> jsc
 # 9 - lagocollaboration.jsonld -> lagoCollaboration.jsonld
 # 10 -  "@id:"-> "@id"
+# 11 adding Main Release (major.minor): filename.jsonld -> filename.1.1.jsonld
+# 12 Adding GitHub Tag with patch (major.minor.patch): "/DMP/1.1" -> "/DMP/1.1.0"
 
 
 import argparse
@@ -68,15 +70,33 @@ def patch(only_test, folder_name, folder_id, host, token):
     j_text = j_text.replace("lago:llimit", "lago:lLimit")
     
     # 8 - Ojo se ha cambiado los codigos: pozn -> psnc ; juli-> jsc
-    j_text = j_text.replace("sitesLago.jsonld#pozn", "sitesLago.jsonld#pnsc") #OJO FALTA CAMBIAR SUS NOMBRES DE FICHERO
-    j_text = j_text.replace("sitesLago.jsonld#juli", "sitesLago.jsonld#jsc") # OJO FALTA CAMBIAR SUS NOMBRES DE FICHERO
+    j_text = j_text.replace("jsonld#pozn", "jsonld#pnsc") #OJO FALTA CAMBIAR SUS NOMBRES DE FICHERO
+    j_text = j_text.replace("jsonld#juli", "jsonld#jsc") # OJO FALTA CAMBIAR SUS NOMBRES DE FICHERO
     
+
     # 9 - lagocollaboration.jsonld -> lagoCollaboration.jsonld
     j_text = j_text.replace("lagocollaboration.jsonld", "lagoCollaboration.jsonld")
-    
+ 
     # 10  "@id:"-> "@id"
     j_text = j_text.replace("@id:" , "@id")
     
+    # 11 adding Main Release (major.minor)
+    j_text = j_text.replace("sitesLago.jsonld",
+                            "sitesLago.1.1.jsonld")
+    
+    j_text = j_text.replace("lagoSchema.jsonld",
+                            "lagoSchema.1.1.jsonld")
+    
+    j_text = j_text.replace("lagoCommonRights.jsonld",
+                            "lagoCommonRights.1.1.jsonld")
+    
+    j_text = j_text.replace("lagoCollaboration.jsonld",
+                            "lagoCollaboration.1.1.jsonld")
+    
+    # 12 Adding GitHub Tag with patch (major.minor.patch)
+    
+    j_text = j_text.replace("/DMP/1.1",
+                            "/DMP/1.1.0")
 
     
     print('\n\n')

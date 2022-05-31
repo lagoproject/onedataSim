@@ -41,6 +41,13 @@ def create_dublincore_xml_file(all_level1):
     -------
     ....????
     """
+    
+    # get publisher
+    r_json = mdaux.requests.get(all_level1["publisher"]['@id'])
+    j_publisher = json.loads(r_json.text)
+    # get current rights
+    r_json = mdaux.requests.get(all_level1["rights"]['@id'])
+    j_rights = json.loads(r_json.text)
 
     # ajrm: creating a handle at OneData needs a RDF file:
     # https://onedata.org/#/home/api/stable/onezone?anchor=operation/handle_service_register_handle
@@ -81,17 +88,21 @@ def create_dublincore_xml_file(all_level1):
         with tag('dc:description'):
             text(all_level1["description"])
         with tag('dc:publisher'):
-            text('EGI DataHub')
+            text('EGI DataHub')  # OJO SERIA MEJOR CAPTURARLO DE METADATOS
         with tag('dc:publisher'):
             text('https://datahub.egi.eu')
         with tag('dc:publisher'):
-            text('LAGO Collaboration') # MEJOR SERIA CAPTURARLA DEL LINK JSON
+            text(j_publisher["name"]) # LAGO Collaboration
         with tag('dc:publisher'):
-            text(all_level1["publisher"]['@id'])
+            text(j_publisher["url"]) # equivalent to landingPage
+        with tag('dc:publisher'):
+            text(j_publisher["sameAs"][0]) # equivalent URLS           
         with tag('dc:contributor'):
-            text('LAGO Collaboration') # LAGO es cotributor en todas las publicaciones
+            text(j_publisher["name"]) # LAGO Collaboration es tambien siempre contributor
         with tag('dc:contributor'):
-            text(all_level1["publisher"]['@id'])  # OJO quizás hay que meterlo en el JSON 
+            text(j_publisher["url"]) # equivalent to landingPage
+        with tag('dc:contributor'):
+            text(j_publisher["sameAs"][0]) # equivalent URLS, OJO SOLO PONGO LA PRIMERA Y ESPERO QUE APUNTE AL DMP    
         with tag('dc:contributor'):
             text('EOSC-Synergy')  # OJO SERIA MEJOR CAPTURARLO DE METADATOS
         with tag('dc:contributor'):            
@@ -136,11 +147,13 @@ def create_dublincore_xml_file(all_level1):
         with tag('dc:rights'):
             text(all_level1["license"])
         with tag('dc:rights'):
-            text('LAGO Common Rights')
+            text(j_rights["title"]) # LAGO Common Rights
         with tag('dc:rights'):
-            text(all_level1["rights"])
+            text(j_rights["landingPage"])
         with tag('dc:rights'):
-            text('Current Rights')
+            text(j_rights["relatedResource"])
+        with tag('dc:rights'):
+            text('Access Rights')
         with tag('dc:rights'):
             text(all_level1["accessRigths"])
         # with tag('dc:instrument'): # OJO no existe dc:instrument, ni en DataCite, es solo esquema B2FIND
@@ -367,6 +380,8 @@ def had_it_published(folder1_id, host, token, remove_unused_shares=False):
         for ii in range(len(attrs_level1['shares'])):
             n = len(attrs_level1['shares']) - 1
             shareinfo_level1 = get_share_info(attrs_level1['shares'][n-ii], token)
+            #OJO BUG, PROBLEMAS para obtener el Share cuando se ha migrado el OneProvider
+            if 'handleId' is not shareinfo_level1.keys(): return ([])
             if shareinfo_level1['handleId']:
                 print('handle exist already, it is already published!!!')
                 print(shareinfo_level1['publicHandle'])
