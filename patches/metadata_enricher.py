@@ -195,7 +195,7 @@ def enrich_catalog(only_test, folder_name, folder_id, host, token):
     new_desc += " These Datasets were generated for a flux time of " + artiparams["lago:fluxTime"].replace("P","").replace("S","") + " seconds"
     
     if "lago:highEnergyIntModel" in artiparams.keys():
-        new_desc += ", following the high energy integration model " + artiparams["lago:highEnergyIntModel"]
+        new_desc += ", following the high energy integration model " + str(artiparams["lago:highEnergyIntModel"])
 
     if "lago:flatArray" in artiparams.keys():
         new_desc += ", in flat array mode."
@@ -203,12 +203,12 @@ def enrich_catalog(only_test, folder_name, folder_id, host, token):
         ", in volumetric detector mode."
 
     if "lago:highEnergyCutsSecondaries" in artiparams.keys(): 
-        new_desc += " Additionally, high energy cuts for secondaries were used, so there are no secondary particles with energies E < " +  artiparams["lago:highEnergyCutsSecondaries"] + " GeV."    
+        new_desc += " Additionally, high energy cuts for secondaries were used, so there are no secondary particles with energies E < " +  str(artiparams["lago:highEnergyCutsSecondaries"]) + " GeV."    
 
     if "lago:modatm" in artiparams.keys(): 
-        new_desc += " The " + artiparams["lago:modatm"] + " external atmosphere file was used for this site." 
+        new_desc += " The " + str(artiparams["lago:modatm"]) + " external atmosphere file was used for this site." 
     else:
-        new_desc += " The default atmosphere (" + j_site["lago:atmcrd"]["lago:modatm"]["@default"] + ") was used for this site."
+        new_desc += " The default atmosphere (" + str(j_site["lago:atmcrd"]["lago:modatm"]["@default"]) + ") was used for this site."
 
     if "lago:tMin" not in artiparams.keys():
         artiparams["lago:tMin"] = mdUtils.get_item_by_id(schema,"lago:tMin")["@default"]
@@ -225,11 +225,11 @@ def enrich_catalog(only_test, folder_name, folder_id, host, token):
     if "lago:uLimit" not in artiparams.keys(): 
         artiparams["lago:uLimit" ] = mdUtils.get_item_by_id(schema,"lago:uLimit")["@default"]
  
-    new_desc += " The primary integration energy range used was set to [" + artiparams["lago:lLimit" ] + "," + artiparams["lago:uLimit"] +"] GeV."
+    new_desc += " The primary integration energy range used was set to [" + str(artiparams["lago:lLimit"]) + "," + str(artiparams["lago:uLimit"]) +"] GeV."
         
     # la rigidez es GV y no GeV (porque la rigidez se define como función de la carga: E_cut = p * c * Z, donde p es el momento de la partícula, c la velocidad de la luz, 1, y Z es la carga). 
     if "lago:rigidity" in artiparams.keys(): 
-        new_desc += " The local rigidity cutoff was set to " + artiparams["lago:rigidity" ] + " GV."
+        new_desc += " The local rigidity cutoff was set to " + str(artiparams["lago:rigidity"]) + " GV."
 
     new_desc += "\n\n The completeness of the simulation and the requirements for its storing and publishing was guaranteed by the onedataSim software ( https://github.com/lagoproject/onedataSim ), relying on the ARTI software ( https://github.com/lagoproject/arti )."
     new_desc += " A detailed description of the type and generation of the Datasets and Metadata contained in this Catalogue is in the Data Management Plan of LAGO at https://lagoproject.github.io/DMP/"
@@ -264,16 +264,18 @@ parser = argparse.ArgumentParser(description='Enricher of metadata')
 parser.add_argument('--token', help ='')
 parser.add_argument('--host', help ='')  # OneData Provider !!!
 parser.add_argument('--folder_id', help ='' ) #INCOMPATIBLE CON --myspace_path
-parser.add_argument('--myspace_path', help ='' ) #INCOMPATIBLE CON --folder_id
+parser.add_argument('--myspace_path', help ='Only Catalgues or paths that contain sub-catalogues' ) #INCOMPATIBLE CON --folder_id
 parser.add_argument('--recursive', action='store_true', default=None,
-                     help="Enable finding sub-catalogs and sharing the ones that weren\'t shared)")
+                     help="Enable finding sub-catalogues and sharing the ones that weren\'t shared)")
 parser.add_argument('--only_test', action='store_true', default=False,
                      help="If it is set, only test the changes and outputs)")
 
 args = parser.parse_args()
 
 if args.myspace_path:
-    args.folder_id = mdaux.get_folder_id(args.myspace_path, args.host, args.token) 
+    args.folder_id = mdaux.get_folder_id(args.myspace_path, args.host, args.token)
+    if not args.folder_id: 
+        exit(-1) 
 
 #solo un nivel de recursividad, preparado para que desde un Space, se cambien solo los metadata del catalogo
 if args.recursive is True:
@@ -281,6 +283,6 @@ if args.recursive is True:
     for p in all_level0['children']:
         enrich_catalog(args.only_test, p['name'], p['id'], args.host, args.token)
 else:
-    if args.folder_id:
-        filename = mdaux.get_filename(args.folder_id, args.host, args.token)
+    filename = mdaux.get_filename(args.folder_id, args.host, args.token)
     enrich_catalog(args.only_test, filename, args.folder_id, args.host, args.token)
+

@@ -43,10 +43,10 @@ def create_dublincore_xml_file(all_level1):
     """
     
     # get publisher
-    r_json = mdaux.requests.get(all_level1["publisher"]['@id'])
+    r_json = requests.get(all_level1["publisher"]['@id'])
     j_publisher = json.loads(r_json.text)
     # get current rights
-    r_json = mdaux.requests.get(all_level1["rights"]['@id'])
+    r_json = requests.get(all_level1["rights"])
     j_rights = json.loads(r_json.text)
 
     # ajrm: creating a handle at OneData needs a RDF file:
@@ -546,23 +546,24 @@ def main():
     parser.add_argument('--token', help ='')
     parser.add_argument('--host', help ='')  # OneData Provider !!!
     parser.add_argument('--folder_id', help ='' ) #INCOMPATIBLE CON --myspace_path
-    parser.add_argument('--myspace_path', help ='' ) #INCOMPATIBLE CON --folder_id
+    parser.add_argument('--myspace_path', help ='Only Catalgues or paths that contain sub-catalogues' ) #INCOMPATIBLE CON --folder_id
     parser.add_argument('--handleservice_id', help ='' )
     parser.add_argument('--recursive', action='store_true', default=None,
-                         help="Enable finding sub-catalogs and sharing the ones that weren\'t shared)")
+                         help="Enable finding sub-catalogues and sharing the ones that weren\'t shared)")
     
     args = parser.parse_args()
     
     if args.myspace_path:
         args.folder_id = get_folder_id(args.myspace_path, args.host, args.token) 
+        if not args.folder_id: 
+            exit(-1)
     
     if args.recursive is True:
         all_level0 = folder0_content(args.folder_id, args.host, args.token)
         for p in all_level0['children']:
             publish_catalog(args.handleservice_id, p['name'], p['id'], args.host, args.token)
     else:
-        if args.folder_id:
-            filename = get_filename(args.folder_id, args.host, args.token)
+        filename = get_filename(args.folder_id, args.host, args.token)
         publish_catalog(args.handleservice_id, filename, args.folder_id, args.host, args.token)
     
     

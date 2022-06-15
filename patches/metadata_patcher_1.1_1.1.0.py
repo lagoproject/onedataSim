@@ -35,7 +35,7 @@ import do_share_onedata as mdaux
 from fileinput import filename
 
 
-def patch(only_test, folder_name, folder_id, host, token):
+def patch(only_test, folder_name, folder_id, folder_where_md_hidden, host, token):
     
     # get current metadata
     old_json = mdaux.get_json_metadata(folder_id, host, token)
@@ -95,8 +95,8 @@ def patch(only_test, folder_name, folder_id, host, token):
     
     # 12 Adding GitHub Tag with patch (major.minor.patch)
     
-    j_text = j_text.replace("/DMP/1.1",
-                            "/DMP/1.1.0")
+    j_text = j_text.replace("/DMP/1.1/",
+                            "/DMP/1.1.0/")
 
     
     print('\n\n')
@@ -107,7 +107,7 @@ def patch(only_test, folder_name, folder_id, host, token):
     if not only_test:
         # careful!!! modifiying metadata
         mdaux.put_json_metadata(new_json, folder_id, host, token)
-        mdaux.create_file_in_hidden_metadata_folder(json.dumps(new_json), folder_name + '.jsonld' ,folder_id, host, token)     
+        mdaux.create_file_in_hidden_metadata_folder(json.dumps(new_json), folder_name + '.jsonld', folder_where_md_hidden, host, token)     
     print(new_json)
 
 
@@ -121,29 +121,35 @@ parser = argparse.ArgumentParser(description='Enricher of metadata')
 parser.add_argument('--token', help ='')
 parser.add_argument('--host', help ='')  # OneData Provider !!!
 parser.add_argument('--folder_id', help ='' ) #INCOMPATIBLE CON --myspace_path
-parser.add_argument('--myspace_path', help ='' ) #INCOMPATIBLE CON --folder_id
+parser.add_argument('--myspace_path', help ='Only Catalgues or paths that contain sub-catalogues' ) #INCOMPATIBLE CON --folder_id
 parser.add_argument('--recursive', action='store_true', default=None,
-                     help="Enable finding sub-catalogs and sharing the ones that weren\'t shared)")
+                     help="Enable finding sub-catalogues and sharing the ones that weren\'t shared)")
 parser.add_argument('--only_test', action='store_true', default=False,
                      help="If it is set, only test the changes and outputs)")
 
 args = parser.parse_args()
 
 if args.myspace_path:
-    args.folder_id = mdaux.get_folder_id(args.myspace_path, args.host, args.token) 
+    args.folder_id = mdaux.get_folder_id(args.myspace_path, args.host, args.token)
+    if not args.folder_id: 
+        exit(-1)
 
 #dos niveles de recursividad, preparado para cambiar desde el Space, los metadatos del catalogo y sus datasets
 if args.recursive is True:
     all_level0 = mdaux.folder0_content(args.folder_id, args.host, args.token)
     for p in all_level0['children']:
-        if p['name'] != ".metadata":
-            patch(args.only_test, p['name'], p['id'], args.host, args.token)
+            patch(args.only_test, p['name'], p['id'], p['id'], args.host, args.token)
             all_level1 = mdaux.folder0_content(p['id'], args.host, args.token)
             for q in all_level1['children']:
                 if q['name'] != ".metadata":
-                    patch(args.only_test, q['name'], q['id'], args.host, args.token)
+                    patch(args.only_test, q['name'], q['id'], p['id'],args.host, args.token)
         
 else:
-    if args.folder_id:
-        filename = mdaux.get_filename(args.folder_id, args.host, args.token)
-    patch(args.only_test, filename, args.folder_id, args.host, args.token)
+    filename = mdaux.get_filename(args.folder_id, args.host, args.token)
+    patch(args.only_test, filename, args.folder_id, args.folder_id, args.host, args.token)
+    all_level1 = mdaux.folder0_content(args.folder_id, args.host, args.token)
+    for q in all_level1['children']:
+        if q['name'] != ".metadata":
+            patch(args.only_test, q['name'], q['id'], args.folder_id,args.host, args.token)
+    
+    
