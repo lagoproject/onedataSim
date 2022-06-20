@@ -184,12 +184,17 @@ def get_orcid_name(orcid_link):
 
 
 
-def read_only_permissions(folder_id, host, token, anonym_access=False):
+def read_only_permissions(folder_id, host, token, all_level1):
     
-    # default is to allow anonymous users only reading the metadata 
-    mode = '0554'
-    if anonym_access: 
-        mode = '0555'
+    # pueden haber varios #activity, es un bug que debería estar corregido
+    # aquí cogería el primero que vea
+    #activity_json = mdUtils.get_item_by_id(all_level1, "/" + folder_name + "#activity")
+    
+    mode = '0555'
+    # default is to allow anonymous users only reading the metadata = 0554
+    #mode = '0554'
+    #if anonym_access: 
+    #    mode = '0555'
 
     OneData_urlfolder = "https://" + host + '/api/v3/oneprovider/data/' + folder_id
     request_param = {'X-Auth-Token': token, 'Content-Type': 'application/json'}
@@ -292,7 +297,13 @@ def OneData_sharing(filename, file_id, description, host, token):
     OneData_Header = "application/json"
     OneData_urlcreateShare = "https://" + host + '/api/v3/oneprovider/shares'
     request_param = {'X-Auth-Token': token, "Content-Type": OneData_Header}
-    data_file_share = {'name': filename, "fileId": file_id, "description": description}
+    # OneData Bug/restriction: 'name' max 50 chars for share
+    #data_file_share = {'name': filename, "fileId": file_id, "description": description}
+    if len(filename) > 50:
+        sharename = filename[0:49]
+    else: 
+        sharename = filename
+    data_file_share = {'name': sharename, "fileId": file_id, "description": description}
     r_share_level1 = requests.post(OneData_urlcreateShare, headers=request_param, json=data_file_share)
     
     # only returns shareID
@@ -374,17 +385,19 @@ def had_it_published(folder1_id, host, token, remove_unused_shares=False):
     request_param = {'X-Auth-Token': token}
     shareid_level1 = requests.get(OneData_urlgetAttrs, headers=request_param)
     attrs_level1 = json.loads(shareid_level1.text)
+    print(attrs_level1)
 
     shareinfo = []
     if attrs_level1['shares']:
         for ii in range(len(attrs_level1['shares'])):
             n = len(attrs_level1['shares']) - 1
             shareinfo_level1 = get_share_info(attrs_level1['shares'][n-ii], token)
-            #OJO BUG, PROBLEMAS para obtener el Share cuando se ha migrado el OneProvider
-            if 'handleId' is not shareinfo_level1.keys(): return ([])
+            # print(shareinfo_level1)
+            # OJO BUG, PROBLEMAS para obtener el Share cuando se ha migrado el OneProvider
+            if 'handleId' not in shareinfo_level1.keys(): continue
             if shareinfo_level1['handleId']:
                 print('handle exist already, it is already published!!!')
-                print(shareinfo_level1['publicHandle'])
+                print(shareinfo_level1['handleId'])
                 shareinfo = shareinfo_level1
             else:
                 print('handle is missing')
@@ -445,19 +458,21 @@ def publish_catalog(handleservice_id, filename, folder1_id, host, token):
 
     all_level1 = get_json_metadata(folder1_id, host, token)
 
-    # falta: una funcion que devuelva true o false si pasa o no unos minimos requisitos. 
-    if ('dataset' in all_level1) and (filename.split('_')[0] == "S0"):
+    # falta: una funcion que devuelva true o false si pasa o no unos minimos requisitos.
+    # con spatial me aseguro que tiene metadatos enriquecidos 
+    if ('spatial' in all_level1) and ('dataset' in all_level1) and (filename.split('_')[0] == "S0"):
         
         # is it published?
         if had_it_published(folder1_id, host, token):
             print('It had been published before.')
+            # check if the embargo period had been overcomed (1 year)
+            read_only_permissions(folder1_id, host, token, all_level1) 
         else:
             share_level1 = OneData_sharing(filename, folder1_id, all_level1["description"], host, token)
             print(share_level1)
             OneData_metadata = create_dublincore_xml_file(all_level1)
             handle_level1 = OneData_createhandle(handleservice_id, share_level1["shareId"], OneData_metadata, host, token)
             print('share and handle just created')
-            # OJO, funciona en produccion pero no en ceta-ciemat-02
             # it backups the final DublinCore metadata into a hidden .xml in the hidden .metadata dir
             print(handle_level1['metadata'])
             create_file_in_hidden_metadata_folder(handle_level1['metadata'], filename + '.xml', folder1_id, host, token)
@@ -466,10 +481,11 @@ def publish_catalog(handleservice_id, filename, folder1_id, host, token):
             include_hadle_and_share_in_json_and_hidden_metadata(handle_level1['publicHandle'], share_level1['publicUrl'], filename, folder1_id, host, token)
             # OJO, funciona en produccion pero no en ceta-ciemat-02
             #if all is correct, data should be read-only forever
-            read_only_permissions(folder1_id, host, token)
+            read_only_permissions(folder1_id, host, token, all_level1)
             print('Catalog is now read-only')
+            
     else:
-        print(filename + " Calculation not completed")
+        print(filename + " Calculation not completed or metadate not enriched")
 
 
 def get_json_metadata(onedata_id, host, token):
@@ -547,7 +563,7 @@ def main():
     parser.add_argument('--host', help ='')  # OneData Provider !!!
     parser.add_argument('--folder_id', help ='' ) #INCOMPATIBLE CON --myspace_path
     parser.add_argument('--myspace_path', help ='Only Catalgues or paths that contain sub-catalogues' ) #INCOMPATIBLE CON --folder_id
-    parser.add_argument('--handleservice_id', help ='' )
+    parser.add_argument('--handleservice_id', required=True, help ='Alwasy required for creating the handle' )
     parser.add_argument('--recursive', action='store_true', default=None,
                          help="Enable finding sub-catalogues and sharing the ones that weren\'t shared)")
     
@@ -561,6 +577,7 @@ def main():
     if args.recursive is True:
         all_level0 = folder0_content(args.folder_id, args.host, args.token)
         for p in all_level0['children']:
+            print("Publish Catalogue for " + p['name'] + " id:" + p['id'])
             publish_catalog(args.handleservice_id, p['name'], p['id'], args.host, args.token)
     else:
         filename = get_filename(args.folder_id, args.host, args.token)
