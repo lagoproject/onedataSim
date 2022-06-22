@@ -42,6 +42,11 @@ def enrich_catalog(only_test, folder_name, folder_id, host, token):
     if "dataset" not in old_json.keys():
         print("\n Can\'t enrich: " + folder_name + "\n") 
         return 
+    # and currently only works for S0_
+    if filename.split('_')[0] == "S0" :
+        print("\n Can\'t enrich: " + folder_name + "\n") 
+        return         
+    
 
     artiparams =  mdUtils.get_item_by_id(old_json, "/" + folder_name + "#artiParams")
     

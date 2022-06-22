@@ -42,6 +42,11 @@ def patch(only_test, folder_name, folder_id, folder_where_md_hidden, host, token
     
     j_text = json.dumps(old_json)
     
+    #si está parcheado no vuelve a hacerlo
+    if j_text.count('/DMP/1.1.0/') > 0 : 
+        print('Already patched, skipping file')
+        return False
+    
     # 1- SE QUEDA COMO ESTA: borro y creo un tag 1.1 nuevo
 
     # 2- https://github.com/lagoproject/DMP/blob/1.1/defs/sitesLago.jsonld-> 
@@ -110,6 +115,8 @@ def patch(only_test, folder_name, folder_id, folder_where_md_hidden, host, token
         mdaux.create_file_in_hidden_metadata_folder(json.dumps(new_json), folder_name + '.jsonld', folder_where_md_hidden, host, token)     
     print(new_json)
 
+    # si ha cambiado cosas
+    return True
 
 # ###############
 # MAIN CODE
@@ -123,7 +130,7 @@ parser.add_argument('--host', help ='')  # OneData Provider !!!
 parser.add_argument('--folder_id', help ='' ) #INCOMPATIBLE CON --myspace_path
 parser.add_argument('--myspace_path', help ='Only Catalgues or paths that contain sub-catalogues' ) #INCOMPATIBLE CON --folder_id
 parser.add_argument('--recursive', action='store_true', default=None,
-                     help="Enable finding sub-catalogues and sharing the ones that weren\'t shared)")
+                     help="Enable finding sub-catalogues and sharing the ones that weren\'t shared). Careful: it skips partially-patched Catalogues. Without this option, you can force the patching.")
 parser.add_argument('--only_test', action='store_true', default=False,
                      help="If it is set, only test the changes and outputs)")
 
@@ -137,8 +144,14 @@ if args.myspace_path:
 #dos niveles de recursividad, preparado para cambiar desde el Space, los metadatos del catalogo y sus datasets
 if args.recursive is True:
     all_level0 = mdaux.folder0_content(args.folder_id, args.host, args.token)
+    print("Testing patchin in " + str(len(all_level0['children'])) + " Catalogues." )
     for p in all_level0['children']:
-            patch(args.only_test, p['name'], p['id'], p['id'], args.host, args.token)
+            # OJO dejo de parchear si el directorio del catálogo ya está parcheado.
+            # solo se puede forzar el parcheo individualmente  
+            patched = patch(args.only_test, p['name'], p['id'], p['id'], args.host, args.token)
+            if not patched: 
+                print('Already patched, skipping Catalogue.')
+                continue
             all_level1 = mdaux.folder0_content(p['id'], args.host, args.token)
             for q in all_level1['children']:
                 if q['name'] != ".metadata":
