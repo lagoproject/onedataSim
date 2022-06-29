@@ -41,12 +41,13 @@ def enrich_catalog(only_test, folder_name, folder_id, host, token):
     #only works if complete catalogue:
     if "dataset" not in old_json.keys():
         print("\n Can\'t enrich: " + folder_name + "\n") 
-        return 
+        return    
     # and currently only works for S0_
-    if filename.split('_')[0] == "S0" :
-        print("\n Can\'t enrich: " + folder_name + "\n") 
-        return         
-    
+    if folder_name.split('_')[0] != "S0" :
+        print("\n Can\'t enrich: " + folder_name + "\n")
+        return
+    else:
+        print("\n Enriching: " + folder_name + "\n")   
 
     artiparams =  mdUtils.get_item_by_id(old_json, "/" + folder_name + "#artiParams")
     
@@ -131,6 +132,11 @@ def enrich_catalog(only_test, folder_name, folder_id, host, token):
     # get fixed metadata for the site 
     
     j_site = find_site_metadata(site)
+
+    if j_site is None:
+        print("\n Can\'t enrich: " + folder_name + "\n")
+        print(site + "is not defined in lago schema \n")
+        return
 
     # new spatial 
     # change default altitude to the one simulated "lago:obsLev" OJO: CM->Meters
