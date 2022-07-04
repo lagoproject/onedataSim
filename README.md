@@ -11,7 +11,7 @@ onedataSim standardises the simulations and their analysis in LAGO Collaboration
 
 When using onedataSim or the data and metadata that it outputs, please cite the current main reference reported below:
 
-A. J. Rubio-Montero, R. Pagán-Muñoz, R. Mayo-García, A. Pardo-Diaz, I. Sidelnik and H. Asorey, "A Novel Cloud-Based Framework For Standardized Simulations In The Latin American Giant Observatory (LAGO)," 2021 Winter Simulation Conference (WSC), 2021, pp. 1-12, doi: [10.1109/WSC52266.2021.9715360](https://doi.org/10.1109/WSC52266.2021.9715360)
+   A. J. Rubio-Montero, R. Pagán-Muñoz, R. Mayo-García, A. Pardo-Diaz, I. Sidelnik and H. Asorey, "*A Novel Cloud-Based Framework For Standardized Simulations In The Latin American Giant Observatory (LAGO)*," 2021 Winter Simulation Conference (WSC), 2021, pp. 1-12, doi: [10.1109/WSC52266.2021.9715360](https://doi.org/10.1109/WSC52266.2021.9715360)
 
 ### Acknowledgment 
 
