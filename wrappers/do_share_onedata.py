@@ -468,21 +468,23 @@ def publish_catalog(handleservice_id, filename, folder1_id, host, token):
             # check if the embargo period had been overcomed (1 year)
             read_only_permissions(folder1_id, host, token, all_level1) 
         else:
-            share_level1 = OneData_sharing(filename, folder1_id, all_level1["description"], host, token)
-            print(share_level1)
-            OneData_metadata = create_dublincore_xml_file(all_level1)
-            handle_level1 = OneData_createhandle(handleservice_id, share_level1["shareId"], OneData_metadata, host, token)
-            print('share and handle just created')
-            # it backups the final DublinCore metadata into a hidden .xml in the hidden .metadata dir
-            print(handle_level1['metadata'])
-            create_file_in_hidden_metadata_folder(handle_level1['metadata'], filename + '.xml', folder1_id, host, token)
-            print('XML in ./metadata/ created')
-            # it modifies the JSON-LD metadata both online (internal kept by OneData) and hidden in .metadata  
-            include_hadle_and_share_in_json_and_hidden_metadata(handle_level1['publicHandle'], share_level1['publicUrl'], filename, folder1_id, host, token)
-            # OJO, funciona en produccion pero no en ceta-ciemat-02
-            #if all is correct, data should be read-only forever
-            read_only_permissions(folder1_id, host, token, all_level1)
-            print('Catalog is now read-only')
+            try:
+                share_level1 = OneData_sharing(filename, folder1_id, all_level1["description"], host, token)
+                print(share_level1)
+                OneData_metadata = create_dublincore_xml_file(all_level1)
+                handle_level1 = OneData_createhandle(handleservice_id, share_level1["shareId"], OneData_metadata, host, token)
+                print('share and handle just created')
+                # it backups the final DublinCore metadata into a hidden .xml in the hidden .metadata dir
+                print(handle_level1['metadata'])
+                create_file_in_hidden_metadata_folder(handle_level1['metadata'], filename + '.xml', folder1_id, host, token)
+                print('XML in ./metadata/ created')
+                # it modifies the JSON-LD metadata both online (internal kept by OneData) and hidden in .metadata  
+                include_hadle_and_share_in_json_and_hidden_metadata(handle_level1['publicHandle'], share_level1['publicUrl'], filename, folder1_id, host, token)
+                #if all is correct, data should be read-only forever
+                read_only_permissions(folder1_id, host, token, all_level1)
+                print('Catalog is now read-only')
+            except(Exception):
+                pass
             
     else:
         print(filename + " Calculation not completed or metadate not enriched")
