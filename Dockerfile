@@ -59,8 +59,10 @@ RUN cd /opt && git clone --branch $ONEDATASIM_BRANCH https://github.com/lagoproj
 RUN curl -sS http://get.onedata.org/oneclient-2002.sh | bash
 RUN mkdir -p /mnt/datahub.egi.eu && echo 'nice -n -10 oneclient --force-proxy-io /mnt/datahub.egi.eu/' >> /root/.bashrc
 
-#getfacl getfattr and python3 and libraries for Lago processing with onedata
+# getfacl getfattr and python3 and libraries for Lago processing with onedata
 RUN yum -y install acl attr python3 python36-pyxattr
+# requests and yattag required for do_share
+RUN pip3 install requests yattag 
 
 # xattr (this is  python2 but I had found the command only in python2)
 RUN yum -y install  python2-pip python-devel libffi-devel
