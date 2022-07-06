@@ -17,6 +17,8 @@ import do_share_onedata as mdaux
 
 from fileinput import filename
 
+import sys
+
 
 def find_site_metadata(site):
 

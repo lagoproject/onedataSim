@@ -9,20 +9,13 @@
 
 # CHANGELOG: SOLVED ERRORS
 #
-# 1- NO me gusta - ¿cambiar tag 1.1 POR el commit?????? NO SACA LO MISMO QUE DEV, QUE ESTÁ MEJORADO!!!!
-# 2- https://github.com/lagoproject/DMP/blob/1.1/defs/sitesLago.jsonld#and -> 
-#        "https://raw.githubusercontent.com/lagoproject/DMP/1.1/defs/sitesLago.jsonld"
-# 3- y codigos anadir /LAGOsim  -> PERO SI AÑADO LAGOsim no va a funcionar ni la mitad de los wrappers..., es un cambio mayor!!!
-# 4- "prov:wasAssociatedWith": {"@id": "HANDLETOCDMI/LAGOsoft/corsika/corsika-75600-lago.tar.gz", -> SE HACE una ñapa y se 
-#     SE CONTINUA EN OTRO PATCHER2
-# 5- En JSON catalogue:  "_landing_page": "https://datahub.egi.eu/dummy_hash",  -> NO existe landing page en Catalog DCAT-AP2
-# 6- OJO "Catalogue" y "catalogue" son los correctos en DCAT-AP2, comprobado en el GitHub.... ->   "@type": "Catalog", está mal
-# 7- OJO lago:ulimit y lago:llimit son uLimit y lLimit 
-# 8 - Ojo se ha cambiado los codigos: pozn -> psnc ; juli-> jsc
-# 9 - lagocollaboration.jsonld -> lagoCollaboration.jsonld
-# 10 -  "@id:"-> "@id"
-# 11 adding Main Release (major.minor): filename.jsonld -> filename.1.1.jsonld
-# 12 Adding GitHub Tag with patch (major.minor.patch): "/DMP/1.1" -> "/DMP/1.1.0"
+# Este parche Solo resuelve un error durante la generacion, sustituir ORCID.
+#
+# Este ORCID que no existe (20220630):
+# https://orcid.org/0000-0002-6802-817X
+# Parece que Raúl Pagan introdujo mal su ORCID al ejecutar, porque es similar:
+# https://orcid.org/0000-0002-6802-8179
+
 
 
 import argparse
@@ -44,67 +37,14 @@ def patch(only_test, folder_name, folder_id, folder_where_md_hidden, host, token
     
     j_text = json.dumps(old_json)
     
-    #si está parcheado no vuelve a hacerlo
-    if j_text.count('/DMP/1.1.0/') > 0 : 
-        print('Already patched, skipping file')
+    #si está afectado pues no se cambia nada
+    if not j_text.count('0000-0002-6802-817X') > 0 : 
+        print('Not affected, skipping file')
         return False
+    else:
+        j_text = j_text.replace("0000-0002-6802-817X","0000-0002-6802-8179")    
     
-    # 1- SE QUEDA COMO ESTA: borro y creo un tag 1.1 nuevo
-
-    # 2- https://github.com/lagoproject/DMP/blob/1.1/defs/sitesLago.jsonld-> 
-    #    https://raw.githubusercontent.com/lagoproject/DMP/1.1/defs/sitesLago.jsonld
-    j_text = j_text.replace("https://github.com/lagoproject/DMP/blob/1.1/defs/sitesLago.jsonld",
-                            "https://raw.githubusercontent.com/lagoproject/DMP/1.1/defs/sitesLago.jsonld")
-
-    # 3-  SE QUEDA COMO ESTA
-    
-    # 4 - SE HACE BIEN EN OTRO PATCHER2, aqui solo hacemos una pequeña ñapa para que pase el corte:
-    j_text = j_text.replace("CORSIKA 75600 for LAGO Collaboration",
-                            "CORSIKA 77402 for LAGO Collaboration")
-    j_text = j_text.replace("HANDLETOCDMI/LAGOsoft/corsika/corsika-75600-lago.tar.gz",
-                            "https://api.github.com/repos/lagoproject/lago-corsika")
-
-    
-    # 5- En JSON catalogue:  "'_landing_page': 'https://datahub.egi.eu/dummy_hash',"  -> NO existe landing page en Catalogue DCAT-AP2
-    j_text = j_text.replace("'_landing_page': 'https://datahub.egi.eu/dummy_hash',", "")
-
-    # 6- OJO "Catalogue" y "catalogue" son los correctos en DCAT-AP2, comprobado en el GitHub.... ->   "@type": "Catalog", está mal
-    j_text = j_text.replace("'@type': 'Catalog'", "'@type': 'Catalogue'")
-    
-
-    # 7- OJO lago:ulimit y lago:llimit son uLimit y lLimit 
-    j_text = j_text.replace("lago:ulimit", "lago:uLimit")
-    j_text = j_text.replace("lago:llimit", "lago:lLimit")
-    
-    # 8 - Ojo se ha cambiado los codigos: pozn -> psnc ; juli-> jsc
-    j_text = j_text.replace("jsonld#pozn", "jsonld#pnsc") #OJO FALTA CAMBIAR SUS NOMBRES DE FICHERO
-    j_text = j_text.replace("jsonld#juli", "jsonld#jsc") # OJO FALTA CAMBIAR SUS NOMBRES DE FICHERO
-    
-
-    # 9 - lagocollaboration.jsonld -> lagoCollaboration.jsonld
-    j_text = j_text.replace("lagocollaboration.jsonld", "lagoCollaboration.jsonld")
  
-    # 10  "@id:"-> "@id"
-    j_text = j_text.replace("@id:" , "@id")
-    
-    # 11 adding Main Release (major.minor)
-    j_text = j_text.replace("sitesLago.jsonld",
-                            "sitesLago.1.1.jsonld")
-    
-    j_text = j_text.replace("lagoSchema.jsonld",
-                            "lagoSchema.1.1.jsonld")
-    
-    j_text = j_text.replace("lagoCommonRights.jsonld",
-                            "lagoCommonRights.1.1.jsonld")
-    
-    j_text = j_text.replace("lagoCollaboration.jsonld",
-                            "lagoCollaboration.1.1.jsonld")
-    
-    # 12 Adding GitHub Tag with patch (major.minor.patch)
-    
-    j_text = j_text.replace("/DMP/1.1/",
-                            "/DMP/1.1.0/")
-
     
     print('\n\n')
     print(folder_name)

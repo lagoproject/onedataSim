@@ -28,6 +28,8 @@ import do_share_onedata as mdaux
 
 from fileinput import filename
 
+import sys
+
 
 def patch(only_test, folder_name, folder_id, host, token):
     
