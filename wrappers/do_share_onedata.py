@@ -214,7 +214,7 @@ def create_file_in_hidden_metadata_folder(content, filename, folder_id, host, to
     OneData_Header = "application/octet-stream"
     OneData_urlcreatefile = "https://" + host + '/api/v3/oneprovider/data/' + hiden_metadata_folder_id + '/children?name=.' + filename + '.' + t
     request_param = {'X-Auth-Token': token, "Content-Type": OneData_Header}
-    u_content = content.encode('utf-8')
+    u_content = content.encode('utf-8', "replace")
     r = requests.post(OneData_urlcreatefile, headers=request_param, data=u_content)
 
     r_json = json.loads(r.text)
