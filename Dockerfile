@@ -71,6 +71,11 @@ RUN yum -y install  python2-pip python-devel libffi-devel
 # RUN pip install typing
 RUN pip install cffi && pip install xattr
 
+#problem with locales, CentOS include /etc/locale.conf but not export them
+ENV LANG="en_US.UTF-8"  
+#not needed, perhaps in future:
+#ENV LANGUAGE="en_US:en"  
+#ENV LC_ALL="en_US.UTF-8"
 #not include workdir or entrypoint, because delete the pre-defined
 #WORKDIR /opt/corsika-77402-lago/run
 #ENTRYPOINT /opt/arti/sims/do_datahub.sh
