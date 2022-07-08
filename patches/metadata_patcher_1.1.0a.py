@@ -20,41 +20,35 @@
 
 
 import argparse
-import requests
 import json
-
-import mdUtils
-import do_share_onedata as mdaux
-
-from fileinput import filename
-
 import sys
+
+import do_share_onedata as mdaux
 
 
 def patch(only_test, folder_name, folder_id, host, token):
-    
-    
+
     # DataSets
     all_level0 = folder0_content(folder_id, host, token)
     # REMOVE .metadata!!!
     for p in all_level0['children']:
-        
+
         # get current metadata
         old_json = mdaux.get_json_metadata(p['id'], host, token)
-        
+
         # 4- "prov:wasAssociatedWith": {"@id": "HANDLETOCDMI/LAGOsoft/corsika/corsika-75600-lago.tar.gz",
         #                                      "name": "CORSIKA 75600 for LAGO Collaboration",
         # todos los que están en LAGOsim son 77400...., pero depende del commit de onedataSim para ver cual se usa
         #
         prov_wasAssociatedWith = old_json["@graph"][2]["prov:wasAssociatedWith"]
         runtimePlatform = prov_wasAssociatedWith["lago:runtimePlatform"]
-        
-        new_prov_wasAssociatedWith = prov_wasAssociatedWith     
+
+        new_prov_wasAssociatedWith = prov_wasAssociatedWith
         if prov_wasAssociatedWith["@id"] == "https://api.github.com/repos/lagoproject/lago-corsika":
-            ods_commit = runtimePlatform[ "@id"].split("commits/")[1]
+            ods_commit = runtimePlatform["@id"].split("commits/")[1]
             # los de la rama dev, todos usan el commit "ae38b63419f6882ca1d070b34e3f6e46a721ffe9"
-            dev_list=['23123','37437941'....]
-            
+            dev_list = ['23123', '37437941']  # OJO..... CAMBIAR
+
             if ods_commit in dev_list:
                 new_prov_wasAssociatedWith = {
                     "sdo:codeRepository": "https://github.com/lagoproject/lago-corsika/tree/ae38b63419f6882ca1d070b34e3f6e46a721ffe9",
@@ -63,17 +57,13 @@ def patch(only_test, folder_name, folder_id, host, token):
                 }
             # else or switch....
 
-            
-        
         # estos ya no cambian
         new_prov_wasAssociatedWith["lago:runtimePlatform"] = runtimePlatform
         new_prov_wasAssociatedWith["@type"] = "lago:Software"
 
-
         id_json = {'@id': "/" + folder_name + "/" + p['name'] + "#activity",
-                   'prov:wasAssociatedWith': new_prov_wasAssociatedWith
-                   }
-        
+                   'prov:wasAssociatedWith': new_prov_wasAssociatedWith}
+
         print('\n\n')
         print(folder_name)
         print('\n')
@@ -83,7 +73,6 @@ def patch(only_test, folder_name, folder_id, host, token):
             new_json = updating_id_terms_in_json_metadata(id_json, p['id'], host, token)
             print(new_json)
             create_file_in_hidden_metadata_folder(json.dumps(new_json), p['name'] + '.jsonld', folder_id, host, token)
-    
 
 
 # ###############
@@ -91,22 +80,22 @@ def patch(only_test, folder_name, folder_id, host, token):
 # ###############
 
 def main():
-    
+
     # External arguments for command line use
     parser = argparse.ArgumentParser(description='Enricher of metadata')
-    parser.add_argument('--token', help ='')
-    parser.add_argument('--host', help ='')  # OneData Provider !!!
-    parser.add_argument('--folder_id', help ='' ) #INCOMPATIBLE CON --myspace_path
-    parser.add_argument('--myspace_path', help ='' ) #INCOMPATIBLE CON --folder_id
+    parser.add_argument('--token', help='')
+    parser.add_argument('--host', help='')  # OneData Provider !!!
+    parser.add_argument('--folder_id', help='')  # INCOMPATIBLE CON --myspace_path
+    parser.add_argument('--myspace_path', help='')  # INCOMPATIBLE CON --folder_id
     parser.add_argument('--recursive', action='store_true', default=None,
-                         help="Enable finding sub-catalogs and sharing the ones that weren\'t shared)")
-    
+                        help="Enable finding sub-catalogs and sharing the ones that weren\'t shared)")
+
     args = parser.parse_args()
-    
+
     if args.myspace_path:
-        args.folder_id = mdaux.get_folder_id(args.myspace_path, args.host, args.token) 
-    
-    #dos niveles de recursividad, preparado para cambiar desde el Space, los metadatos del catalogo y sus datasets
+        args.folder_id = mdaux.get_folder_id(args.myspace_path, args.host, args.token)
+
+    # dos niveles de recursividad, preparado para cambiar desde el Space, los metadatos del catalogo y sus datasets
     if args.recursive is True:
         all_level0 = mdaux.folder0_content(args.folder_id, args.host, args.token)
         for p in all_level0['children']:
@@ -121,8 +110,6 @@ def main():
             filename = mdaux.get_filename(args.folder_id, args.host, args.token)
         patch(args.only_test, filename, args.folder_id, args.host, args.token)
 
-    
+
 if __name__ == '__main__':
     sys.exit(main())
-
-    

@@ -23,6 +23,8 @@ def _get_corsika_version():
     try:
         return os.getcwd().split("/opt/lago-corsika-")[1].split("/run")[0]
     except Exception as inst:
+        print("Exception catched: " + str(type(inst)))
+        print(inst)
         print("Please, execute in the /opt/lago-corsika-CORSIKA_VER/run directory")
         sys.exit(1)
 

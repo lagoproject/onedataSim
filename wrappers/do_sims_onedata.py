@@ -108,6 +108,8 @@ def producerS0(catcodename, arti_params):
                     osUtils.run_Popen_interactive(cmd)
                     print('Link created: ' + link)
     except Exception as inst:
+        print("Exception catched: " + str(type(inst)))
+        print(inst)
         pass
 
     # PATCH: correct the creation of tasks, which is based on (-j) in ARTI.

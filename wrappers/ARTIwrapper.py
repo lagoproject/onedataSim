@@ -69,6 +69,8 @@ class ARTIwrapper():
                 self._q_onedata.task_done()
 
             except Exception as inst:
+                print("Exception catched: " + str(type(inst)))
+                print(inst)
                 print(id + ': copy queued again')
                 self._q_onedata.put(md)
                 time.sleep(2)
@@ -131,6 +133,8 @@ class ARTIwrapper():
                 print('Completed NRUN: ' + str(filecode) + '  ' + task)
                 self._q.task_done()
             except Exception as inst:
+                print("Exception catched: " + str(type(inst)))
+                print(inst)
                 self._q.put((filecode, task))
                 # we have to substract 1 to queue lenght because q.put
                 # always add 1 to lenght but really we are re-queing and
