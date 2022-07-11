@@ -22,13 +22,17 @@ ARG BASE_OS="centos:7"
 #  be used in any instruction after a FROM if the ARG is not declared again
 FROM $BASE_OS
 #
+ARG BASE_OS
+LABEL com.github.lagoproject.onedatasim.base-os=${BASE_OS}
+#
 ARG ONEDATASIM_BRANCH="master"
 ARG ARTI_BRANCH=$ONEDATASIM_BRANCH
+LABEL com.github.lagoproject.onedatasim.branch=${ONEDATASIM_BRANCH}
+LABEL com.github.lagoproject.arti.branch=${ARTI_BRANCH}
 # user credentials when the container were used
 ENV ONECLIENT_ACCESS_TOKEN=""
 ENV ONECLIENT_PROVIDER_HOST=""
 
-ARG BASE_OS
 
 # only for testing
 #RUN echo "Using OS: ${BASE_OS}"
@@ -40,9 +44,7 @@ ARG BASE_OS
 RUN yum -y install git bzip2 gcc gcc-c++ gcc-gfortran make
 # we use the ones tested with onedataSim package
 RUN cd /opt && git clone --branch $ARTI_BRANCH https://github.com/lagoproject/arti.git && cd /opt/arti && make
-# now, ARTI is not included as module in onedataSim:
-#RUN cd /opt && git clone --branch $ONEDATASIM_BRANCH --recursive https://github.com/lagoproject/onedataSim.git
-#RUN cd /opt/onedataSim/arti && make
+
 
 #------
 #dowload and install LAGO onedataSim
