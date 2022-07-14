@@ -23,6 +23,8 @@ def _get_corsika_version():
     try:
         return os.getcwd().split("/opt/lago-corsika-")[1].split("/run")[0]
     except Exception as inst:
+        print("Exception catched: " + str(type(inst)))
+        print(inst)
         print("Please, execute in the /opt/lago-corsika-CORSIKA_VER/run directory")
         sys.exit(1)
 
@@ -35,14 +37,14 @@ def _get_arti_params_json_md(arti_dict):
                 "lago:fluxTime": "P" + str(arti_dict['t']) + "S",
                 "lago:highEnergyIntModel": arti_dict['h'],
                 "lago:detectorSite":
-                "https://github.com/lagoproject/DMP/blob/1.1/defs/sitesLago.jsonld#" + arti_dict['s'],
+                "https://github.com/lagoproject/DMP/blob/1.1.0/defs/sitesLago.1.1.jsonld#" + arti_dict['s'],
                 "lago:obsLev": arti_dict['k'],
                 "lago:modatm": arti_dict['c'],
                 "lago:rigidity": arti_dict['b'],
                 "lago:tMin": arti_dict['m'],
                 "lago:tMax": arti_dict['n'],
-                "lago:llimit": arti_dict['r'],
-                "lago:ulimit": arti_dict['i'],
+                "lago:lLimit": arti_dict['r'],
+                "lago:uLimit": arti_dict['i'],
                 "lago:bx": arti_dict['o'],
                 "lago:bz": arti_dict['q'],
                 "lago:flatArray": not arti_dict['y'],

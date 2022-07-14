@@ -22,13 +22,17 @@ ARG BASE_OS="centos:7"
 #  be used in any instruction after a FROM if the ARG is not declared again
 FROM $BASE_OS
 #
+ARG BASE_OS
+LABEL com.github.lagoproject.onedatasim.base-os=${BASE_OS}
+#
 ARG ONEDATASIM_BRANCH="master"
 ARG ARTI_BRANCH=$ONEDATASIM_BRANCH
+LABEL com.github.lagoproject.onedatasim.branch=${ONEDATASIM_BRANCH}
+LABEL com.github.lagoproject.arti.branch=${ARTI_BRANCH}
 # user credentials when the container were used
 ENV ONECLIENT_ACCESS_TOKEN=""
 ENV ONECLIENT_PROVIDER_HOST=""
 
-ARG BASE_OS
 
 # only for testing
 #RUN echo "Using OS: ${BASE_OS}"
@@ -40,9 +44,7 @@ ARG BASE_OS
 RUN yum -y install git bzip2 gcc gcc-c++ gcc-gfortran make
 # we use the ones tested with onedataSim package
 RUN cd /opt && git clone --branch $ARTI_BRANCH https://github.com/lagoproject/arti.git && cd /opt/arti && make
-# now, ARTI is not included as module in onedataSim:
-#RUN cd /opt && git clone --branch $ONEDATASIM_BRANCH --recursive https://github.com/lagoproject/onedataSim.git
-#RUN cd /opt/onedataSim/arti && make
+
 
 #------
 #dowload and install LAGO onedataSim
@@ -59,8 +61,10 @@ RUN cd /opt && git clone --branch $ONEDATASIM_BRANCH https://github.com/lagoproj
 RUN curl -sS http://get.onedata.org/oneclient-2002.sh | bash
 RUN mkdir -p /mnt/datahub.egi.eu && echo 'nice -n -10 oneclient --force-proxy-io /mnt/datahub.egi.eu/' >> /root/.bashrc
 
-#getfacl getfattr and python3 and libraries for Lago processing with onedata
+# getfacl getfattr and python3 and libraries for Lago processing with onedata
 RUN yum -y install acl attr python3 python36-pyxattr
+# requests and yattag required for do_share
+RUN pip3 install requests yattag 
 
 # xattr (this is  python2 but I had found the command only in python2)
 RUN yum -y install  python2-pip python-devel libffi-devel
@@ -69,6 +73,11 @@ RUN yum -y install  python2-pip python-devel libffi-devel
 # RUN pip install typing
 RUN pip install cffi && pip install xattr
 
+#problem with locales, CentOS include /etc/locale.conf but not export them
+ENV LANG="en_US.UTF-8"  
+#not needed, perhaps in future:
+#ENV LANGUAGE="en_US:en"  
+#ENV LC_ALL="en_US.UTF-8"
 #not include workdir or entrypoint, because delete the pre-defined
 #WORKDIR /opt/corsika-77402-lago/run
 #ENTRYPOINT /opt/arti/sims/do_datahub.sh

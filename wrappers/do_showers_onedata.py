@@ -160,6 +160,8 @@ def producer_S1_pri_sec(catcodename, arti_params):
             param_list.pop(i+1)  # <procs>
         arti_params = ' '.join(param_list)
     except Exception as inst:
+        print("Exception catched: " + str(type(inst)))
+        print(inst)
         print("ERROR: ORCID is missed")
         raise
 
