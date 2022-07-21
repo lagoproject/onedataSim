@@ -232,7 +232,7 @@ Slurm and a directory shared by NFS are already configured (/home), but some con
 sudo mkdir /home/cloudadm
 sudo chown cloudadm /home/cloudadm
 sudo docker pull lagocollaboration/onedatasim-s0:dev
-sudo docker save -o /home/cloudadm/onedatasim-s0.tar onedatasim-s0:dev
+sudo docker save -o /home/cloudadm/onedatasim-s0.tar lagocollaboration/onedatasim-s0:dev
 ```
 
 Then, you can launch simulations through ``sbatch``. The environment varialbles will be exported to execution nodes. Thus:
