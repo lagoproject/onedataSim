@@ -106,6 +106,8 @@ def get_sys_args_S1():
     S0_codename = S0_codename_full.split("/")
     S0_codename = S0_codename[-1]  # last in list
 
+    print(S0_codename_full)
+
     codename = 'S1_' + S0_codename.replace('S0_', '', 1)
 
     args_dict.update({'p': codename})
@@ -117,7 +119,6 @@ def get_sys_args_S1():
     # OJO PROVI: DEBERIA SACARSE DE LOS METADATOS DE S0
     # other args for ARTI showers from CODENAME
     splitted = S0_codename.split('_')
-    print(splitted)
     # LAGO site
     # args_dict.update({'priv_site': splitted[1]})
     # flux time in seconds
