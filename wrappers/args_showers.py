@@ -41,7 +41,7 @@ def _get_arti_params_json_md(arti_dict):
 
 def get_sys_args_S1():
 
-    disclaimer = 'do_onedata: simulating LAGO sites and storing/publishing \
+    disclaimer = 'do_showers_onedata: analysis S0 simulation raw data and storing/publishing \
     results in OneData.'
     # epilog= "this can be ASCII art"
     parser = argparse.ArgumentParser(description=disclaimer, add_help=False)
@@ -58,8 +58,8 @@ def get_sys_args_S1():
                         help='Number of distance secondary bins (default: $distance_bins).')
     # parser.add_argument('-p', dest='p',
     #                     help='Base name for identification of S1 files (do not use spaces). Default: odir basename.')
-    # parser.add_argument('-k', dest='k', required=True, type=int,
-    #                     help='For curved mode (default), site altitude in m a.s.l. (mandatory).')
+    parser.add_argument('-k', dest='k', required=True, type=int,
+                         help='For curved mode (default), site altitude in m a.s.l. (mandatory).')
     parser.add_argument('-s', dest='s', required=False, type=int,
                         help='Filter secondaries by type: 1: EM, 2: MU, 3: HD.')
     # parser.add_argument('-t', dest='t', required=True, type=int,
@@ -117,12 +117,14 @@ def get_sys_args_S1():
     # OJO PROVI: DEBERIA SACARSE DE LOS METADATOS DE S0
     # other args for ARTI showers from CODENAME
     splitted = S0_codename.split('_')
+    print(splitted)
     # LAGO site
     # args_dict.update({'priv_site': splitted[1]})
     # flux time in seconds
     args_dict.update({'t': splitted[2]})
     # site altitude in m a.s.l.  #OJO BUG, SOLO FUNCIONARIA SI NO ES LA ALTURA DEFAULT
     # MUY PELIGROSO
-    args_dict.update({'k': int(float(splitted[3]))})
+    # lo saco y agrego -k como mandatorio
+    # args_dict.update({'k': int(float(splitted[3]))})
 
     return (codename, args_dict, _get_arti_params_json_md(args_dict))
