@@ -104,18 +104,14 @@ def get_sys_args_S1():
     # codename is identical to the S0 origin, but begins with S1
     S0_codename_full = args_dict['o']
     S0_codename = S0_codename_full.split("/")
-    S0_codename = S0_codename[-1]  # last in list
-
-    print(S0_codename_full)
-
+    # warning, if the user include an additional "/" at the end (this is typical when using tab)
+    # the it will fail as last element of S0_condename is empty
+    # so we need the last not empty element of the list
+    S0_codename = [e for e in S0_codename if e][-1]
     codename = 'S1_' + S0_codename.replace('S0_', '', 1)
-
     args_dict.update({'p': codename})
-
     # working dir
-
     args_dict.update({'w': os.getcwd()})
-
     # OJO PROVI: DEBERIA SACARSE DE LOS METADATOS DE S0
     # other args for ARTI showers from CODENAME
     splitted = S0_codename.split('_')
