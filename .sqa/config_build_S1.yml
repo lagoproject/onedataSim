@@ -34,13 +34,12 @@ sqa_criteria:
         #  - ONECLIENT_PROVIDER_HOST="mon01-tic.ciemat.es"
         commands:
           - >
-            env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN} ; 
-            env ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu" ;
-            ls -alh /mnt/datahub.egi.eu ;
-            sh /root/.bashrc
-            git --git-dir /opt/onedataSim/.git rev-parse --verify HEAD ;
-            do_sims_onedata.py -t 30 -u 0000-0001-6497-753X -s and -k 2.0e2 -h QGSII -x --onedata_path /mnt/datahub.egi.eu/test8/SQaaS/ -j 2 ;
-            'do_share_onedata.py --token $ONECLIENT_ACCESS_TOKEN 
+            env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN} 
+            env ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu" 
+            ls -alh /mnt/datahub.egi.eu 
+          - git --git-dir /opt/onedataSim/.git rev-parse --verify HEAD 
+          - do_sims_onedata.py -t 30 -u 0000-0001-6497-753X -s and -k 2.0e2 -h QGSII -x --onedata_path /mnt/datahub.egi.eu/test8/SQaaS/ -j 2 ;
+          - 'do_share_onedata.py --token $ONECLIENT_ACCESS_TOKEN 
             --myspace_path /mnt/datahub.egi.eu/test8/SQaaS/XXX 
             --handleservice_id 986fe2ab97a6b749fac17eb9e9b38c37chb045 | grep "resourceId\|publicHandle" | tail -n2 > /mnt/datahub.egi.eu/test8/SQaaS/handles/lasthandles1.txt'
           #- unittest   
