@@ -33,11 +33,12 @@ sqa_criteria:
           # - ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN}
           # - ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu"
         commands:
+          - pwd
           - ls -alh /mnt/datahub.egi.eu
           - >
             env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN} 
             env ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu" 
-            /bin/bash /root/.bashrc
+            modprobe fuse && /bin/bash /root/.bashrc
           - git --git-dir /opt/onedataSim/.git rev-parse --verify HEAD 
           - >
             env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN} 
