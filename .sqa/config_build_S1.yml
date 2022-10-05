@@ -35,8 +35,10 @@ sqa_criteria:
         commands:
           - pwd
           - whoami
-          - export
+          - shell
           - ls -alh /mnt/datahub.egi.eu
+          - bash -lc "export"
+          - bash -lc "do_sims_onedata.py -?"
           - >
             env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN} 
             env ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu" 
