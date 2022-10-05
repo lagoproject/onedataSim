@@ -16,3 +16,32 @@ services:
     # image, post-build is where it is stored
     image: "lagocollaboration/onedatasim-s0:latest"
     command: sleep 900
+    # ..., doesn't work for fuse
+    # volumes:
+    # - source: /dev/fuse
+    #  target: /dev/fuse
+    #  type: bind
+    # again, with fuse
+    privileged: true
+    devices:
+      - "/dev/fuse"
+    cap_add:
+      - SYS_ADMIN
+      # - DAC_READ_SEARCH
+  fair_eva:
+    image: ferag/fair_eva:latest
+    #image: ferag/fair_eva:fair
+    volumes:
+    - source: ./
+      target: /sqaaas-build
+      type: bind
+    working_dir: /sqaaas-build
+    #command: /FAIR_eva/start.sh
+    #command: apt-get install -y curl && /FAIR_eva/fair.py && /FAIR_eva/web.py
+  fair_uji:
+    image: steinsteiny/fuji:fair
+    volumes:
+    - source: ./
+      target: /sqaaas-build
+      type: bind
+    working_dir: /sqaaas-build
