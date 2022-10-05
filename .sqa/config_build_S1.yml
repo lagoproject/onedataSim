@@ -32,6 +32,7 @@ sqa_criteria:
         # environment:
           # - ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN}
           # - ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu"
+        # estos comandos son "exec" contra un container ya levantado con docker-compose -f build...yml
         commands:
           - pwd
           - whoami
