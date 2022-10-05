@@ -35,7 +35,6 @@ sqa_criteria:
         commands:
           - pwd
           - whoami
-          - shell
           - ls -alh /mnt/datahub.egi.eu
           - bash -lc "export"
           - bash -lc "do_sims_onedata.py -?"
