@@ -42,7 +42,7 @@ sqa_criteria:
           - >
             env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN} 
             env ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu" 
-            bash -lc "modinfo fuse; modprobe fuse; source /root/.bashrc; ls -alh /mnt/datahub.egi.eu"
+            bash -lc 'modinfo fuse; modprobe fuse; source /root/.bashrc; ls -alh /mnt/datahub.egi.eu'
           - >
             env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN} 
             env ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu" 
