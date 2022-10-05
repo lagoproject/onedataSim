@@ -36,17 +36,13 @@ sqa_criteria:
           - pwd
           - whoami
           - git --git-dir /opt/onedataSim/.git rev-parse --verify HEAD 
-          - bash -lc "export"
-          - bash -lc "do_sims_onedata.py -?"
+          # - bash -lc "export"
+          # - bash -lc "do_sims_onedata.py -?"
           - ls -alh /mnt/datahub.egi.eu
           - >
             env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN} 
             env ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu" 
-            bash -lc 'modinfo fuse; modprobe fuse; source /root/.bashrc; ls -alh /mnt/datahub.egi.eu'
-          - >
-            env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN} 
-            env ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu" 
-            bash -lc "do_sims_onedata.py -t 30 -u 0000-0001-6497-753X -s and -k 2.0e2 -h QGSII -x --onedata_path /mnt/datahub.egi.eu/test8/SQaaS/ -j 2" 
+            bash -lc "ls -alh /mnt/datahub.egi.eu; do_sims_onedata.py -t 30 -u 0000-0001-6497-753X -s and -k 2.0e2 -h QGSII -x --onedata_path /mnt/datahub.egi.eu/test8/SQaaS/ -j 2" 
           - >
             env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN} 
             env ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu" 
