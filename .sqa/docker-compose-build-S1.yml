@@ -12,7 +12,7 @@ services:
         ARTI_BRANCH : "dev"
     # image, post-build is where it is stored
     image: "lagocollaboration/onedatasim-s1:latest"
-    command: sleep 900
+    #command: sleep 900
   fair_eva:
     image: ferag/fair_eva:latest
     #image: ferag/fair_eva:fair
