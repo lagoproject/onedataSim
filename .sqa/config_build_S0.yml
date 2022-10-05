@@ -46,9 +46,9 @@ sqa_criteria:
           - >
             env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN} 
             env ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu" 
-            bash -lc 'do_share_onedata.py --token $ONECLIENT_ACCESS_TOKEN --host $ONECLIENT_PROVIDER_HOST
-            --myspace_path /test8/SQaaS/S0_and_10_200.0_77402_QGSII_flat_defaults 
-            --handleservice_id 986fe2ab97a6b749fac17eb9e9b38c37chb045 | grep "resourceId\|publicHandle" | tail -n2 > /mnt/datahub.egi.eu/test8/SQaaS/handles/lasthandles1.txt'
+            bash -lc 'do_share_onedata.py --token "$ONECLIENT_ACCESS_TOKEN" --host "$ONECLIENT_PROVIDER_HOST"
+            --myspace_path "/test8/SQaaS/S0_and_10_200.0_77402_QGSII_flat_defaults" 
+            --handleservice_id "986fe2ab97a6b749fac17eb9e9b38c37chb045" | grep "resourceId\|publicHandle" | tail -n2 > /mnt/datahub.egi.eu/test8/SQaaS/handles/lasthandles1.txt'
           #- unittest   
   qc_coverage:
     repos:
