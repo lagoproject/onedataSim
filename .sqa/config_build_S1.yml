@@ -34,6 +34,8 @@ sqa_criteria:
           # - ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu"
         commands:
           - pwd
+          - whoami
+          - export
           - ls -alh /mnt/datahub.egi.eu
           - >
             env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN} 
