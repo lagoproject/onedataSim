@@ -77,12 +77,12 @@ sqa_criteria:
           -X GET "https://$ONECLIENT_PROVIDER_HOST/cdmi/test8/SQaaS/handles/lasthandles0.txt" 
           -o /tmp/lasthandles.txt
         - export HANDLE = $(cat lasthandles.json | sed "s/'/%%%/g" | sed 's/%%%/"/g' | awk -F', "metadata' '{print $1"}"}' | jq .publicHandle)
-        - curl -H ''Accept: application/json'' -H ''Content-Type: application/json''
+        - 'curl -H ''Accept: application/json'' -H ''Content-Type: application/json''
           -H ''Authorization: Basic bWFydmVsOndvbmRlcndvbWFu'' -X POST 
           -d ''{"metadata_service_endpoint":"http://datahub.egi.eu/oai_pmh",
           "metadata_service_type":"oai_pmh","object_identifier":$HANDLE,
           "test_debug":true,"use_datacite":false}''
-          http://localhost:1071/fuji/api/v1/evaluate
+          http://localhost:1071/fuji/api/v1/evaluate'
       FAIR_EVAL:
         container: fair_eva
         # Onedata has Verbs as petition of LAGO: http://datahub.egi.eu/oai_pmh?verb=ListSets
@@ -99,9 +99,9 @@ sqa_criteria:
         - >
           env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN}
           env ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu"
-          'curl -k --tlsv1.2 -H "X-CDMI-Specification-Version: 1.1.1" -H "X-Auth-Token: $ONECLIENT_ACCESS_TOKEN" 
+          curl -k --tlsv1.2 -H "X-CDMI-Specification-Version: 1.1.1" -H "X-Auth-Token: $ONECLIENT_ACCESS_TOKEN" 
           -X GET "https://$ONECLIENT_PROVIDER_HOST/cdmi/test8/SQaaS/handles/lasthandles0.json" 
-          -o /tmp/lasthandles.json'
+          -o /tmp/lasthandles.json
         - export SHAREID = $(cat lasthandles.json | sed "s/'/%%%/g" | sed 's/%%%/"/g' | awk -F', "metadata' '{print $1"}"}' | jq .resourceId)
         - 'curl -H ''Content-Type: application/json'' -X POST 
           -d ''{"id": $SHAREID,
