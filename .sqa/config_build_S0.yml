@@ -103,8 +103,7 @@ sqa_criteria:
         # ojo comandos en /bin/sh (default)  
         - > 
           whoami;
-          apt-get update -y;
-          apt-get install -y jq;
+          pip3 -y install jq;
           HANDLE = $(cat /tmp/lasthandles.json | sed "s/'/%%%/g" | sed 's/%%%/"/g' | awk -F', "metadata' '{print $1"}"}' | jq .publicHandle);
           'curl -H ''Accept: application/json'' -H ''Content-Type: application/json''
           -H ''Authorization: Basic bWFydmVsOndvbmRlcndvbWFu'' -X POST 
@@ -133,8 +132,7 @@ sqa_criteria:
           -o /tmp/lasthandles.json
         - >
           whoami;
-          apt-get update -y;
-          apt-get install -y jq;
+          pip3 -y install jq;
           SHAREID = $(cat /tmp/lasthandles.json | sed "s/'/%%%/g" | sed 's/%%%/"/g' | awk -F', "metadata' '{print $1"}"}' | jq .resourceId)
           'curl -H ''Content-Type: application/json'' -X POST 
           -d ''{"id": ${SHAREID},
