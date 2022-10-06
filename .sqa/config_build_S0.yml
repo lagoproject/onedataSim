@@ -46,11 +46,12 @@ sqa_criteria:
           #  env ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu" 
           #  bash -lc 'ls -alh /mnt/datahub.egi.eu; ls -alh /mnt/datahub.egi.eu/test8; ls -alh /mnt/datahub.egi.eu/test8/SQaaS;
           #  do_sims_onedata.py -t 10 -u 0000-0001-6497-753X -s and -k 2.0e2 -h QGSII -x --onedata_path /mnt/datahub.egi.eu/test8/SQaaS/ -j 2' 
-          # enricher
+          # enricher (fuerzo un git pull :-()
           - >
             env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN} 
             env ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu" 
-            bash -lc 'cd /opt/onedataSim/wrappers; cp /opt/onedataSim/patches/metadata_enricher.py .;
+            bash -lc 'cd /opt/onedataSim; git pull;
+            cd /opt/onedataSim/wrappers; cp /opt/onedataSim/patches/metadata_enricher.py .;
             python3 ./metadata_enricher.py  --token "$ONECLIENT_ACCESS_TOKEN" --host "$ONECLIENT_PROVIDER_HOST"
             --myspace_path "/test8/SQaaS/S0_and_10_200.0_77402_QGSII_flat_defaults" '
           # publish
