@@ -119,8 +119,8 @@ sqa_criteria:
           env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN}
           env ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu"
           'curl -k --tlsv1.2 -H "X-CDMI-Specification-Version: 1.1.1" -H "X-Auth-Token: $ONECLIENT_ACCESS_TOKEN" 
-          -X GET "https://$ONECLIENT_PROVIDER_HOST/cdmi/test8/SQaaS/handles/lasthandles1.txt" 
-          -o /tmp/lasthandles1.txt'
+          -X GET "https://$ONECLIENT_PROVIDER_HOST/cdmi/test8/SQaaS/handles/lasthandles0.txt" 
+          -o /tmp/lasthandles.txt'
           export HANDLE = `cat lasthandles.json | sed "s/'/%%%/g" | sed 's/%%%/"/g' | awk -F', "metadata' '{print $1"}"}' | jq .publicHandle´
           'curl -H ''Accept: application/json'' -H ''Content-Type: application/json''
           -H ''Authorization: Basic bWFydmVsOndvbmRlcndvbWFu'' -X POST 
