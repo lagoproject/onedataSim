@@ -97,23 +97,18 @@ sqa_criteria:
         - >
           env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN}
           env ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu"
-          bash -lc '''curl -k --tlsv1.2 -H "X-CDMI-Specification-Version: 1.1.1" -H "X-Auth-Token: ${ONECLIENT_ACCESS_TOKEN}" 
+          bash -lc 'curl -k --tlsv1.2 -H "X-CDMI-Specification-Version: 1.1.1" -H "X-Auth-Token: ${ONECLIENT_ACCESS_TOKEN}" 
           -X GET "https://${ONECLIENT_PROVIDER_HOST}/cdmi/test8/SQaaS/handles/lasthandles0.txt" 
-          -o /tmp/lasthandles.txt;
+          -o /tmp/lasthandles.txt ;
           whoami;
           pip3 install jq;
-          HANDLE = $(cat /tmp/lasthandles.json | sed "s/'/%%%/g" | sed 's/%%%/"/g' | awk -F', "metadata' '{print $1"}"}' | jq .publicHandle) '''
-        # ojo comandos en /bin/sh (default)  
-        - > 
-          whoami;
-          pip3 install jq;
-          HANDLE = $(cat /tmp/lasthandles.json | sed "s/'/%%%/g" | sed 's/%%%/"/g' | awk -F', "metadata' '{print $1"}"}' | jq .publicHandle);
-          'curl -H ''Accept: application/json'' -H ''Content-Type: application/json''
+          HANDLE = $(cat /tmp/lasthandles.json | sed "s/\x27/\x22/g" | awk -F', "metadata' '{print $1"}"}' | jq .publicHandle); 
+          curl -H ''Accept: application/json'' -H ''Content-Type: application/json''
           -H ''Authorization: Basic bWFydmVsOndvbmRlcndvbWFu'' -X POST 
           -d ''{"metadata_service_endpoint":"http://datahub.egi.eu/oai_pmh",
           "metadata_service_type":"oai_pmh","object_identifier":${HANDLE},
           "test_debug":true,"use_datacite":false}''
-          http://localhost:1071/fuji/api/v1/evaluate'
+          http://localhost:1071/fuji/api/v1/evaluate '
       FAIR_EVAL:
         container: fair_eva
         # Onedata has Verbs as petition of LAGO: http://datahub.egi.eu/oai_pmh?verb=ListSets
@@ -132,12 +127,10 @@ sqa_criteria:
           env ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu"
           curl -k --tlsv1.2 -H "X-CDMI-Specification-Version: 1.1.1" -H "X-Auth-Token: ${ONECLIENT_ACCESS_TOKEN}" 
           -X GET "https://${ONECLIENT_PROVIDER_HOST}/cdmi/test8/SQaaS/handles/lasthandles0.json" 
-          -o /tmp/lasthandles.json
-        - >
-          whoami;
+          -o /tmp/lasthandles.json ;
           pip3 install jq;
-          SHAREID = $(cat /tmp/lasthandles.json | sed "s/'/%%%/g" | sed 's/%%%/"/g' | awk -F', "metadata' '{print $1"}"}' | jq .resourceId)
-          'curl -H ''Content-Type: application/json'' -X POST 
+          SHAREID = $(cat /tmp/lasthandles.json | sed "s/\x27/\x22/g" | awk -F', "metadata' '{print $1"}"}' | jq .resourceId);
+          curl -H ''Content-Type: application/json'' -X POST 
           -d ''{"id": ${SHAREID},
           "repo": "oai-pmh", "oai_base": "http://datahub.egi.eu/oai_pmh"}''
           http://localhost:9090/v1.0/rda/rda_all'
