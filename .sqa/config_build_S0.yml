@@ -45,7 +45,7 @@ sqa_criteria:
             env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN} 
             env ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu" 
             bash -lc 'ls -alh /mnt/datahub.egi.eu; ls -alh /mnt/datahub.egi.eu/test8; ls -alh /mnt/datahub.egi.eu/test8/SQaaS;
-            do_sims_onedata.py -t 10 -u 0000-0001-6497-753X -s and -k 2.0e2 -h QGSII -x --onedata_path /mnt/datahub.egi.eu/test8/SQaaS/ -j 2' 
+            do_sims_onedata.py -t 5 -u 0000-0001-6497-753X -s and -k 2.0e2 -h QGSII -x --onedata_path /mnt/datahub.egi.eu/test8/SQaaS/ -j 2' 
           # enricher (fuerzo un git pull NO SE DEBERIA SI SE REICIERA LA IMAGEN:-()
           - >
             env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN} 
@@ -53,7 +53,7 @@ sqa_criteria:
             bash -lc 'cd /opt/onedataSim; git pull;
             cd /opt/onedataSim/wrappers; cp /opt/onedataSim/patches/metadata_enricher.py .;
             python3 ./metadata_enricher.py  --token "$ONECLIENT_ACCESS_TOKEN" --host "$ONECLIENT_PROVIDER_HOST"
-            --myspace_path "/test8/SQaaS/S0_and_10_200.0_77402_QGSII_flat_defaults" '
+            --myspace_path "/test8/SQaaS/S0_and_5_200.0_77402_QGSII_flat_defaults" '
           # publish
           - >
             env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN} 
@@ -61,8 +61,17 @@ sqa_criteria:
             env ONECLIENT_PUBLISH_TOKEN=${TOKEN_PUBLISH} 
             bash -lc 'ls -alh /mnt/datahub.egi.eu/test8/SQaaS/handles/;
             do_share_onedata.py --token "$ONECLIENT_PUBLISH_TOKEN" --host "$ONECLIENT_PROVIDER_HOST"
-            --myspace_path "/test8/SQaaS/S0_and_10_200.0_77402_QGSII_flat_defaults" 
-            --handleservice_id "986fe2ab97a6b749fac17eb9e9b38c37chb045" | grep "resourceId\|publicHandle" > /mnt/datahub.egi.eu/test8/SQaaS/handles/lasthandles0.json'
+            --myspace_path "/test8/SQaaS/S0_and_5_200.0_77402_QGSII_flat_defaults" 
+            --handleservice_id "986fe2ab97a6b749fac17eb9e9b38c37chb045" | grep "resourceId\|publicHandle" > /tmp/lasthandles0.json'
+          # ojo comandos /bin/sh
+          - yum install -y jq
+          - cat /tmp/lastpublish0.json | sed "s/'/%%%/g" | sed 's/%%%/"/g' | awk -F', "metadata' '{print $1"}"}' | jq .resourceId > /tmp/share0.json
+          - cat /tmp/lastpublish0.json | sed "s/'/%%%/g" | sed 's/%%%/"/g' | awk -F', "metadata' '{print $1"}"}' | jq .publicHandle > /tmp/handle0.json
+          - >
+            env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN} 
+            env ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu"
+            bash -lc 'cp -f /tmp/share0.json  /mnt/datahub.egi.eu/test8/SQaaS/handles/;
+            cp -f /tmp/handle0.json  /mnt/datahub.egi.eu/test8/SQaaS/handles/ '
           #- unittest   
   qc_coverage:
     repos:
