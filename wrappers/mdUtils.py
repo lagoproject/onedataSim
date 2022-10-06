@@ -41,7 +41,7 @@ def xsd_dateTime_add_elapsed(start, elapsed):
 
     # careful, formisoformat only works with python 3.7+
     # dt = datetime.datetime.fromisoformat(start)
-    dt = datetime.strptime(start.isoformat(), "%Y-%m-%dT%H:%M:%S.%f")
+    dt = datetime.datetime.strptime(start.isoformat(), "%Y-%m-%dT%H:%M:%S.%f")
     # WARNING: currently lago:fluxTime is always in seconds
     # if changes to xsd:duration with days,months,years, we have
     # to use isodate module
