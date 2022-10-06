@@ -78,7 +78,9 @@ sqa_criteria:
           -o /tmp/lasthandles.txt'
         # ojo comandos en /bin/sh (default)  
         - > 
-          HANDLE = $(cat lasthandles.json | sed "s/'/%%%/g" | sed 's/%%%/"/g' | awk -F', "metadata' '{print $1"}"}' | jq .publicHandle);
+          apt-get update -y ;
+          apt-get install -y jq;
+          HANDLE = $(cat /tmp/lasthandles.json | sed "s/'/%%%/g" | sed 's/%%%/"/g' | awk -F', "metadata' '{print $1"}"}' | jq .publicHandle);
           'curl -H ''Accept: application/json'' -H ''Content-Type: application/json''
           -H ''Authorization: Basic bWFydmVsOndvbmRlcndvbWFu'' -X POST 
           -d ''{"metadata_service_endpoint":"http://datahub.egi.eu/oai_pmh",
@@ -104,8 +106,11 @@ sqa_criteria:
           curl -k --tlsv1.2 -H "X-CDMI-Specification-Version: 1.1.1" -H "X-Auth-Token: ${ONECLIENT_ACCESS_TOKEN}" 
           -X GET "https://${ONECLIENT_PROVIDER_HOST}/cdmi/test8/SQaaS/handles/lasthandles0.json" 
           -o /tmp/lasthandles.json
-        - export SHAREID = $(cat lasthandles.json | sed "s/'/%%%/g" | sed 's/%%%/"/g' | awk -F', "metadata' '{print $1"}"}' | jq .resourceId)
-        - 'curl -H ''Content-Type: application/json'' -X POST 
+        - >
+          apt-get update -y ;
+          apt-get install -y jq;
+          SHAREID = $(cat /tmp/lasthandles.json | sed "s/'/%%%/g" | sed 's/%%%/"/g' | awk -F', "metadata' '{print $1"}"}' | jq .resourceId)
+          'curl -H ''Content-Type: application/json'' -X POST 
           -d ''{"id": ${SHAREID},
           "repo": "oai-pmh", "oai_base": "http://datahub.egi.eu/oai_pmh"}''
           http://localhost:9090/v1.0/rda/rda_all'
