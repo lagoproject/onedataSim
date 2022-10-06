@@ -40,30 +40,6 @@ sqa_criteria:
           # - bash -lc "export"
           # - bash -lc "do_sims_onedata.py -?"
           - ls -alh /mnt/datahub.egi.eu
-          # simulation 10 secs
-          - >
-            env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN} 
-            env ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu" 
-            bash -lc 'ls -alh /mnt/datahub.egi.eu; ls -alh /mnt/datahub.egi.eu/test8; ls -alh /mnt/datahub.egi.eu/test8/SQaaS;
-            do_sims_onedata.py -t 10 -u 0000-0001-6497-753X -s and -k 2.0e2 -h QGSII -x --onedata_path /mnt/datahub.egi.eu/test8/SQaaS/ -j 2' 
-          # enricher (fuerzo un git pull NO SE DEBERIA SI SE REICIERA LA IMAGEN:-()
-          - >
-            env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN} 
-            env ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu" 
-            bash -lc 'cd /opt/onedataSim; git pull;
-            cd /opt/onedataSim/wrappers; cp /opt/onedataSim/patches/metadata_enricher.py .;
-            python3 ./metadata_enricher.py  --token "$ONECLIENT_ACCESS_TOKEN" --host "$ONECLIENT_PROVIDER_HOST"
-            --myspace_path "/test8/SQaaS/S0_and_10_200.0_77402_QGSII_flat_defaults" '
-          # publish
-          - >
-            env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN} 
-            env ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu"
-            env ONECLIENT_PUBLISH_TOKEN=${TOKEN_PUBLISH} 
-            bash -lc 'ls -alh /mnt/datahub.egi.eu/test8/SQaaS/handles/;
-            do_share_onedata.py --token "$ONECLIENT_PUBLISH_TOKEN" --host "$ONECLIENT_PROVIDER_HOST"
-            --myspace_path "/test8/SQaaS/S0_and_10_200.0_77402_QGSII_flat_defaults" 
-            --handleservice_id "986fe2ab97a6b749fac17eb9e9b38c37chb045" | grep "resourceId\|publicHandle" > /mnt/datahub.egi.eu/test8/SQaaS/handles/lasthandles0.json'
-          #- unittest   
   qc_coverage:
     repos:
       onedatasim:
@@ -71,7 +47,7 @@ sqa_criteria:
         commands:
           - >
             env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN}
-            env ONECLIENT_PROVIDER_HOST="mon01-tic.ciemat.es"
+            env ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu"
             #pip install coverage && coverage run -m unittest discover -s /opt/onedataSim
             pip3 install coverage && python3 -m coverage run -m unittest discover -s /opt/onedataSim
           #- cover
@@ -83,7 +59,7 @@ sqa_criteria:
         commands:
           - >
             env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN}
-            env ONECLIENT_PROVIDER_HOST="mon01-tic.ciemat.es"
+            env ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu"
             #bandit -r /opt/onedataSim -x tests -s B404,B602,B603
             pip3 install bandit && python3 -m bandit -r /opt/onedataSim -x tests -s B404,B602,B603
           #- bandit -r /onedatasim-repo -x tests
@@ -110,7 +86,7 @@ sqa_criteria:
           'curl -k --tlsv1.2 -H "X-CDMI-Specification-Version: 1.1.1" -H "X-Auth-Token: $ONECLIENT_ACCESS_TOKEN" 
           -X GET "https://$ONECLIENT_PROVIDER_HOST/cdmi/test8/SQaaS/handles/lasthandles0.json" 
           -o /tmp/lasthandles.json'
-          export SHAREID = `cat lasthandles.json | sed "s/'/%%%/g" | sed 's/%%%/"/g' | awk -F', "metadata' '{print $1"}"}' | jq .resourceId´
+          export SHAREID = $(cat lasthandles.json | sed "s/'/%%%/g" | sed 's/%%%/"/g' | awk -F', "metadata' '{print $1"}"}' | jq .resourceId)
           'curl -H ''Content-Type: application/json'' -X POST 
           -d ''{"id": $SHAREID,
           "repo": "oai-pmh", "oai_base": "http://datahub.egi.eu/oai_pmh"}''
@@ -124,7 +100,7 @@ sqa_criteria:
           'curl -k --tlsv1.2 -H "X-CDMI-Specification-Version: 1.1.1" -H "X-Auth-Token: $ONECLIENT_ACCESS_TOKEN" 
           -X GET "https://$ONECLIENT_PROVIDER_HOST/cdmi/test8/SQaaS/handles/lasthandles0.txt" 
           -o /tmp/lasthandles.txt'
-          export HANDLE = `cat lasthandles.json | sed "s/'/%%%/g" | sed 's/%%%/"/g' | awk -F', "metadata' '{print $1"}"}' | jq .publicHandle´
+          export HANDLE = $(cat lasthandles.json | sed "s/'/%%%/g" | sed 's/%%%/"/g' | awk -F', "metadata' '{print $1"}"}' | jq .publicHandle)
           'curl -H ''Accept: application/json'' -H ''Content-Type: application/json''
           -H ''Authorization: Basic bWFydmVsOndvbmRlcndvbWFu'' -X POST 
           -d ''{"metadata_service_endpoint":"http://datahub.egi.eu/oai_pmh",
