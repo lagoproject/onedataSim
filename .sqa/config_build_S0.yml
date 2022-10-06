@@ -78,7 +78,9 @@ sqa_criteria:
           -o /tmp/lasthandles.txt'
         # ojo comandos en /bin/sh (default)  
         - > 
-          apt-get update -y ;
+          whoami;
+          sudo su -;
+          apt-get update -y;
           apt-get install -y jq;
           HANDLE = $(cat /tmp/lasthandles.json | sed "s/'/%%%/g" | sed 's/%%%/"/g' | awk -F', "metadata' '{print $1"}"}' | jq .publicHandle);
           'curl -H ''Accept: application/json'' -H ''Content-Type: application/json''
