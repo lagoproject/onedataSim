@@ -102,8 +102,9 @@ sqa_criteria:
           -o /tmp/lasthandles.txt ;
           whoami;
           pip3 install jq;
-          HANDLE = $(cat /tmp/lasthandles.json | sed "s/\x27/\x22/g" | awk -F', "metadata' '{print $1"}"}' | jq .publicHandle); 
-          curl -H ''Accept: application/json'' -H ''Content-Type: application/json''
+          HANDLE = $(cat /tmp/lasthandles.json | sed "s/\x27/\x22/g" | awk -F', "metadata' '{print $1"}"}' | jq .publicHandle)'
+          # two commands ?
+          'curl -H ''Accept: application/json'' -H ''Content-Type: application/json''
           -H ''Authorization: Basic bWFydmVsOndvbmRlcndvbWFu'' -X POST 
           -d ''{"metadata_service_endpoint":"http://datahub.egi.eu/oai_pmh",
           "metadata_service_type":"oai_pmh","object_identifier":${HANDLE},
