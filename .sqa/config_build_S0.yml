@@ -9,8 +9,10 @@ config:
     #- id: onedata-token-build-ajrm
     #  variable: TOKEN_BUILD
     # TOKEN_RUN is needed for testing the application
-    - id: onedata-token-test4-ajrm
+    - id: onedata-token-test8-ajrm
       variable: TOKEN_RUN
+    - id: onedata-token-publish-ajrm
+      variable: TOKEN_PUBLISH
     # If we will want a private DockerHub
     - id: repoimage-lago-ajrm
       username_var: JPL_DOCKERUSER
@@ -38,17 +40,26 @@ sqa_criteria:
           # - bash -lc "export"
           # - bash -lc "do_sims_onedata.py -?"
           - ls -alh /mnt/datahub.egi.eu
+          # simulation 10 secs
           - >
             env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN} 
             env ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu" 
             bash -lc 'ls -alh /mnt/datahub.egi.eu; ls -alh /mnt/datahub.egi.eu/test8; ls -alh /mnt/datahub.egi.eu/test8/SQaaS;
             do_sims_onedata.py -t 10 -u 0000-0001-6497-753X -s and -k 2.0e2 -h QGSII -x --onedata_path /mnt/datahub.egi.eu/test8/SQaaS/ -j 2' 
+          # enricher
           - >
             env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN} 
             env ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu" 
+            bash -lc 'cd /opt/onedataSim/wrappers; cp /opt/onedataSim/patches/metadata_enricher.py .;
+            python3 ./metadata_enricher.py  --token "$ONECLIENT_ACCESS_TOKEN" --host "$ONECLIENT_PROVIDER_HOST"
+            --myspace_path "/test8/SQaaS/S0_and_10_200.0_77402_QGSII_flat_defaults" '
+          # publish
+          - >
+            env ONECLIENT_ACCESS_TOKEN=${TOKEN_PUBLISH} 
+            env ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu" 
             bash -lc 'do_share_onedata.py --token "$ONECLIENT_ACCESS_TOKEN" --host "$ONECLIENT_PROVIDER_HOST"
             --myspace_path "/test8/SQaaS/S0_and_10_200.0_77402_QGSII_flat_defaults" 
-            --handleservice_id "986fe2ab97a6b749fac17eb9e9b38c37chb045" | grep "resourceId\|publicHandle" | tail -n2 > /mnt/datahub.egi.eu/test8/SQaaS/handles/lasthandles1.txt'
+            --handleservice_id "986fe2ab97a6b749fac17eb9e9b38c37chb045" | grep "resourceId\|publicHandle" > /mnt/datahub.egi.eu/test8/SQaaS/handles/lasthandles0.json'
           #- unittest   
   qc_coverage:
     repos:
@@ -94,9 +105,9 @@ sqa_criteria:
           env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN}
           env ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu"
           'curl -k --tlsv1.2 -H "X-CDMI-Specification-Version: 1.1.1" -H "X-Auth-Token: $ONECLIENT_ACCESS_TOKEN" 
-          -X GET "https://$ONECLIENT_PROVIDER_HOST/cdmi/test8/SQaaS/handles/lasthandles1.txt" 
-          -o /tmp/lasthandles1.txt'
-          export SHAREID = `grep resourceId /tmp/lasthandles1.txt | awk -F': ' '{print $2}'´
+          -X GET "https://$ONECLIENT_PROVIDER_HOST/cdmi/test8/SQaaS/handles/lasthandles0.json" 
+          -o /tmp/lasthandles.json'
+          export SHAREID = `cat lasthandles.json | sed "s/'/%%%/g" | sed 's/%%%/"/g' | awk -F', "metadata' '{print $1"}"}' | jq .resourceId´
           'curl -H ''Content-Type: application/json'' -X POST 
           -d ''{"id": $SHAREID,
           "repo": "oai-pmh", "oai_base": "http://datahub.egi.eu/oai_pmh"}''
@@ -110,11 +121,11 @@ sqa_criteria:
           'curl -k --tlsv1.2 -H "X-CDMI-Specification-Version: 1.1.1" -H "X-Auth-Token: $ONECLIENT_ACCESS_TOKEN" 
           -X GET "https://$ONECLIENT_PROVIDER_HOST/cdmi/test8/SQaaS/handles/lasthandles1.txt" 
           -o /tmp/lasthandles1.txt'
-          export SHAREID = `grep publicHandle /tmp/lasthandles1.txt | awk -F': ' '{print $2}'´
+          export HANDLE = `cat lasthandles.json | sed "s/'/%%%/g" | sed 's/%%%/"/g' | awk -F', "metadata' '{print $1"}"}' | jq .publicHandle´
           'curl -H ''Accept: application/json'' -H ''Content-Type: application/json''
           -H ''Authorization: Basic bWFydmVsOndvbmRlcndvbWFu'' -X POST 
           -d ''{"metadata_service_endpoint":"http://datahub.egi.eu/oai_pmh",
-          "metadata_service_type":"oai_pmh","object_identifier":"http://hdl.handle.net/21.12145/V6CkywE",
+          "metadata_service_type":"oai_pmh","object_identifier":$HANDLE,
           "test_debug":true,"use_datacite":false}''
           http://localhost:1071/fuji/api/v1/evaluate'
 timeout: 900
