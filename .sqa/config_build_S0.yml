@@ -41,11 +41,11 @@ sqa_criteria:
           # - bash -lc "do_sims_onedata.py -?"
           - ls -alh /mnt/datahub.egi.eu
           # simulation 10 secs
-          #- >
-          #  env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN} 
-          #  env ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu" 
-          #  bash -lc 'ls -alh /mnt/datahub.egi.eu; ls -alh /mnt/datahub.egi.eu/test8; ls -alh /mnt/datahub.egi.eu/test8/SQaaS;
-          #  do_sims_onedata.py -t 10 -u 0000-0001-6497-753X -s and -k 2.0e2 -h QGSII -x --onedata_path /mnt/datahub.egi.eu/test8/SQaaS/ -j 2' 
+          - >
+            env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN} 
+            env ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu" 
+            bash -lc 'ls -alh /mnt/datahub.egi.eu; ls -alh /mnt/datahub.egi.eu/test8; ls -alh /mnt/datahub.egi.eu/test8/SQaaS;
+            do_sims_onedata.py -t 10 -u 0000-0001-6497-753X -s and -k 2.0e2 -h QGSII -x --onedata_path /mnt/datahub.egi.eu/test8/SQaaS/ -j 2' 
           # enricher (fuerzo un git pull NO SE DEBERIA SI SE REICIERA LA IMAGEN:-()
           - >
             env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN} 
@@ -58,8 +58,9 @@ sqa_criteria:
           - >
             env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN} 
             env ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu"
-            env ONECLIENT_PUBLISH_TOKEN=${TOKEN_RUN} 
-            bash -lc 'do_share_onedata.py --token "$ONECLIENT_PUBLISH_TOKEN" --host "$ONECLIENT_PROVIDER_HOST"
+            env ONECLIENT_PUBLISH_TOKEN=${TOKEN_PUBLISH} 
+            bash -lc 'ls -alh /mnt/datahub.egi.eu/test8/SQaaS/handles/;
+            do_share_onedata.py --token "$ONECLIENT_PUBLISH_TOKEN" --host "$ONECLIENT_PROVIDER_HOST"
             --myspace_path "/test8/SQaaS/S0_and_10_200.0_77402_QGSII_flat_defaults" 
             --handleservice_id "986fe2ab97a6b749fac17eb9e9b38c37chb045" | grep "resourceId\|publicHandle" > /mnt/datahub.egi.eu/test8/SQaaS/handles/lasthandles0.json'
           #- unittest   
