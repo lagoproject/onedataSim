@@ -100,9 +100,10 @@ sqa_criteria:
           bash -lc 'curl -k --tlsv1.2 -H "X-CDMI-Specification-Version: 1.1.1" -H "X-Auth-Token: ${ONECLIENT_ACCESS_TOKEN}" 
           -X GET "https://${ONECLIENT_PROVIDER_HOST}/cdmi/test8/SQaaS/handles/lasthandles0.txt" 
           -o /tmp/lasthandles.txt ;
+          cat /tmp/lasthandles.json;
           whoami;
           pip3 install jq;
-          HANDLE = $(cat /tmp/lasthandles.json | sed "s/\x27/\x22/g" | sed "s/\x22, \x22metadata/\x22}\n/g" | head -n1 | jq .publicHandle)'
+          export HANDLE = $(cat /tmp/lasthandles.json | sed "s/\x27/\x22/g" | sed "s/\x22, \x22metadata/\x22}\n/g" | head -n1 | jq .publicHandle)'
         - 'curl -H ''Accept: application/json'' -H ''Content-Type: application/json''
           -H ''Authorization: Basic bWFydmVsOndvbmRlcndvbWFu'' -X POST 
           -d ''{"metadata_service_endpoint":"http://datahub.egi.eu/oai_pmh",
