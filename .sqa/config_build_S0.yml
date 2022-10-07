@@ -113,7 +113,7 @@ sqa_criteria:
         # cuidado! en /bin/sh
         - >
           env HANDLE="$(cat ./handle.txt)"
-          curl -H 'Accept: application/json' -H 'Content-Type: application/json' -H 'Authorization: Basic bWFydmVsOndvbmRlcndvbWFu' -X POST -d '{"metadata_service_endpoint":"http://datahub.egi.eu/oai_pmh", "metadata_service_type":"oai_pmh","object_identifier":${HANDLE}, "test_debug":true,"use_datacite":false}' "http://localhost:1071/fuji/api/v1/evaluate"
+          curl -H 'Accept: application/json' -H 'Content-Type: application/json' -H 'Authorization: Basic bWFydmVsOndvbmRlcndvbWFu' -X POST -d '{"metadata_service_endpoint":"http://datahub.egi.eu/oai_pmh", "metadata_service_type":"oai_pmh","object_identifier":$HANDLE, "test_debug":true,"use_datacite":false}' "http://localhost:1071/fuji/api/v1/evaluate"
       FAIR_EVA:
         container: fair_eva
         # Onedata has Verbs as petition of LAGO: http://datahub.egi.eu/oai_pmh?verb=ListSets
@@ -145,5 +145,5 @@ sqa_criteria:
           '
         - >
           env SHAREID="$(cat ./share.txt)"
-          curl -H 'Content-Type: application/json' -X POST -d '{"id":${SHAREID}, "repo": "oai-pmh", "oai_base": "http://datahub.egi.eu/oai_pmh"}' "http://localhost:9090/v1.0/rda/rda_all"
+          curl -H 'Content-Type: application/json' -X POST -d '{"id":$SHAREID, "repo": "oai-pmh", "oai_base": "http://datahub.egi.eu/oai_pmh"}' "http://localhost:9090/v1.0/rda/rda_all"
 timeout: 900
