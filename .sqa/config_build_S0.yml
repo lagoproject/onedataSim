@@ -163,8 +163,8 @@ sqa_criteria:
         # OJO intento levantar el demonio del FAIR_eva, porque por yaim es imposible.
         - > 
           bash -lc ' 
-          /FAIR_eva/start.sh &;
-          curl -H "Content-Type: application/json" -X POST -d @post_eva.json "http://localhost:9090/v1.0/rda/rda_all" ;
+          /FAIR_eva/start.sh;
+          curl -H "Content-Type: application/json" -X POST -d @post_eva.json "http://localhost:9090/v1.0/rda/rda_all"
           '
         # OJO sin no es con - > NO FUNCIONA
         #- >
