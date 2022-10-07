@@ -30,8 +30,8 @@ services:
       # - DAC_READ_SEARCH
   fair_eva:
     image: ferag/fair_eva:latest
+    command: sleep 900
     #image: ferag/fair_eva:fair
-    command: /bin/bash -lc "/FAIR_eva/start.sh &; sleep 900"
     volumes:
     - source: ./
       target: /sqaaas-build
