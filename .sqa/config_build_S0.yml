@@ -97,7 +97,8 @@ sqa_criteria:
         - >
           env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN}
           env ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu"
-          bash -lc 'whoami;
+          bash -lc '
+          whoami;
           apt-get update;
           apt-get install -y jq;
           OBJECTID=$(curl -ksS --tlsv1.2 -H "X-CDMI-Specification-Version: 1.1.1" -H "X-Auth-Token: ${ONECLIENT_ACCESS_TOKEN}"  
@@ -106,7 +107,7 @@ sqa_criteria:
           cat /tmp/lasthandles.json;
           cat /tmp/lasthandles.json | sed "s/\x27/\x22/g" | sed "s/\x22, \x22metadata/\x22}\n/g" | head -n1 | jq .publicHandle;
           HANDLE=$(cat /tmp/lasthandles.json | sed "s/\x27/\x22/g" | sed "s/\x22, \x22metadata/\x22}\n/g" | head -n1 | jq .publicHandle);
-          echo "Handle obtained:"
+          echo "Handle obtained:";
           echo $HANDLE;
           $(curl -H ''Accept: application/json'' -H ''Content-Type: application/json''
           -H ''Authorization: Basic bWFydmVsOndvbmRlcndvbWFu'' -X POST 
@@ -114,6 +115,7 @@ sqa_criteria:
           "metadata_service_type":"oai_pmh","object_identifier":${HANDLE},
           "test_debug":true,"use_datacite":false}''
           http://localhost:1071/fuji/api/v1/evaluate)
+          '
       FAIR_EVAL:
         container: fair_eva
         # Onedata has Verbs as petition of LAGO: http://datahub.egi.eu/oai_pmh?verb=ListSets
