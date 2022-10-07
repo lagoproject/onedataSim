@@ -102,8 +102,9 @@ sqa_criteria:
           -o /tmp/lasthandles.json;
           cat /tmp/lasthandles.json;
           whoami;
+          apt-get update;
           apt-get install -y jq;
-          export HANDLE = $(cat /tmp/lasthandles.json | sed "s/\x27/\x22/g" | sed "s/\x22, \x22metadata/\x22}\n/g" | head -n1 | jq .publicHandle)'
+          export HANDLE=$(cat /tmp/lasthandles.json | sed "s/\x27/\x22/g" | sed "s/\x22, \x22metadata/\x22}\n/g" | head -n1 | jq .publicHandle)'
         - 'curl -H ''Accept: application/json'' -H ''Content-Type: application/json''
           -H ''Authorization: Basic bWFydmVsOndvbmRlcndvbWFu'' -X POST 
           -d ''{"metadata_service_endpoint":"http://datahub.egi.eu/oai_pmh",
@@ -130,7 +131,7 @@ sqa_criteria:
           -X GET "https://${ONECLIENT_PROVIDER_HOST}/cdmi/test8/SQaaS/handles/lasthandles0.json" 
           -o /tmp/lasthandles.json ;
           pip3 install jq;
-          SHAREID = $(cat /tmp/lasthandles.json | sed "s/\x27/\x22/g" | awk -F', "metadata' '{print $1"}"}' | jq .resourceId);
+          SHAREID=$(cat /tmp/lasthandles.json | sed "s/\x27/\x22/g" | awk -F', "metadata' '{print $1"}"}' | jq .resourceId);
           curl -H ''Content-Type: application/json'' -X POST 
           -d ''{"id": ${SHAREID},
           "repo": "oai-pmh", "oai_base": "http://datahub.egi.eu/oai_pmh"}''
