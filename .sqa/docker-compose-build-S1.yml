@@ -27,6 +27,7 @@ services:
     #  - DAC_READ_SEARCH
   fair_eva:
     image: ferag/fair_eva:latest
+    command: sleep 900
     #image: ferag/fair_eva:fair
     volumes:
     - source: ./
