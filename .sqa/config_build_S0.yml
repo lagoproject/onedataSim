@@ -110,10 +110,12 @@ sqa_criteria:
           echo "Handle obtained:";
           echo $HANDLE;
           '
+        # aqui voy jugando con los ficheros en el volumen compartido por docker
         - echo -n '{"metadata_service_endpoint":"http://datahub.egi.eu/oai_pmh", "metadata_service_type":"oai_pmh","object_identifier":' > ./post_uji.json
         - echo -n $(cat ./handle.txt) >> ./post_uji.json
         - echo -n ', "test_debug":true,"use_datacite":false}'  >> ./post_uji.json
         - cat ./post_uji.json
+        # OJO sin no es con - > NO FUNCIONA
         - >
           curl -H 'Accept: application/json' -H 'Content-Type: application/json' -H 'Authorization: Basic bWFydmVsOndvbmRlcndvbWFu' -X POST -d @post_uji.json  http://localhost:1071/fuji/api/v1/evaluate
         # tampoco funcionan
@@ -153,7 +155,17 @@ sqa_criteria:
           echo "Share obtained:";
           echo $SHAREID;
           '
+        # aqui voy jugando con los ficheros en el volumen compartido por docker
+        - echo -n '{"id":' > ./post_eva.json
+        - echo -n $(cat ./share.txt) >> ./post_eva.json
+        - echo -n ', "repo": "oai-pmh", "oai_base": "http://datahub.egi.eu/oai_pmh"}'  >> ./post_eva.json
+        - cat ./post_eva.json
+        # OJO sin no es con - > NO FUNCIONA
         - >
-          env SHAREID="$(cat ./share.txt)"
-          curl -H 'Content-Type: application/json' -X POST -d '{"id":$SHAREID, "repo": "oai-pmh", "oai_base": "http://datahub.egi.eu/oai_pmh"}' "http://localhost:9090/v1.0/rda/rda_all"
+          curl -H 'Content-Type: application/json' -X POST -d @post_eva.json "http://localhost:9090/v1.0/rda/rda_all"
+        # no funciona bien, porque la variable de entorno no la traduce  
+        # cuidado! en /bin/sh
+        # - >
+        #  env SHAREID="$(cat ./share.txt)"
+        #  curl -H 'Content-Type: application/json' -X POST -d '{"id":$SHAREID, "repo": "oai-pmh", "oai_base": "http://datahub.egi.eu/oai_pmh"}' "http://localhost:9090/v1.0/rda/rda_all"
 timeout: 900
