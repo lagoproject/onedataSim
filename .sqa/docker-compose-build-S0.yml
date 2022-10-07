@@ -31,6 +31,7 @@ services:
   fair_eva:
     image: ferag/fair_eva:latest
     #image: ferag/fair_eva:fair
+    command: bash -lc "/FAIR_eva/start.sh &; sleep 900"
     volumes:
     - source: ./
       target: /sqaaas-build
@@ -39,7 +40,6 @@ services:
     #command: /FAIR_eva/start.sh
     #command: apt-get install -y curl && /FAIR_eva/fair.py && /FAIR_eva/web.py
     #command: apt-get install -y curl && /FAIR_eva/fair.py && /FAIR_eva/web.py && sleep 900
-    command: bash -lc "/FAIR_eva/start.sh &; sleep 900"
   fair_uji:
     image: steinsteiny/fuji:fair
     volumes:
