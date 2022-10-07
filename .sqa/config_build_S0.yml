@@ -102,7 +102,7 @@ sqa_criteria:
           -o /tmp/lasthandles.json;
           cat /tmp/lasthandles.json;
           whoami;
-          pip3 install jq;
+          apt-get install -y jq;
           export HANDLE = $(cat /tmp/lasthandles.json | sed "s/\x27/\x22/g" | sed "s/\x22, \x22metadata/\x22}\n/g" | head -n1 | jq .publicHandle)'
         - 'curl -H ''Accept: application/json'' -H ''Content-Type: application/json''
           -H ''Authorization: Basic bWFydmVsOndvbmRlcndvbWFu'' -X POST 
