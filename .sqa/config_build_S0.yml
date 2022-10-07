@@ -156,9 +156,9 @@ sqa_criteria:
           echo $SHAREID;
           '
         # aqui voy jugando con los ficheros en el volumen compartido por docker
-        - echo -n '{"id":' > ./post_eva.json
-        - echo -n $(cat ./share.txt) >> ./post_eva.json
-        - echo -n ', "repo":"oai-pmh", "oai_base":"http://datahub.egi.eu/oai_pmh"}'  >> ./post_eva.json
+        - echo -n '{"id":"oai:datahub.egi.eu:' > ./post_eva.json
+        - echo -n $(cat ./share.txt | sed "s/\x22//g") >> ./post_eva.json
+        - echo -n '", "repo":"oai-pmh", "oai_base":"http://datahub.egi.eu/oai_pmh"}'  >> ./post_eva.json
         - cat ./post_eva.json
         # OJO intento levantar el demonio del FAIR_eva, porque por yaim es imposible.
         - > 
