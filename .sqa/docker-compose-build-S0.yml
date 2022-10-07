@@ -39,6 +39,7 @@ services:
     #command: /FAIR_eva/start.sh
     #command: apt-get install -y curl && /FAIR_eva/fair.py && /FAIR_eva/web.py
     #command: apt-get install -y curl && /FAIR_eva/fair.py && /FAIR_eva/web.py && sleep 900
+    command: sleep 900
   fair_uji:
     image: steinsteiny/fuji:fair
     volumes:
