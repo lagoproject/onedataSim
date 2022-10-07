@@ -31,7 +31,7 @@ services:
   fair_eva:
     image: ferag/fair_eva:latest
     #image: ferag/fair_eva:fair
-    command: bash -lc "/FAIR_eva/start.sh &; sleep 900"
+    command: /bin/bash -lc "/FAIR_eva/start.sh &; sleep 900"
     volumes:
     - source: ./
       target: /sqaaas-build
