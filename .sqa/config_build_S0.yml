@@ -114,6 +114,7 @@ sqa_criteria:
         - echo -n $(cat ./handle.txt) >> ./post_uji.json
         - echo -n ', "test_debug":true,"use_datacite":false}'  >> ./post_uji.json
         - cat ./post_uji.json
+        - curl -H 'Accept: application/json' -H 'Content-Type: application/json' -H 'Authorization: Basic bWFydmVsOndvbmRlcndvbWFu' -X POST -d @post_uji.json  http://localhost:1071/fuji/api/v1/evaluate
         # tampoco funcionan
         # - cat ./post_uji.json | curl -H 'Accept: application/json' -H 'Content-Type: application/json' -H 'Authorization: Basic bWFydmVsOndvbmRlcndvbWFu' -X POST --data-binary @-  http://localhost:1071/fuji/api/v1/evaluate
         # - bash -lc " cat ./post_uji.json | curl -H 'Accept: application/json' -H 'Content-Type: application/json' -H 'Authorization: Basic bWFydmVsOndvbmRlcndvbWFu' -X POST --data-binary @-  http://localhost:1071/fuji/api/v1/evaluate"
