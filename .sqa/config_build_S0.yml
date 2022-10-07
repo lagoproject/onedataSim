@@ -98,8 +98,8 @@ sqa_criteria:
           env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN}
           env ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu"
           bash -lc 'curl -k --tlsv1.2 -H "X-CDMI-Specification-Version: 1.1.1" -H "X-Auth-Token: ${ONECLIENT_ACCESS_TOKEN}" 
-          -X GET "https://${ONECLIENT_PROVIDER_HOST}/cdmi/test8/SQaaS/handles/lasthandles0.txt" 
-          -o /tmp/lasthandles.txt ;
+          -X GET "https://${ONECLIENT_PROVIDER_HOST}/cdmi/test8/SQaaS/handles/lasthandles0.json" 
+          -o /tmp/lasthandles.json;
           cat /tmp/lasthandles.json;
           whoami;
           pip3 install jq;
