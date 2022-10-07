@@ -104,13 +104,14 @@ sqa_criteria:
           whoami;
           apt-get update;
           apt-get install -y jq;
-          export HANDLE=$(cat /tmp/lasthandles.json | sed "s/\x27/\x22/g" | sed "s/\x22, \x22metadata/\x22}\n/g" | head -n1 | jq .publicHandle)'
-        - 'curl -H ''Accept: application/json'' -H ''Content-Type: application/json''
+          export HANDLE=$(cat /tmp/lasthandles.json | sed "s/\x27/\x22/g" | sed "s/\x22, \x22metadata/\x22}\n/g" | head -n1 | jq .publicHandle)';
+          echo $HANDLE;
+          $(curl -H ''Accept: application/json'' -H ''Content-Type: application/json''
           -H ''Authorization: Basic bWFydmVsOndvbmRlcndvbWFu'' -X POST 
           -d ''{"metadata_service_endpoint":"http://datahub.egi.eu/oai_pmh",
           "metadata_service_type":"oai_pmh","object_identifier":${HANDLE},
           "test_debug":true,"use_datacite":false}''
-          http://localhost:1071/fuji/api/v1/evaluate '
+          http://localhost:1071/fuji/api/v1/evaluate)
       FAIR_EVAL:
         container: fair_eva
         # Onedata has Verbs as petition of LAGO: http://datahub.egi.eu/oai_pmh?verb=ListSets
