@@ -110,10 +110,16 @@ sqa_criteria:
           echo "Handle obtained:";
           echo $HANDLE;
           '
+        - echo '{"metadata_service_endpoint":"http://datahub.egi.eu/oai_pmh", "metadata_service_type":"oai_pmh","object_identifier":' > ./post_uji.json
+        - echo ${HANDLE} >> ./post_uji.json
+        - echo ', "test_debug":true,"use_datacite":false}'  >> ./post_uji.json
+        - cat ./post_uji.json
+        - cat ./post_uji.json | curl -H 'Accept: application/json' -H 'Content-Type: application/json' -H 'Authorization: Basic bWFydmVsOndvbmRlcndvbWFu' -X POST --data-binary @-  http://localhost:1071/fuji/api/v1/evaluate
+        # no funciona bien, porque la variable de entorno no la traduce  
         # cuidado! en /bin/sh
-        - >
-          env HANDLE="$(cat ./handle.txt)"
-          curl -H 'Accept: application/json' -H 'Content-Type: application/json' -H 'Authorization: Basic bWFydmVsOndvbmRlcndvbWFu' -X POST -d '{"metadata_service_endpoint":"http://datahub.egi.eu/oai_pmh", "metadata_service_type":"oai_pmh","object_identifier":$HANDLE, "test_debug":true,"use_datacite":false}' "http://localhost:1071/fuji/api/v1/evaluate"
+        #- >
+        #  env HANDLE="$(cat ./handle.txt)"
+        #  curl -H 'Accept: application/json' -H 'Content-Type: application/json' -H 'Authorization: Basic bWFydmVsOndvbmRlcndvbWFu' -X POST -d '{"metadata_service_endpoint":"http://datahub.egi.eu/oai_pmh", "metadata_service_type":"oai_pmh","object_identifier":$HANDLE, "test_debug":true,"use_datacite":false}' "http://localhost:1071/fuji/api/v1/evaluate"
       FAIR_EVA:
         container: fair_eva
         # Onedata has Verbs as petition of LAGO: http://datahub.egi.eu/oai_pmh?verb=ListSets
