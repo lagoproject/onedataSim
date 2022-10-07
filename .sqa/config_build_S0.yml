@@ -139,6 +139,8 @@ sqa_criteria:
         # Guardo el handle y el share de qc_functional en un fichero conocido y publico, luego lo uso para los FAIR_eva y los F-UJI respectivamente
         ####
         commands:
+        # a ver que release tiene el FAIR_eva
+        - cat .git/refs/heads/main 
         - >
           env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN}
           env ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu"
@@ -163,6 +165,7 @@ sqa_criteria:
         # OJO intento levantar el demonio del FAIR_eva, porque por yaim es imposible.
         - > 
           bash -lc ' 
+          git pull;
           /FAIR_eva/start.sh;
           curl -H "Content-Type: application/json" -X POST -d @post_eva.json "http://localhost:9090/v1.0/rda/rda_all"
           '
