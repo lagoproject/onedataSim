@@ -105,7 +105,8 @@ sqa_criteria:
           curl -H "X-Auth-Token: $ONECLIENT_ACCESS_TOKEN" -X GET "https://${ONECLIENT_PROVIDER_HOST}/api/v3/oneprovider/data/${OBJECTID}/content" > /tmp/lasthandles.json;
           cat /tmp/lasthandles.json;
           cat /tmp/lasthandles.json | sed "s/\x27/\x22/g" | sed "s/\x22, \x22metadata/\x22}\n/g" | head -n1 | jq .publicHandle;
-          HANDLE=$(cat /tmp/lasthandles.json | sed "s/\x27/\x22/g" | sed "s/\x22, \x22metadata/\x22}\n/g" | head -n1 | jq .publicHandle)';
+          HANDLE=$(cat /tmp/lasthandles.json | sed "s/\x27/\x22/g" | sed "s/\x22, \x22metadata/\x22}\n/g" | head -n1 | jq .publicHandle);
+          echo "Handle obtained:"
           echo $HANDLE;
           $(curl -H ''Accept: application/json'' -H ''Content-Type: application/json''
           -H ''Authorization: Basic bWFydmVsOndvbmRlcndvbWFu'' -X POST 
