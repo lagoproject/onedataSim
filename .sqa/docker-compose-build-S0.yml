@@ -30,7 +30,7 @@ services:
       # - DAC_READ_SEARCH
   fair_eva:
     image: ferag/fair_eva:latest
-    command: sleep 900
+    command: bash -lc 'cd /FAIR_eva; /FAIR_eva/start.sh'
     #image: ferag/fair_eva:fair
     volumes:
     - source: ./
