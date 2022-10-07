@@ -106,12 +106,13 @@ sqa_criteria:
           curl -H "X-Auth-Token: $ONECLIENT_ACCESS_TOKEN" -X GET "https://${ONECLIENT_PROVIDER_HOST}/api/v3/oneprovider/data/${OBJECTID}/content" > ./lasthandles.json;
           cat ./lasthandles.json;
           cat ./lasthandles.json | sed "s/\x27/\x22/g" | sed "s/\x22, \x22metadata/\x22}\n/g" | head -n1 | jq .publicHandle | sed "s/\x22//g" > ./handle.txt;
-          '
-        # cuidado! en /bin/sh
-        - >
           HANDLE=$(cat ./handle.txt);
           echo "Handle obtained:";
           echo $HANDLE;
+          '
+        # cuidado! en /bin/sh
+        - >
+          env  HANDLE=$(cat ./handle.txt)
           'curl -H ''Accept: application/json'' -H ''Content-Type: application/json'' 
           -H ''Authorization: Basic bWFydmVsOndvbmRlcndvbWFu'' -X POST 
           -d ''{"metadata_service_endpoint":"http://datahub.egi.eu/oai_pmh",  "metadata_service_type":"oai_pmh","object_identifier":"${HANDLE}","test_debug":true,"use_datacite":false}''  
