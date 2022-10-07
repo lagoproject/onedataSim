@@ -145,5 +145,5 @@ sqa_criteria:
           '
         - >
           env SHAREID="$(cat ./share.txt)"
-          curl -H 'Content-Type: application/json' -X POST -d '{"id":"${SHAREID}", "repo": "oai-pmh", "oai_base": "http://datahub.egi.eu/oai_pmh"}' "http://localhost:9090/v1.0/rda/rda_all"
+          /FAIR_eva/start.sh && curl -H 'Content-Type: application/json' -X POST -d '{"id":"${SHAREID}", "repo": "oai-pmh", "oai_base": "http://datahub.egi.eu/oai_pmh"}' "http://localhost:9090/v1.0/rda/rda_all"
 timeout: 900
