@@ -161,10 +161,13 @@ sqa_criteria:
         - echo -n ', "repo":"oai-pmh", "oai_base":"http://datahub.egi.eu/oai_pmh"}'  >> ./post_eva.json
         - cat ./post_eva.json
         # OJO intento levantar el demonio del FAIR_eva, porque por yaim es imposible.
-        - /FAIR_eva/start.sh &
+        - > bash -lc ' 
+          /FAIR_eva/start.sh &;
+          curl -H "Content-Type: application/json" -X POST -d @post_eva.json "http://localhost:9090/v1.0/rda/rda_all" ;
+          '
         # OJO sin no es con - > NO FUNCIONA
-        - >
-          curl -H 'Content-Type: application/json' -X POST -d @post_eva.json "http://localhost:9090/v1.0/rda/rda_all"
+        #- >
+        #  curl -H 'Content-Type: application/json' -X POST -d @post_eva.json "http://localhost:9090/v1.0/rda/rda_all"
         # no funciona bien, porque la variable de entorno no la traduce  
         # cuidado! en /bin/sh
         # - >
