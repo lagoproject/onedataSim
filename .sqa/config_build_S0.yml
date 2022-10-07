@@ -111,7 +111,7 @@ sqa_criteria:
           echo $HANDLE;
           '
         - echo '{"metadata_service_endpoint":"http://datahub.egi.eu/oai_pmh", "metadata_service_type":"oai_pmh","object_identifier":' > ./post_uji.json
-        - echo ${HANDLE} >> ./post_uji.json
+        - cat ./handle.txt >> ./post_uji.json
         - echo ', "test_debug":true,"use_datacite":false}'  >> ./post_uji.json
         - cat ./post_uji.json
         - cat ./post_uji.json | curl -H 'Accept: application/json' -H 'Content-Type: application/json' -H 'Authorization: Basic bWFydmVsOndvbmRlcndvbWFu' -X POST --data-binary @-  http://localhost:1071/fuji/api/v1/evaluate
