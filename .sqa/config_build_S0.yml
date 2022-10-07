@@ -140,7 +140,7 @@ sqa_criteria:
         ####
         commands:
         # a ver que release tiene el FAIR_eva
-        - cat .git/refs/heads/main 
+        - cat /FAIR_eva/.git/refs/heads/main 
         - >
           env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN}
           env ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu"
@@ -164,9 +164,11 @@ sqa_criteria:
         - cat ./post_eva.json
         # OJO intento levantar el demonio del FAIR_eva, porque por yaim es imposible.
         - > 
-          bash -lc ' 
+          bash -lc '
+          cd /FAIR_eva;
           git pull;
           /FAIR_eva/start.sh;
+          cd;
           curl -H "Content-Type: application/json" -X POST -d @post_eva.json "http://localhost:9090/v1.0/rda/rda_all"
           '
         # OJO sin no es con - > NO FUNCIONA
