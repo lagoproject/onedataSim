@@ -109,7 +109,7 @@ sqa_criteria:
           HANDLE=$(cat /tmp/lasthandles.json | sed "s/\x27/\x22/g" | sed "s/\x22, \x22metadata/\x22}\n/g" | head -n1 | jq .publicHandle | sed "s/\x22//g");
           echo "Handle obtained:";
           echo $HANDLE;
-          curl -H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Basic bWFydmVsOndvbmRlcndvbWFu" -X POST -d "{\x27metadata_service_endpoint\x27:\x27http://datahub.egi.eu/oai_pmh\x27,  \x27metadata_service_type\x27:\x27oai_pmh\x27, \x27object_identifier\x27:\x27$HANDLE\x27, \x27test_debug\x27:true, \x27use_datacite\x27:false}"  "http://localhost:1071/fuji/api/v1/evaluate" ;
+          curl -vv -H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Basic bWFydmVsOndvbmRlcndvbWFu" -X POST -d "{\x27metadata_service_endpoint\x27:\x27http://datahub.egi.eu/oai_pmh\x27,  \x27metadata_service_type\x27:\x27oai_pmh\x27, \x27object_identifier\x27:\x27$HANDLE\x27, \x27test_debug\x27:true, \x27use_datacite\x27:false}"  "http://localhost:1071/fuji/api/v1/evaluate" ;
           '
       FAIR_EVAL:
         container: fair_eva
