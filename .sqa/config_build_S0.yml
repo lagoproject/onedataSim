@@ -97,13 +97,13 @@ sqa_criteria:
         - >
           env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN}
           env ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu"
-          bash -lc 'curl -k --tlsv1.2 -H "X-CDMI-Specification-Version: 1.1.1" -H "X-Auth-Token: ${ONECLIENT_ACCESS_TOKEN}" 
-          -X GET "https://${ONECLIENT_PROVIDER_HOST}/cdmi/test8/SQaaS/handles/lasthandles0.json" 
-          -o /tmp/lasthandles.json;
-          cat /tmp/lasthandles.json;
-          whoami;
+          bash -lc 'OBJECTID=$(whoami;
           apt-get update;
           apt-get install -y jq;
+          OBJECTID=$(curl -ksS --tlsv1.2 -H "X-CDMI-Specification-Version: 1.1.1" -H "X-Auth-Token: ${ONECLIENT_ACCESS_TOKEN}"  
+          -X GET "https://${ONECLIENT_PROVIDER_HOST}/cdmi/test8/SQaaS/handles/lasthandles0.json" | jq .objectID | sed "s/\x22//g" );
+          curl -H "X-Auth-Token: $ONECLIENT_ACCESS_TOKEN" -X GET "https://${ONECLIENT_PROVIDER_HOST}/api/v3/oneprovider/data/${OBJECTID}/content" > /tmp/lasthandles.json;
+          cat /tmp/lasthandles.json;
           cat /tmp/lasthandles.json | sed "s/\x27/\x22/g" | sed "s/\x22, \x22metadata/\x22}\n/g" | head -n1 | jq .publicHandle;
           HANDLE=$(cat /tmp/lasthandles.json | sed "s/\x27/\x22/g" | sed "s/\x22, \x22metadata/\x22}\n/g" | head -n1 | jq .publicHandle)';
           echo $HANDLE;
