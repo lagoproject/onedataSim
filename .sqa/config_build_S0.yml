@@ -105,7 +105,7 @@ sqa_criteria:
           -X GET "https://${ONECLIENT_PROVIDER_HOST}/cdmi/test8/SQaaS/handles/lasthandles0.json" | jq .objectID | sed "s/\x22//g" );
           curl -H "X-Auth-Token: $ONECLIENT_ACCESS_TOKEN" -X GET "https://${ONECLIENT_PROVIDER_HOST}/api/v3/oneprovider/data/${OBJECTID}/content" > ./lasthandles.json;
           cat ./lasthandles.json;
-          cat ./lasthandles.json | sed "s/\x27/\x22/g" | sed "s/\x22, \x22metadata/\x22}\n/g" | head -n1 | jq .publicHandle | sed "s/\x22//g" ./handle.txt;
+          cat ./lasthandles.json | sed "s/\x27/\x22/g" | sed "s/\x22, \x22metadata/\x22}\n/g" | head -n1 | jq .publicHandle | sed "s/\x22//g" > ./handle.txt;
           '
         # cuidado! en /bin/sh
         - >
