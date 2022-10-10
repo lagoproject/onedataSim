@@ -27,7 +27,7 @@ However, the main objective of onedataSim is to standardise the simulation and i
   - executes simulations as ``do_sims.sh``, exactly with same parameters;
   - caches partial results as local scratch and then copies them to the official [LAGO repository](https://datahub.egi.eu) based on [OneData](https://github.com/onedata);
   - makes standardised metadata for every inputs and results and includes them as extended attributes in OneData filesystem.
-**``do_showers_onedata.py``** that:
+2. **``do_showers_onedata.py``** that:
   - executes analysis as ``do_showers.sh`` does.
   - caches the selected simulation to be analisyed in local from the official [LAGO repository](https://datahub.egi.eu) and then stores again the results to the repository;
   - makes also standardised metadata for these results and updates the corresponding catalog on OneData.
@@ -206,16 +206,11 @@ sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
 ### Executing on clusters instantiated by oneself in IaaS cloud providers
 
 1. First you has to create and configure a cluster in the cloud:
-
-- Using the EOSC public cloud, that enables the pre-configuration of Slurm and other schedulers (Kubernetes). [See EOSC-Synergy training for LAGO](https://moodle.learn.eosc-synergy.eu/course/view.php?id=16)
-- Using commercial public clouds (Amazon, Azure, Google, etc).
-- Using private clouds (institutional orchestators as OpenStack, OpenNebula, XenServer, VMware, etc).
-
+   - Using the EOSC public cloud, that enables the pre-configuration of Slurm and other schedulers (Kubernetes). [See EOSC-Synergy training for LAGO](https://moodle.learn.eosc-synergy.eu/course/view.php?id=16)
+   - Using commercial public clouds (Amazon, Azure, Google, etc).
+   - Using private clouds (institutional orchestators as OpenStack, OpenNebula, XenServer, VMware, etc).
 2.  Example for an Slurm instantiated on EOSC resources (pre-configured by IM):
-
-You can access to head node through SSH, using ``cloudadm`` account, but then you can gain root privileges with ``sudo``.
-
-Slurm and a directory shared by NFS are already configured (/home), but some configruation has to be done: to share the users' directories and to install spackages needed for Docker:
+   You can access to head node through SSH, using ``cloudadm`` account, but then you can gain root privileges with ``sudo``. Slurm and a directory shared by NFS are already configured (/home), but some configruation has to be done: to share the users' directories and to install spackages needed for Docker:
 
 ```sh
 sudo mkdir /home/cloudadm
@@ -289,9 +284,7 @@ sudo docker build --build-arg ONEDATASIM_BRANCH="dev-ajrubio-montero" \
 ### Logging into container for developing purposes
 
 1. Runing scripts & attaching a local directory at login.
-
-To log into the container only has to run bash without parameters, positioned alwasy at the end of the command. Additionally, You can mount a local directory inside the container the with the parameter **--volume \<local path\>:\<container path\>**. For example:
-
+   To log into the container only has to run bash without parameters, positioned alwasy at the end of the command. Additionally, You can mount a local directory inside the container the with the parameter **--volume \<local path\>:\<container path\>**. For example:
 ```sh
  [pepe@mypc tmp]# ls /home/pepe/workspace
  onedataSim  samples geant4-dev
@@ -301,10 +294,8 @@ To log into the container only has to run bash without parameters, positioned al
  [root@c42dc622f7eb run]# ls /root
  onedataSim  samples geant4-dev
 ```
-
 2. Explore OneData repository within the container.
-
-Firstly test if the repository is already mounted and force mount if necessary:
+   Firstly test if the repository is already mounted and force mount if necessary:
 ```sh
 [root@c42dc622f7eb run]# ls -alh /mnt/datahub.egi.eu
 [root@c42dc622f7eb run]# ls -alh /mnt/datahub.egi.eu/LAGOsim
@@ -317,8 +308,7 @@ Getting configuration...
 Oneclient has been successfully mounted in '/mnt/datahub.egi.eu'.
 ```
 
-Then, you can explore the repository:
-
+   Then, you can explore the repository:
 ```sh
 [root@c42dc622f7eb run]# ls -alh /mnt/datahub.egi.eu
 total 0
