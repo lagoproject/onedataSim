@@ -10,27 +10,51 @@
 
 ## About
 
-onedataSim standardises the simulations and their analysis in LAGO Collaboration to curate, re-use and publish the results, following the Data Management Plan (DMP) established (https://lagoproject.github.io/DMP/). For this purpose, onedataSim packets ARTI and related software into a Docker image, giving researchers the advantage of obtaining results on any plataform and publishing them on LAGO repositories.
+onedataSim standardises the simulations and their analysis in LAGO Collaboration
+to curate, re-use and publish the results, following the Data Management Plan
+(DMP) established (https://lagoproject.github.io/DMP/). For this purpose,
+onedataSim packets ARTI and related software into a Docker image, giving
+researchers the advantage of obtaining results on any plataform and publishing
+them on LAGO repositories.
 
 ### Citing
 
-When using onedataSim or the data and metadata that it outputs, please cite the current main reference reported below:
+When using onedataSim or the data and metadata that it outputs, please cite the
+current main reference reported below:
 
-   A. J. Rubio-Montero, R. Pagán-Muñoz, R. Mayo-García, A. Pardo-Diaz, I. Sidelnik and H. Asorey, "*A Novel Cloud-Based Framework For Standardized Simulations In The Latin American Giant Observatory (LAGO)*," 2021 Winter Simulation Conference (WSC), 2021, pp. 1-12, doi: [10.1109/WSC52266.2021.9715360](https://doi.org/10.1109/WSC52266.2021.9715360)
+   A. J. Rubio-Montero, R. Pagán-Muñoz, R. Mayo-García, A. Pardo-Diaz, I.
+   Sidelnik and H. Asorey, "*A Novel Cloud-Based Framework For Standardized
+   Simulations In The Latin American Giant Observatory (LAGO)*," 2021 Winter
+   Simulation Conference (WSC), 2021, pp. 1-12, doi:
+   [10.1109/WSC52266.2021.9715360](https://doi.org/10.1109/WSC52266.2021.9715360)
 
 ### Acknowledgment
 
-This work is financed by [EOSC-Synergy](https://www.eosc-synergy.eu/) project (EU H2020 RI Grant No 857647), but it is also currently supported by human and computational resources under the [EOSC](https://www.eosc-portal.eu/) umbrella (specially [EGI](https://www.egi.eu), [GEANT](https://geant.org) ) and the [members](http://lagoproject.net/collab.html) of the LAGO Collaboration.
+This work is financed by [EOSC-Synergy](https://www.eosc-synergy.eu/) project
+(EU H2020 RI Grant No 857647), but it is also currently supported by human and
+computational resources under the [EOSC](https://www.eosc-portal.eu/) umbrella
+(specially [EGI](https://www.egi.eu), [GEANT](https://geant.org) ) and the
+[members](http://lagoproject.net/collab.html) of the LAGO Collaboration.
 
 ## Description
 
-LAGO onedataSim packets all requeriments for runnig [ARTI](https://github.com/lagoproject/arti) into a Docker container, giving researcher the advantage of obtaining results on any plataform that supports Docker (Linux, Windows and MacOs on personal computers, HTC/HPC clusters or cloud plublic/private providers).
+LAGO onedataSim packets all requeriments for runnig
+[ARTI](https://github.com/lagoproject/arti) into a Docker container, giving
+researcher the advantage of obtaining results on any plataform that supports
+Docker (Linux, Windows and MacOs on personal computers, HTC/HPC clusters or
+cloud plublic/private providers).
 
-However, the main objective of onedataSim is to standardise the simulation and its analisys in [LAGO Collaboration](http://lagoproject.net) in order to curate, re-use and publish the results, following the [Data Management Plan (DPM)](https://lagoproject.github.io/DMP/) established. For this purpose, onedataSim includes two main programs:
+However, the main objective of onedataSim is to standardise the simulation and
+its analisys in [LAGO Collaboration](http://lagoproject.net) in order to
+curate, re-use and publish the results, following the
+[Data Management Plan (DPM)](https://lagoproject.github.io/DMP/)
+established. For this purpose, onedataSim includes two main programs:
 
 1. **``do_sims_onedata.py``** that:
   - executes simulations as ``do_sims.sh``, exactly with same parameters;
-  - caches partial results as local scratch and then copies them to the official [LAGO repository](https://datahub.egi.eu) based on [OneData](https://github.com/onedata);
+  - caches partial results as local scratch and then copies them to the official
+  [LAGO repository](https://datahub.egi.eu) based on
+  [OneData](https://github.com/onedata);
   - makes standardised metadata for every inputs and results and includes them as extended attributes in OneData filesystem.
 2. **``do_showers_onedata.py``** that:
   - executes analysis as ``do_showers.sh`` does.
