@@ -4,6 +4,7 @@
 |------|------|-------|
 
 ## About
+
 onedataSim standardises the simulations and their analysis in LAGO Collaboration to curate, re-use and publish the results, following the Data Management Plan (DMP) established (https://lagoproject.github.io/DMP/). For this purpose, onedataSim packets ARTI and related software into a Docker image, giving researchers the advantage of obtaining results on any plataform and publishing them on LAGO repositories.
 
 ### Citing
@@ -26,13 +27,13 @@ However, the main objective of onedataSim is to standardise the simulation and i
   - executes simulations as ``do_sims.sh``, exactly with same parameters;
   - caches partial results as local scratch and then copies them to the official [LAGO repository](https://datahub.egi.eu) based on [OneData](https://github.com/onedata);
   - makes standardised metadata for every inputs and results and includes them as extended attributes in OneData filesystem.
-2. **``do_showers_onedata.py``** that:
+**``do_showers_onedata.py``** that:
   - executes analysis as ``do_showers.sh`` does.
   - caches the selected simulation to be analisyed in local from the official [LAGO repository](https://datahub.egi.eu) and then stores again the results to the repository;
   - makes also standardised metadata for these results and updates the corresponding catalog on OneData.
 
 Storing results on the official repository with standardised metadata enables:
-  - sharing results with other LAGO members; 
+  - sharing results with other LAGO members;
   - future searches and publishing through institutional/goverment catalog providers and virtual observatories such as the [B2FIND](https://b2find.eudat.eu/group/lago);
   - properly citing scientific data and diseminating results through internet through Handle.net' PiDs;
   - building new results based on data minig or big data techniques thanks to linked metadata.
@@ -257,7 +258,7 @@ Every container has different requrirements. To build the ``onedatasim-s0`` cont
 
 On the other hand, other parameters allow choosing ARTI and onedataSim branches, which is fundamental for developing.
 
-#### Example: building images from default branches (currently "dev"):
+#### Example: building images from default branches (currently "dev")
 
 You must indicate the BASE_OS parameter if you want creating S0 or S2 images:
 
@@ -273,7 +274,7 @@ sudo docker build --build-arg BASE_OS="lagocollaboration/geant4:TBD" \
                   -t onedatasim-s2:local-test https://github.com/lagoproject/onedatasim.git
 ```
 
-#### Example: building ``onedatasim-s0`` from featured branches:
+#### Example: building ``onedatasim-s0`` from featured branches
 
 If you have the newer releases of *git* installed in your machine, you can build the container with one command. Note that afther the *.git* link, there hare an '#' followed of again the ONEDATASIM_BRANCH name.
 
@@ -346,7 +347,7 @@ drwxr-xr-x 1 1034995 638198 0 Sep 13 16:17 S0_sac_60_200.0_75600_QGSII_flat
 ...
 ```
 
-### Storing data on testing spaces based on OneData:
+### Storing data on testing spaces based on OneData
 
 You can use testing spaces such as ``test8`` to store testing runs during development. For this purpose you should the suitable OneData provider and use the the ``--onedata_path`` parameter to select the correct path.
 
