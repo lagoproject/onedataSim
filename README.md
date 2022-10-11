@@ -1,4 +1,4 @@
-# LAGO onedataSim : packed tools for [ARTI](https://github.com/lagoproject/arti) sims & analisys on [OneData](https://github.com/onedata)
+# LAGO onedataSim: tools for [ARTI](https://github.com/lagoproject/arti) on [OneData](https://github.com/onedata)
 
 - Plain tests in dev branch:
  [![Build Status](https://jenkins.eosc-synergy.eu/buildStatus/icon?job=eosc-synergy-org%2FonedataSim%2Fdev)](https://jenkins.eosc-synergy.eu/job/eosc-synergy-org/job/onedataSim/job/dev/)
