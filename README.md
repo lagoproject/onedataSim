@@ -1,18 +1,18 @@
 # LAGO onedataSim : packed tools for [ARTI](https://github.com/lagoproject/arti) simulation and analisys on [OneData](https://github.com/onedata)
 
-| Plain tests in dev branch:
+- Plain tests in dev branch:
  [![Build Status](https://jenkins.eosc-synergy.eu/buildStatus/icon?job=eosc-synergy-org%2FonedataSim%2Fdev)](https://jenkins.eosc-synergy.eu/job/eosc-synergy-org/job/onedataSim/job/dev/)
-| onedatasim-s0 image:
+- onedatasim-s0 image:
  [![Build Status](https://jenkins.eosc-synergy.eu/buildStatus/icon?job=eosc-synergy-org%2FonedataSim%2Fbuild-S0)](https://jenkins.eosc-synergy.eu/job/eosc-synergy-org/job/onedataSim/job/build-S0/)
-| onedatasim-s1 image:
- [![Build Status](https://jenkins.eosc-synergy.eu/buildStatus/icon?job=eosc-synergy-org%2FonedataSim%2Fbuild-S1)](https://jenkins.eosc-synergy.eu/job/eosc-synergy-org/job/onedataSim/job/build-S1/) |
-|------|------|-------|
+- onedatasim-s1 image:
+ [![Build Status](https://jenkins.eosc-synergy.eu/buildStatus/icon?job=eosc-synergy-org%2FonedataSim%2Fbuild-S1)](https://jenkins.eosc-synergy.eu/job/eosc-synergy-org/job/onedataSim/job/build-S1/)
+
 
 ## About
 
 onedataSim standardises the simulations and their analysis in LAGO Collaboration
 to curate, re-use and publish the results, following the Data Management Plan
-(DMP) established (https://lagoproject.github.io/DMP/). For this purpose,
+(DMP) established [(https://lagoproject.github.io/DMP/)](https://lagoproject.github.io/DMP/). For this purpose,
 onedataSim packets ARTI and related software into a Docker image, giving
 researchers the advantage of obtaining results on any plataform and publishing
 them on LAGO repositories.
@@ -57,6 +57,7 @@ established. For this purpose, onedataSim includes two main programs:
   [OneData](https://github.com/onedata);
   - makes standardised metadata for every inputs and results and includes them
   as extended attributes in OneData filesystem.
+
 2. **``do_showers_onedata.py``** that:
   - executes analysis as ``do_showers.sh`` does.
   - caches the selected simulation to be analisyed in local from the official
@@ -84,6 +85,7 @@ simulations.
 [LAGO Virtual Organisation](https://lagoproject.github.io/DMP/docs/howtos/how_to_join_LAGO_VO/)
 to obtain a OneData personal
 [token.](https://lagoproject.github.io/DMP/docs/howtos/how_to_login_into_OneData/).
+
 2. Had [Docker](https://www.docker.com/)
 (or [Singularity](https://singularity.lbl.gov/)
 or [udocker](https://pypi.org/project/udocker/))
@@ -141,11 +143,13 @@ Depending on the type of data that you want generate and/or processs (i.e.
 [S0, S1, S2](https://lagoproject.github.io/DMP/DMP/#types-and-formats-of-generatedcollected-data)),
 you should pull different image, because their size.
 
-- **``onedatasim-s0``** is mainly for generate S0 datasets (simulations with
-``do_sims_onedata.py``), but also allows S1 analysis. Therefore it includes
+- **``onedatasim-s0``** is mainly for generate S0 datasets (simulations
+with ``do_sims_onedata.py``), but also allows S1 analysis. Therefore it includes
 the modified CORSIKA for LAGO, which it results in a heavy image (~911.7 MB).
-- **``onedatasim-s1``** is only for generate S1 datasets (analysis with
-``do_showers_onedata.py``), but the image is smaller (currently, ~473.29 MB).
+
+- **``onedatasim-s1``** is only for generate S1 datasets (analysis
+with ``do_showers_onedata.py``), but the image is smaller (currently, ~473.29 MB).
+
 - ( Future: ``onedatasim-s2`` will be mainly for generate S2 datasets (detector
 response). It will include GEANt4/ROOT, and consequently, heaviest (~ 1GB)).
 
@@ -182,10 +186,12 @@ sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
 ### Running simulations (generating S0 data)
 
 1. Export credentials:
+ 
 ```sh
 export TOKEN="MDAxY...LAo"
 export ONEPROVIDER="ceta-ciemat-01.datahub.egi.eu"
 ```
+
 2. Showing parameters:
 ```sh
 sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
@@ -272,17 +278,22 @@ sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
 ### Executing on clusters instantiated by oneself in IaaS cloud providers
 
 1. First you has to create and configure a cluster in the cloud:
+
 - Using the EOSC public cloud, that enables the pre-configuration of Slurm
 and other schedulers (Kubernetes).
 [See EOSC-Synergy training for LAGO](https://moodle.learn.eosc-synergy.eu/course/view.php?id=16)
+
 - Using commercial public clouds (Amazon, Azure, Google, etc).
+
 - Using private clouds (institutional orchestators as OpenStack,
 OpenNebula, XenServer, VMware, etc).
+
 2.  Example for an Slurm instantiated on EOSC resources (pre-configured by IM):
 You can access to head node through SSH, using ``cloudadm`` account, but then
 you can gain root privileges with ``sudo``. Slurm and a directory shared by NFS
 are already configured (/home), but some configruation has to be done: to share
 the users' directories and to install spackages needed for Docker:
+
 ```sh
 sudo mkdir /home/cloudadm
 sudo chown cloudadm /home/cloudadm
@@ -371,6 +382,7 @@ To log into the container only has to run bash without parameters,
 positioned alwasy at the end of the command. Additionally, You can mount
 a local directory inside the container the with the parameter
 **--volume \<local path\>:\<container path\>**. For example:
+
 ```sh
  [pepe@mypc tmp]# ls /home/pepe/workspace
  onedataSim  samples geant4-dev
@@ -380,8 +392,10 @@ a local directory inside the container the with the parameter
  [root@c42dc622f7eb run]# ls /root
  onedataSim  samples geant4-dev
 ```
+
 2. Explore OneData repository within the container.
 Firstly test if the repository is already mounted and force mount if necessary:
+
 ```sh
 [root@c42dc622f7eb run]# ls -alh /mnt/datahub.egi.eu
 [root@c42dc622f7eb run]# ls -alh /mnt/datahub.egi.eu/LAGOsim
