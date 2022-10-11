@@ -1,4 +1,3 @@
-
 [flake8]
 # Enricher and patches in ./patches directory are
 # dealing with text, and it is actually difficult 
