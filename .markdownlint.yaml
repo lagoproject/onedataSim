@@ -1,0 +1,6 @@
+# markdownlint checker YAML configuration
+
+# MD029/ol-prefix - Ordered list item prefix
+MD029:
+  # List style
+  style: "ordered"
