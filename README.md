@@ -1,4 +1,4 @@
-# LAGO onedataSim : packed tools for [ARTI](https://github.com/lagoproject/arti) simulation and analisys on [OneData](https://github.com/onedata)
+# LAGO onedataSim : packed tools for [ARTI](https://github.com/lagoproject/arti) simulation & analisys on [OneData](https://github.com/onedata)
 
 - Plain tests in dev branch:
  [![Build Status](https://jenkins.eosc-synergy.eu/buildStatus/icon?job=eosc-synergy-org%2FonedataSim%2Fdev)](https://jenkins.eosc-synergy.eu/job/eosc-synergy-org/job/onedataSim/job/dev/)
@@ -175,7 +175,7 @@ sudo docker pull lagocollaboration/onedatasim-s1:dev
 If you are many nodes under a NAT, you should consider distributing internally
 the docker image through ``docker save`` and ``load commands``).
 
-## Executing a stardandised simulation & analisys to be stored in OneData repositories for LAGO
+## Stardandised simulation & analisys to be stored in OneData repositories for LAGO
 
 This automatised execution is the preferred one in LAGO collaboration.
 
