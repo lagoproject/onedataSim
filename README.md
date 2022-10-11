@@ -57,7 +57,7 @@ established. For this purpose, onedataSim includes two main programs:
   [OneData](https://github.com/onedata);
   - makes standardised metadata for every inputs and results and includes them
   as extended attributes in OneData filesystem.
-2. **``do_showers_onedata.py``** that:
+**``do_showers_onedata.py``** that:
   - executes analysis as ``do_showers.sh`` does.
   - caches the selected simulation to be analisyed in local from the official
   [LAGO repository](https://datahub.egi.eu) and then stores again the results
@@ -275,12 +275,12 @@ sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
 ### Executing on clusters instantiated by oneself in IaaS cloud providers
 
 1. First you has to create and configure a cluster in the cloud:
-   - Using the EOSC public cloud, that enables the pre-configuration of Slurm
-   and other schedulers (Kubernetes).
-   [See EOSC-Synergy training for LAGO](https://moodle.learn.eosc-synergy.eu/course/view.php?id=16)
-   - Using commercial public clouds (Amazon, Azure, Google, etc).
-   - Using private clouds (institutional orchestators as OpenStack,
-   OpenNebula, XenServer, VMware, etc).
+- Using the EOSC public cloud, that enables the pre-configuration of Slurm
+and other schedulers (Kubernetes).
+[See EOSC-Synergy training for LAGO](https://moodle.learn.eosc-synergy.eu/course/view.php?id=16)
+- Using commercial public clouds (Amazon, Azure, Google, etc).
+- Using private clouds (institutional orchestators as OpenStack,
+OpenNebula, XenServer, VMware, etc).
 2.  Example for an Slurm instantiated on EOSC resources (pre-configured by IM):
 You can access to head node through SSH, using ``cloudadm`` account, but then
 you can gain root privileges with ``sudo``. Slurm and a directory shared by NFS
@@ -353,10 +353,10 @@ sudo docker build --build-arg BASE_OS="lagocollaboration/geant4:TBD" \
 ```
 
 #### Example: building ``onedatasim-s0`` from featured branches
-
+ 
 If you have the newer releases of *git* installed in your machine, you can build
-the container with one command. Note that afther the *.git* link, there hare an
-'#' followed of again the ONEDATASIM_BRANCH name.
+the container with one command. Note that afther the *.git* link,
+there hare an '#' followed of again the ONEDATASIM_BRANCH name.
 
 ```sh
 sudo docker build --build-arg ONEDATASIM_BRANCH="dev-ajrubio-montero" \
