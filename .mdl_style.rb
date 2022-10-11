@@ -4,4 +4,5 @@ all
 # default in next version, remove then
 #   "MD003": { "style": "atx_closed" 
 # rule 'MD007', :indent => 3
-rule 'MD029', :style => :ordered
+# rule 'MD029', :style => :ordered
+exclude_rule 'MD029'
