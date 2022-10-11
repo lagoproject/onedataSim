@@ -51,30 +51,40 @@ curate, re-use and publish the results, following the
 established. For this purpose, onedataSim includes two main programs:
 
 1. **``do_sims_onedata.py``** that:
+
   - executes simulations as ``do_sims.sh``, exactly with same parameters;
+
   - caches partial results as local scratch and then copies them to the official
-  [LAGO repository](https://datahub.egi.eu) based on
-  [OneData](https://github.com/onedata);
+    [LAGO repository](https://datahub.egi.eu) based on
+    [OneData](https://github.com/onedata);
+ 
   - makes standardised metadata for every inputs and results and includes them
-  as extended attributes in OneData filesystem.
+    as extended attributes in OneData filesystem.
 
 2. **``do_showers_onedata.py``** that:
+
   - executes analysis as ``do_showers.sh`` does.
+
   - caches the selected simulation to be analisyed in local from the official
-  [LAGO repository](https://datahub.egi.eu) and then stores again the results
-  to the repository;
+    [LAGO repository](https://datahub.egi.eu) and then stores again the results
+    to the repository;
+
   - makes also standardised metadata for these results and updates the
-  corresponding catalog on OneData.
+    corresponding catalog on OneData.
 
 Storing results on the official repository with standardised metadata enables:
+
   - sharing results with other LAGO members;
+
   - future searches and publishing through institutional/goverment catalog
-  providers and virtual observatories such as the
-  [B2FIND](https://b2find.eudat.eu/group/lago);
+    providers and virtual observatories such as the
+    [B2FIND](https://b2find.eudat.eu/group/lago);
+
   - properly citing scientific data and diseminating results through internet
-  through Handle.net' PiDs;
+    through Handle.net' PiDs;
+
   - building new results based on data minig or big data techniques thanks to
-  linked metadata.
+    linked metadata.
 
 Therefore, we encourage LAGO researchers to use these programs for their
 simulations.
@@ -82,9 +92,9 @@ simulations.
 ## Pre-requisites
 
 1. Be acredited in
-[LAGO Virtual Organisation](https://lagoproject.github.io/DMP/docs/howtos/how_to_join_LAGO_VO/)
-to obtain a OneData personal
-[token.](https://lagoproject.github.io/DMP/docs/howtos/how_to_login_into_OneData/).
+  [LAGO Virtual Organisation](https://lagoproject.github.io/DMP/docs/howtos/how_to_join_LAGO_VO/)
+  to obtain a OneData personal
+  [token.](https://lagoproject.github.io/DMP/docs/howtos/how_to_login_into_OneData/).
 
 2. Had [Docker](https://www.docker.com/)
 (or [Singularity](https://singularity.lbl.gov/)
@@ -144,14 +154,14 @@ Depending on the type of data that you want generate and/or processs (i.e.
 you should pull different image, because their size.
 
 - **``onedatasim-s0``** is mainly for generate S0 datasets (simulations
-with ``do_sims_onedata.py``), but also allows S1 analysis. Therefore it includes
-the modified CORSIKA for LAGO, which it results in a heavy image (~911.7 MB).
+  with ``do_sims_onedata.py``), but also allows S1 analysis. Therefore it includes
+  the modified CORSIKA for LAGO, which it results in a heavy image (~911.7 MB).
 
 - **``onedatasim-s1``** is only for generate S1 datasets (analysis
-with ``do_showers_onedata.py``), but the image is smaller (currently, ~473.29 MB).
+  with ``do_showers_onedata.py``), but the image is smaller (currently, ~473.29 MB).
 
-- ( Future: ``onedatasim-s2`` will be mainly for generate S2 datasets (detector
-response). It will include GEANt4/ROOT, and consequently, heaviest (~ 1GB)).
+- (Future: ``onedatasim-s2`` will be mainly for generate S2 datasets (detector
+  response). It will include GEANt4/ROOT, and consequently, heaviest (~ 1GB)).
 
 ```sh
 sudo docker pull lagocollaboration/onedatasim-s0:dev
@@ -197,7 +207,8 @@ export ONEPROVIDER="ceta-ciemat-01.datahub.egi.eu"
 ```sh
 sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
                 -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \
-                -it lagocollaboration/onedatasim-s0:dev  bash -lc "do_sims_onedata.py -?"
+                -it lagocollaboration/onedatasim-s0:dev \
+                bash -lc "do_sims_onedata.py -?"
 ```
 
 3. Simple simulation example:
@@ -286,13 +297,13 @@ sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
 1. First you has to create and configure a cluster in the cloud:
 
 - Using the EOSC public cloud, that enables the pre-configuration of Slurm
-and other schedulers (Kubernetes).
-[See EOSC-Synergy training for LAGO](https://moodle.learn.eosc-synergy.eu/course/view.php?id=16)
+  and other schedulers (Kubernetes).
+  [See EOSC-Synergy training for LAGO](https://moodle.learn.eosc-synergy.eu/course/view.php?id=16)
 
 - Using commercial public clouds (Amazon, Azure, Google, etc).
 
 - Using private clouds (institutional orchestators as OpenStack,
-OpenNebula, XenServer, VMware, etc).
+  OpenNebula, XenServer, VMware, etc).
 
 2.  Example for an Slurm instantiated on EOSC resources (pre-configured by IM):
 
