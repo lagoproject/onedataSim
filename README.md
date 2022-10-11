@@ -52,39 +52,39 @@ established. For this purpose, onedataSim includes two main programs:
 
 1. **``do_sims_onedata.py``** that:
 
-  - executes simulations as ``do_sims.sh``, exactly with same parameters;
+- executes simulations as ``do_sims.sh``, exactly with same parameters;
 
-  - caches partial results as local scratch and then copies them to the official
-    [LAGO repository](https://datahub.egi.eu) based on
-    [OneData](https://github.com/onedata);
- 
-  - makes standardised metadata for every inputs and results and includes them
-    as extended attributes in OneData filesystem.
+- caches partial results as local scratch and then copies them to the official
+  [LAGO repository](https://datahub.egi.eu) based on
+  [OneData](https://github.com/onedata);
+
+- makes standardised metadata for every inputs and results and includes them
+  as extended attributes in OneData filesystem.
 
 2. **``do_showers_onedata.py``** that:
 
-  - executes analysis as ``do_showers.sh`` does.
+- executes analysis as ``do_showers.sh`` does.
 
-  - caches the selected simulation to be analisyed in local from the official
-    [LAGO repository](https://datahub.egi.eu) and then stores again the results
-    to the repository;
+- caches the selected simulation to be analisyed in local from the official
+  [LAGO repository](https://datahub.egi.eu) and then stores again the results
+  to the repository;
 
-  - makes also standardised metadata for these results and updates the
-    corresponding catalog on OneData.
+- makes also standardised metadata for these results and updates the
+  corresponding catalog on OneData.
 
 Storing results on the official repository with standardised metadata enables:
 
-  - sharing results with other LAGO members;
+- sharing results with other LAGO members;
 
-  - future searches and publishing through institutional/goverment catalog
-    providers and virtual observatories such as the
-    [B2FIND](https://b2find.eudat.eu/group/lago);
+- future searches and publishing through institutional/goverment catalog
+  providers and virtual observatories such as the
+  [B2FIND](https://b2find.eudat.eu/group/lago);
 
-  - properly citing scientific data and diseminating results through internet
-    through Handle.net' PiDs;
+- properly citing scientific data and diseminating results through internet
+  through Handle.net' PiDs;
 
-  - building new results based on data minig or big data techniques thanks to
-    linked metadata.
+- building new results based on data minig or big data techniques thanks to
+  linked metadata.
 
 Therefore, we encourage LAGO researchers to use these programs for their
 simulations.
@@ -97,9 +97,9 @@ simulations.
   [token.](https://lagoproject.github.io/DMP/docs/howtos/how_to_login_into_OneData/).
 
 2. Had [Docker](https://www.docker.com/)
-(or [Singularity](https://singularity.lbl.gov/)
-or [udocker](https://pypi.org/project/udocker/))
-installed on your PC (or HPC/HTC facility).
+  (or [Singularity](https://singularity.lbl.gov/)
+  or [udocker](https://pypi.org/project/udocker/))
+  installed on your PC (or HPC/HTC facility).
 
 It is only needed [Docker Engine](https://docs.docker.com/engine/install/) to
 run onedataSim container, this is, the *SERVER* mode. However, the *DESKTOP*
@@ -196,43 +196,43 @@ sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
 ### Running simulations (generating S0 data)
 
 1. Export credentials:
- 
-```sh
-export TOKEN="MDAxY...LAo"
-export ONEPROVIDER="ceta-ciemat-01.datahub.egi.eu"
-```
+
+  ```sh
+  export TOKEN="MDAxY...LAo"
+  export ONEPROVIDER="ceta-ciemat-01.datahub.egi.eu"
+  ```
 
 2. Showing parameters:
 
-```sh
-sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
-                -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \
-                -it lagocollaboration/onedatasim-s0:dev \
-                bash -lc "do_sims_onedata.py -?"
-```
+  ```sh
+  sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
+                  -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \
+                  -it lagocollaboration/onedatasim-s0:dev \
+                  bash -lc "do_sims_onedata.py -?"
+  ```
 
 3. Simple simulation example:
 
-```sh
-sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
-                -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \
-                -it lagocollaboration/onedatasim-s0:dev \ 
-                bash -lc "do_sims_onedata.py -t 10 \
-                -u 0000-0001-6497-753X -s and -k 2.0e2 -h QGSII -x"
-```
+  ```sh
+  sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
+                  -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \
+                  -it lagocollaboration/onedatasim-s0:dev \
+                  bash -lc "do_sims_onedata.py -t 10 \
+                  -u 0000-0001-6497-753X -s and -k 2.0e2 -h QGSII -x"
+  ```
 
 3. Executing on a multi-processor server.
 
-If you count on an standalone server for computing or a virtual machine
-instantiated with enough procesors memory and disk, you only need add the
-**-j \<procs\>** param to enable multi-processing:
+  If you count on an standalone server for computing or a virtual machine
+  instantiated with enough procesors memory and disk, you only need add the
+  **-j \<procs\>** param to enable multi-processing:
 
-```sh
-sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
-                -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \
-                -it <container name> bash -lc "do_sims_onedata.py \
-                <other ARTI do_* params> -j <procs>"
-```
+  ```sh
+  sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
+                  -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \
+                  -it <container name> bash -lc "do_sims_onedata.py \
+                  <other ARTI do_* params> -j <procs>"
+  ```
 
 ### Analysing S0 datasets (generating S1 data)
 
@@ -411,7 +411,7 @@ For example:
  [pepe@mypc tmp]# sudo docker run --privileged \
            -e  ONECLIENT_ACCESS_TOKEN="MDAxY2xv...iXm8jowGgo" \
            -e ONECLIENT_PROVIDER_HOST="mon01-tic.ciemat.es" \
-           --volume /home/pepe/workspace:/root \ 
+           --volume /home/pepe/workspace:/root \
            -it lagocontainer:0.0.1  bash
  [root@c42dc622f7eb run]# ls /root
  onedataSim  samples geant4-dev
@@ -433,7 +433,8 @@ Getting configuration...
 Oneclient has been successfully mounted in '/mnt/datahub.egi.eu'.
 ```
 
-Then, you can explore the repository:   
+Then, you can explore the repository:
+
 ```sh
 [root@c42dc622f7eb run]# ls -alh /mnt/datahub.egi.eu
 total 0
