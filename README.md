@@ -57,7 +57,7 @@ established. For this purpose, onedataSim includes two main programs:
   [OneData](https://github.com/onedata);
   - makes standardised metadata for every inputs and results and includes them
   as extended attributes in OneData filesystem.
-**``do_showers_onedata.py``** that:
+2. **``do_showers_onedata.py``** that:
   - executes analysis as ``do_showers.sh`` does.
   - caches the selected simulation to be analisyed in local from the official
   [LAGO repository](https://datahub.egi.eu) and then stores again the results
@@ -84,7 +84,6 @@ simulations.
 [LAGO Virtual Organisation](https://lagoproject.github.io/DMP/docs/howtos/how_to_join_LAGO_VO/)
 to obtain a OneData personal
 [token.](https://lagoproject.github.io/DMP/docs/howtos/how_to_login_into_OneData/).
-
 2. Had [Docker](https://www.docker.com/)
 (or [Singularity](https://singularity.lbl.gov/)
 or [udocker](https://pypi.org/project/udocker/))
@@ -99,6 +98,7 @@ On linux, the recommended way is to remove all docker packages included by
 default in your distro and to make use of Docker repositories.
 
 For example, for a old Debian based distribution such as Ubuntu:
+
 ```sh
   sudo apt-get remove docker wmdocker docker-registry [...etc...]
   curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
@@ -182,14 +182,11 @@ sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
 ### Running simulations (generating S0 data)
 
 1. Export credentials:
-
 ```sh
 export TOKEN="MDAxY...LAo"
 export ONEPROVIDER="ceta-ciemat-01.datahub.egi.eu"
 ```
-
 2. Showing parameters:
-
 ```sh
 sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
                 -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \
@@ -286,7 +283,6 @@ You can access to head node through SSH, using ``cloudadm`` account, but then
 you can gain root privileges with ``sudo``. Slurm and a directory shared by NFS
 are already configured (/home), but some configruation has to be done: to share
 the users' directories and to install spackages needed for Docker:
-
 ```sh
 sudo mkdir /home/cloudadm
 sudo chown cloudadm /home/cloudadm
@@ -344,16 +340,18 @@ You must indicate the BASE_OS parameter if you want creating S0 or S2 images:
 sudo docker build --build-arg BASE_OS="lagocollaboration/lago-corsika:77402" \
                   -t onedatasim-s1:local-test https://github.com/lagoproject/onedatasim.git
 ```
+
 ```sh
 sudo docker build -t onedatasim-s1:local-test https://github.com/lagoproject/onedatasim.git
 ```
+
 ```sh
 sudo docker build --build-arg BASE_OS="lagocollaboration/geant4:TBD" \
                   -t onedatasim-s2:local-test https://github.com/lagoproject/onedatasim.git
 ```
 
 #### Example: building ``onedatasim-s0`` from featured branches
- 
+
 If you have the newer releases of *git* installed in your machine, you can build
 the container with one command. Note that afther the *.git* link,
 there hare an '#' followed of again the ONEDATASIM_BRANCH name.
@@ -383,7 +381,7 @@ a local directory inside the container the with the parameter
  onedataSim  samples geant4-dev
 ```
 2. Explore OneData repository within the container.
-   Firstly test if the repository is already mounted and force mount if necessary:
+Firstly test if the repository is already mounted and force mount if necessary:
 ```sh
 [root@c42dc622f7eb run]# ls -alh /mnt/datahub.egi.eu
 [root@c42dc622f7eb run]# ls -alh /mnt/datahub.egi.eu/LAGOsim
@@ -396,7 +394,7 @@ Getting configuration...
 Oneclient has been successfully mounted in '/mnt/datahub.egi.eu'.
 ```
 
-   Then, you can explore the repository:
+Then, you can explore the repository:   
 ```sh
 [root@c42dc622f7eb run]# ls -alh /mnt/datahub.egi.eu
 total 0
