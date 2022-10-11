@@ -7,15 +7,15 @@
 - onedatasim-s1 image:
  [![Build Status](https://jenkins.eosc-synergy.eu/buildStatus/icon?job=eosc-synergy-org%2FonedataSim%2Fbuild-S1)](https://jenkins.eosc-synergy.eu/job/eosc-synergy-org/job/onedataSim/job/build-S1/)
 
-
 ## About
 
 onedataSim standardises the simulations and their analysis in LAGO Collaboration
 to curate, re-use and publish the results, following the Data Management Plan
-(DMP) established [(https://lagoproject.github.io/DMP/)](https://lagoproject.github.io/DMP/). For this purpose,
-onedataSim packets ARTI and related software into a Docker image, giving
-researchers the advantage of obtaining results on any plataform and publishing
-them on LAGO repositories.
+(DMP) established
+[(https://lagoproject.github.io/DMP/)](https://lagoproject.github.io/DMP/).
+For this purpose, onedataSim packets ARTI and related software into a Docker
+image, giving researchers the advantage of obtaining results on any plataform
+and publishing them on LAGO repositories.
 
 ### Citing
 
@@ -193,6 +193,7 @@ export ONEPROVIDER="ceta-ciemat-01.datahub.egi.eu"
 ```
 
 2. Showing parameters:
+
 ```sh
 sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
                 -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \
@@ -204,7 +205,9 @@ sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
 ```sh
 sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
                 -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \
-                -it lagocollaboration/onedatasim-s0:dev  bash -lc "do_sims_onedata.py -t 10 -u 0000-0001-6497-753X -s and -k 2.0e2 -h QGSII -x"
+                -it lagocollaboration/onedatasim-s0:dev \ 
+                bash -lc "do_sims_onedata.py -t 10 \
+                -u 0000-0001-6497-753X -s and -k 2.0e2 -h QGSII -x"
 ```
 
 3. Executing on a multi-processor server.
@@ -216,7 +219,8 @@ instantiated with enough procesors memory and disk, you only need add the
 ```sh
 sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
                 -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \
-                -it <container name> bash -lc "do_sims_onedata.py <other ARTI do_* params> -j <procs>"
+                -it <container name> bash -lc "do_sims_onedata.py \
+                <other ARTI do_* params> -j <procs>"
 ```
 
 ### Analysing S0 datasets (generating S1 data)
@@ -233,7 +237,8 @@ export ONEPROVIDER="ceta-ciemat-01.datahub.egi.eu"
 ```sh
 sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
                 -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \
-                -it lagocollaboration/onedatasim-s1:dev  bash -lc "do_showers_onedata.py -?"
+                -it lagocollaboration/onedatasim-s1:dev \
+                bash -lc "do_showers_onedata.py -?"
 ```
 
 3. Executing an analysis:
@@ -241,7 +246,8 @@ sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
 ```sh
 sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
                 -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \
-                -it <container name> bash -lc "do_showers_onedata.py -o XXXX  -u 0000-0001-6497-753X"
+                -it <container name> bash -lc "do_showers_onedata.py \
+                -o XXXX  -u 0000-0001-6497-753X"
 ```
 
 ## Advanced use cases
@@ -289,6 +295,7 @@ and other schedulers (Kubernetes).
 OpenNebula, XenServer, VMware, etc).
 
 2.  Example for an Slurm instantiated on EOSC resources (pre-configured by IM):
+
 You can access to head node through SSH, using ``cloudadm`` account, but then
 you can gain root privileges with ``sudo``. Slurm and a directory shared by NFS
 are already configured (/home), but some configruation has to be done: to share
@@ -312,7 +319,7 @@ sbatch simulation.sbatch
 ```
 
 A simulation.sbatch file for testing functionality can be one that will write
-the allowed parameters in <job number>.log:
+the allowed parameters in ``<job number>.log``:
 
 ```sh
 #!/bin/bash
@@ -326,7 +333,9 @@ sudo apt-get install -y docker.io
 sudo docker stop $(docker ps -aq)
 sudo docker rm $(docker ps -aq)
 sudo docker load -i -o  /home/cloudadm/onedatasim-s0.tar
-sudo docker run --privileged -e ONECLIENT_ACCESS_TOKEN=$TOKEN -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER -i onedatasim-s0:dev bash -lc "do_sims_onedata.py -?"
+sudo docker run --privileged -e ONECLIENT_ACCESS_TOKEN=$TOKEN \
+     -e ONECLIENT_PROVIDER_HOST=$ONEPROVIDER \
+     -i onedatasim-s0:dev bash -lc "do_sims_onedata.py -?"
 ```
 
 ## Instructions only for developers
@@ -378,22 +387,27 @@ sudo docker build --build-arg ONEDATASIM_BRANCH="dev-ajrubio-montero" \
 ### Logging into container for developing purposes
 
 1. Runing scripts & attaching a local directory at login.
+
 To log into the container only has to run bash without parameters,
 positioned alwasy at the end of the command. Additionally, You can mount
-a local directory inside the container the with the parameter
-**--volume \<local path\>:\<container path\>**. For example:
+a local directory inside the container the with the
+parameter **--volume \<local path\>:\<container path\>**.
+For example:
 
 ```sh
  [pepe@mypc tmp]# ls /home/pepe/workspace
  onedataSim  samples geant4-dev
- [pepe@mypc tmp]# sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN="MDAxY2xv...iXm8jowGgo" \
+ [pepe@mypc tmp]# sudo docker run --privileged \
+           -e  ONECLIENT_ACCESS_TOKEN="MDAxY2xv...iXm8jowGgo" \
            -e ONECLIENT_PROVIDER_HOST="mon01-tic.ciemat.es" \
-           --volume /home/pepe/workspace:/root -it lagocontainer:0.0.1  bash
+           --volume /home/pepe/workspace:/root \ 
+           -it lagocontainer:0.0.1  bash
  [root@c42dc622f7eb run]# ls /root
  onedataSim  samples geant4-dev
 ```
 
 2. Explore OneData repository within the container.
+
 Firstly test if the repository is already mounted and force mount if necessary:
 
 ```sh
@@ -444,17 +458,19 @@ development. For this purpose you should the suitable OneData provider and use
 the the ``--onedata_path`` parameter to select the correct path.
 
 For ``test8``, you should choose ceta-ciemat-**02**.datahub.egi.eu and any
-directory <dir> under the ``--onedata_path /mnt/datahub.egi.eu/test8/<dir>``
-path:
+directory ``<dir>`` under
+the ``--onedata_path /mnt/datahub.egi.eu/test8/<dir>`` path:
 
 ```sh
 export TOKEN="MDAxY...LAo"
 export ONEPROVIDER="ceta-ciemat-02.datahub.egi.eu"
 
-[pepe@mypc tmp]# sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN="$TOKEN" \
+[pepe@mypc tmp]# sudo docker run --privileged \
+            -e  ONECLIENT_ACCESS_TOKEN="$TOKEN" \
             -e ONECLIENT_PROVIDER_HOST="$ONEPROVIDER" \
             -it lagocollaboration/onedatasim-s0:dev bash
 
-[root@9db2578a3e28 run]# do_sims_onedata.py -t 13 -u 0000-0001-6497-753X -s and -k 2.0e2 -h QGSII -x --onedata_path /mnt/datahub.egi.eu/test8/LAGOSIM_test_20220210 -j 4
-
+[root@9db2578a3e28 run]# do_sims_onedata.py -t 13 -u 0000-0001-6497-753X \
+                    -s and -k 2.0e2 -h QGSII -x --onedata_path \
+                    /mnt/datahub.egi.eu/test8/LAGOSIM_test_20220210 -j 4
 ```
