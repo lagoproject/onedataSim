@@ -305,7 +305,7 @@ sudo docker run --privileged  -e  ONECLIENT_ACCESS_TOKEN=$TOKEN \
 - Using private clouds (institutional orchestators as OpenStack,
   OpenNebula, XenServer, VMware, etc).
 
-2.  Example for an Slurm instantiated on EOSC resources (pre-configured by IM):
+2. Example for an Slurm instantiated on EOSC resources (pre-configured by IM):
 
 You can access to head node through SSH, using ``cloudadm`` account, but then
 you can gain root privileges with ``sudo``. Slurm and a directory shared by NFS
