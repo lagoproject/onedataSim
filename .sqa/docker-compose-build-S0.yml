@@ -41,7 +41,8 @@ services:
     #command: apt-get install -y curl && /FAIR_eva/fair.py && /FAIR_eva/web.py
     #command: apt-get install -y curl && /FAIR_eva/fair.py && /FAIR_eva/web.py && sleep 900
   fair_uji:
-    image: steinsteiny/fuji:fair
+    #image: steinsteiny/fuji:fair
+    image: steinsteiny/fuji:v1.4.9-noauth
     volumes:
     - source: ./
       target: /sqaaas-build
