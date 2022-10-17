@@ -25,25 +25,26 @@ services:
     cap_add:
       - SYS_ADMIN
     #  - DAC_READ_SEARCH
-  fair_eva:
-    #image: ferag/fair_eva:latest
-    #image: ferag/fair_eva:fair
-    image: lagocollaboration/fair_eva:9f4440903e14
-    command: bash -lc 'cd /FAIR_eva; /FAIR_eva/start.sh'
-    volumes:
-    - source: ./
-      target: /sqaaas-build
-      type: bind
-    working_dir: /sqaaas-build
-    #command: /FAIR_eva/start.sh
-    #command: apt-get install -y curl && /FAIR_eva/fair.py && /FAIR_eva/web.py
-    #command: apt-get install -y curl && /FAIR_eva/fair.py && /FAIR_eva/web.py && sleep 900
-  fair_uji:
-    #image: steinsteiny/fuji:fair
-    #image: steinsteiny/fuji:v1.4.9-noauth
-    image: lagocollaboration/fuji:v1.4.9-noauth
-    volumes:
-    - source: ./
-      target: /sqaaas-build
-      type: bind
-    working_dir: /sqaaas-build
+#  FAIR DISABLED FOR S1 (not planified in EOSC-synergy)
+#  fair_eva:
+#    #image: ferag/fair_eva:latest
+#    #image: ferag/fair_eva:fair
+#    image: lagocollaboration/fair_eva:9f4440903e14
+#    command: bash -lc 'cd /FAIR_eva; /FAIR_eva/start.sh'
+#    volumes:
+#    - source: ./
+#      target: /sqaaas-build
+#      type: bind
+#    working_dir: /sqaaas-build
+#    #command: /FAIR_eva/start.sh
+#    #command: apt-get install -y curl && /FAIR_eva/fair.py && /FAIR_eva/web.py
+#    #command: apt-get install -y curl && /FAIR_eva/fair.py && /FAIR_eva/web.py && sleep 900
+#  fair_uji:
+#    #image: steinsteiny/fuji:fair
+#    #image: steinsteiny/fuji:v1.4.9-noauth
+#    image: lagocollaboration/fuji:v1.4.9-noauth
+#    volumes:
+#    - source: ./
+#      target: /sqaaas-build
+#      type: bind
+#    working_dir: /sqaaas-build
