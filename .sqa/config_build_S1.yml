@@ -40,16 +40,15 @@ sqa_criteria:
           # - bash -lc "export"
           # - bash -lc "do_sims_onedata.py -?"
           - ls -alh /mnt/datahub.egi.eu
+          # simulation 5 secs
           - >
             env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN} 
             env ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu" 
-            bash -lc "ls -alh /mnt/datahub.egi.eu; do_sims_onedata.py -t 30 -u 0000-0001-6497-753X -s and -k 2.0e2 -h QGSII -x --onedata_path /mnt/datahub.egi.eu/test8/SQaaS/ -j 2" 
-          - >
-            env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN} 
-            env ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu" 
-            bash -lc 'do_share_onedata.py --token $ONECLIENT_ACCESS_TOKEN 
-            --myspace_path /mnt/datahub.egi.eu/test8/SQaaS/XXX 
-            --handleservice_id 986fe2ab97a6b749fac17eb9e9b38c37chb045 | grep "resourceId\|publicHandle" | tail -n2 > /mnt/datahub.egi.eu/test8/SQaaS/handles/lasthandles1.txt'
+            bash -lc 'ls -alh /mnt/datahub.egi.eu; ls -alh /mnt/datahub.egi.eu/test8;
+            ls -alh /mnt/datahub.egi.eu/test8/SQaaS;
+            do_showers_onedata.py -o /mnt/datahub.egi.eu/test8/SQaaS/S0_and_30_200.0_77402_QGSII_flat_defaults
+            -u 0000-0001-6497-753X --onedata_path /mnt/datahub.egi.eu/test8/SQaaS/ -j 2' 
+          # enricher and publish currently deactivated (not planified during EOSC-Synergy) 
           #- unittest   
   qc_coverage:
     repos:
@@ -75,47 +74,13 @@ sqa_criteria:
             pip3 install bandit && python3 -m bandit -r /opt/onedataSim -x tests -s B404,B602,B603
           #- bandit -r /onedatasim-repo -x tests
 #  qc_fair: # it is not defined yet in JePL library, we have to use qc_doc
-  qc_doc:
-    repos:
-      FAIR_EVAL:
-        container: fair_eva
-        # Onedata has Verbs as petition of LAGO: http://datahub.egi.eu/oai_pmh?verb=ListSets
-        # Then the whole OAI-PMH repository is
-        # http://datahub.egi.eu/oai_pmh?verb=ListRecords&metadataPrefix=oai_dc&set=986fe2ab97a6b749fac17eb9e9b38c37chb045
-        # however, to check the build we only check a the testing catalog generated in qc_functional
-        # as an example we can use: 
-        # http://datahub.egi.eu/oai_pmh?verb=GetRecord&metadataPrefix=oai_dc&identifier=oai:datahub.egi.eu:f11ab6c1168399bc6f062d043c3c97f6ch693a
-        # which handle is http://hdl.handle.net/21.12145/V6CkywE
-        ####
-        # Guardo el handle y el share de qc_functional en un fichero conocido y publico, luego lo uso para los FAIR_eva y los F-UJI respectivamente
-        ####
-        commands:
-        - >
-          env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN}
-          env ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu"
-          'curl -k --tlsv1.2 -H "X-CDMI-Specification-Version: 1.1.1" -H "X-Auth-Token: $ONECLIENT_ACCESS_TOKEN" 
-          -X GET "https://$ONECLIENT_PROVIDER_HOST/cdmi/test8/SQaaS/handles/lasthandles1.txt" 
-          -o /tmp/lasthandles1.txt'
-          export SHAREID = `grep resourceId /tmp/lasthandles1.txt | awk -F': ' '{print $2}'´
-          'curl -H ''Content-Type: application/json'' -X POST 
-          -d ''{"id": $SHAREID,
-          "repo": "oai-pmh", "oai_base": "http://datahub.egi.eu/oai_pmh"}''
-          http://localhost:9090/v1.0/rda/rda_all'
-      FAIR_UJI:
-        container: fair_uji
-        commands:
-        - >
-          env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN}
-          env ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu"
-          'curl -k --tlsv1.2 -H "X-CDMI-Specification-Version: 1.1.1" -H "X-Auth-Token: $ONECLIENT_ACCESS_TOKEN" 
-          -X GET "https://$ONECLIENT_PROVIDER_HOST/cdmi/test8/SQaaS/handles/lasthandles1.txt" 
-          -o /tmp/lasthandles1.txt'
-          export SHAREID = `grep publicHandle /tmp/lasthandles1.txt | awk -F': ' '{print $2}'´
-          'curl -H ''Accept: application/json'' -H ''Content-Type: application/json''
-          -H ''Authorization: Basic bWFydmVsOndvbmRlcndvbWFu'' -X POST 
-          -d ''{"metadata_service_endpoint":"http://datahub.egi.eu/oai_pmh",
-          "metadata_service_type":"oai_pmh","object_identifier":"http://hdl.handle.net/21.12145/V6CkywE",
-          "test_debug":true,"use_datacite":false}''
-          http://localhost:1071/fuji/api/v1/evaluate'
-
-timeout: 900
+#  currently deactivated for S1 building (not planified during EOSC-Synergy) 
+#  qc_doc:
+#    repos:
+#      FAIR_EVAL:
+#        container: fair_eva
+#        commands:
+#      FAIR_UJI:
+#        container: fair_uji
+#        commands:
+#timeout: 900
