@@ -1,0 +1,29 @@
+authors:
+  - family-names: Rubio-Montero
+    given-names: "Antonio Juan"
+    orcid: "https://orcid.org/0000-0001-6497-753X"
+cff-version: 1.2.0
+message: "If you use this software, please cite both the article from preferred-citation and the software itself."
+preferred-citation:
+  authors:
+    - family-names: Rubio-Montero
+      given-names: "Antonio Juan"
+    - family-names: Pagán-Muñoz
+      given-names: Raúl
+    - family-names: Mayo-García
+      given-names: Rafael
+    - family-names: Pardo-Díaz
+      given-names: Alfonso
+    - family-names: Sidelnik
+      given-names: Iván
+    - family-names: Asorey
+      given-names: Hernán
+  title: "A Novel Cloud-Based Framework For Standardized Simulations In The Latin American Giant Observatory (LAGO)"
+  type: conference-paper
+  collection-title: "2021 Winter Simulation Conference (WSC)"
+  pages: 12
+  doi: 10.1109/WSC52266.2021.9715360
+  year: 2021
+title: "LAGO onedataSim Software"
+license: BSD-3-Clause
+repository: "https://github.com/lagoproject/onedataSim"
