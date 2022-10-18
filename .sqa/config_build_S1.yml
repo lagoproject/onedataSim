@@ -47,7 +47,7 @@ sqa_criteria:
             bash -lc 'ls -alh /mnt/datahub.egi.eu; ls -alh /mnt/datahub.egi.eu/test8;
             ls -alh /mnt/datahub.egi.eu/test8/SQaaS;
             do_showers_onedata.py -o /mnt/datahub.egi.eu/test8/SQaaS/S0_and_30_200.0_77402_QGSII_flat_defaults
-            -u 0000-0001-6497-753X --onedata_path /mnt/datahub.egi.eu/test8/SQaaS/ -j 2' 
+            -u 0000-0001-6497-753X --onedata_path /mnt/datahub.egi.eu/test8/SQaaS/ -e 1 -d 1 -s -m -j 2' 
           # enricher and publish currently deactivated (not planified during EOSC-Synergy) 
           #- unittest   
   qc_coverage:
