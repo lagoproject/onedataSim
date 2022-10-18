@@ -5,15 +5,15 @@ config:
       repo: 'https://github.com/EOSC-synergy/onedataSim'
       branch: 'dev'
   credentials:
-    # not necessary with docker-images
+    # not necessary with pre-uploaded docker-images with corsika
     #- id: onedata-token-build-ajrm
     #  variable: TOKEN_BUILD
     # TOKEN_RUN is needed for testing the application
-    - id: onedata-token-test4-ajrm
+    - id: onedata-token-test8-ajrm
       variable: TOKEN_RUN
-# If we will want a private DockerHub
-    # first testing with eoscsynergybot account in dockerhub (synergy_dockerhub_bot_pass) 
-    #- id: synergy_dockerhub_bot_pass
+    - id: onedata-token-publish-ajrm
+      variable: TOKEN_PUBLISH
+    # If we will want a private DockerHub
     - id: repoimage-lago-ajrm
       username_var: JPL_DOCKERUSER
       password_var: JPL_DOCKERPASS
