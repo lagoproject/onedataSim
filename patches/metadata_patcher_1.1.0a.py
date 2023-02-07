@@ -29,7 +29,7 @@ import do_share_onedata as mdaux
 def patch(only_test, folder_name, folder_id, host, token):
 
     # DataSets
-    all_level0 = folder0_content(folder_id, host, token)
+    all_level0 = mdaux.folder0_content(folder_id, host, token)
     # REMOVE .metadata!!!
     for p in all_level0['children']:
 
@@ -70,9 +70,9 @@ def patch(only_test, folder_name, folder_id, host, token):
         if only_test:
             print(id_json)
         else:
-            new_json = updating_id_terms_in_json_metadata(id_json, p['id'], host, token)
+            new_json = mdaux.updating_id_terms_in_json_metadata(id_json, p['id'], host, token)
             print(new_json)
-            create_file_in_hidden_metadata_folder(json.dumps(new_json), p['name'] + '.jsonld', folder_id, host, token)
+            mdaux.create_file_in_hidden_metadata_folder(json.dumps(new_json), p['name'] + '.jsonld', folder_id, host, token)
 
 
 # ###############

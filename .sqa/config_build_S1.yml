@@ -5,15 +5,15 @@ config:
       repo: 'https://github.com/EOSC-synergy/onedataSim'
       branch: 'dev'
   credentials:
-    # not necessary with docker-images
+    # not necessary with pre-uploaded docker-images with corsika
     #- id: onedata-token-build-ajrm
     #  variable: TOKEN_BUILD
     # TOKEN_RUN is needed for testing the application
-    - id: onedata-token-test4-ajrm
+    - id: onedata-token-test8-ajrm
       variable: TOKEN_RUN
-# If we will want a private DockerHub
-    # first testing with eoscsynergybot account in dockerhub (synergy_dockerhub_bot_pass) 
-    #- id: synergy_dockerhub_bot_pass
+    - id: onedata-token-publish-ajrm
+      variable: TOKEN_PUBLISH
+    # If we will want a private DockerHub
     - id: repoimage-lago-ajrm
       username_var: JPL_DOCKERUSER
       password_var: JPL_DOCKERPASS
@@ -29,14 +29,26 @@ sqa_criteria:
       onedatasim:
         # we need a complete build to test simulations
         container: onedatasim-s1
-        #environment:
-        #  - ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN}
-        #  - ONECLIENT_PROVIDER_HOST="mon01-tic.ciemat.es"
+        # environment:
+          # - ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN}
+          # - ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu"
+        # estos comandos son "exec" contra un container ya levantado con docker-compose -f build...yml
         commands:
+          - pwd
+          - whoami
+          - git --git-dir /opt/onedataSim/.git rev-parse --verify HEAD 
+          # - bash -lc "export"
+          # - bash -lc "do_sims_onedata.py -?"
+          - ls -alh /mnt/datahub.egi.eu
+          # simulation 5 secs
           - >
-            env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN}
-            env ONECLIENT_PROVIDER_HOST="mon01-tic.ciemat.es"
-            ls -alh /mnt/datahub.egi.eu
+            env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN} 
+            env ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu" 
+            bash -lc 'ls -alh /mnt/datahub.egi.eu; ls -alh /mnt/datahub.egi.eu/test8;
+            ls -alh /mnt/datahub.egi.eu/test8/SQaaS;
+            do_showers_onedata.py -o /mnt/datahub.egi.eu/test8/SQaaS/S0_and_30_200.0_77402_QGSII_flat_defaults
+            -u 0000-0001-6497-753X --onedata_path /mnt/datahub.egi.eu/test8/SQaaS/ -e 1 -d 1 -s 1 -m 1 -j 2' 
+          # enricher and publish currently deactivated (not planified during EOSC-Synergy) 
           #- unittest   
   qc_coverage:
     repos:
@@ -45,7 +57,7 @@ sqa_criteria:
         commands:
           - >
             env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN}
-            env ONECLIENT_PROVIDER_HOST="mon01-tic.ciemat.es"
+            env ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu"
             #pip install coverage && coverage run -m unittest discover -s /opt/onedataSim 
             pip3 install coverage && python3 -m coverage run -m unittest discover -s /opt/onedataSim
           #- cover
@@ -57,35 +69,18 @@ sqa_criteria:
         commands:
           - >
             env ONECLIENT_ACCESS_TOKEN=${TOKEN_RUN}
-            env ONECLIENT_PROVIDER_HOST="mon01-tic.ciemat.es"
+            env ONECLIENT_PROVIDER_HOST="ceta-ciemat-02.datahub.egi.eu"
             #bandit -r /opt/onedataSim -x tests -s B404,B602,B603
             pip3 install bandit && python3 -m bandit -r /opt/onedataSim -x tests -s B404,B602,B603
           #- bandit -r /onedatasim-repo -x tests
 #  qc_fair: # it is not defined yet in JePL library, we have to use qc_doc
-  qc_doc:
-    repos:
-      FAIR_EVAL:
-        container: fair_eva
-        # Onedata has Verbs as petition of LAGO: http://datahub.egi.eu/oai_pmh?verb=ListSets
-        # Then the whole OAI-PMH repository is
-        # http://datahub.egi.eu/oai_pmh?verb=ListRecords&metadataPrefix=oai_dc&set=986fe2ab97a6b749fac17eb9e9b38c37chb045
-        # however, to check the build we only check a the testing catalog generated in qc_functional
-        # as an example we can use: 
-        # http://datahub.egi.eu/oai_pmh?verb=GetRecord&metadataPrefix=oai_dc&identifier=oai:datahub.egi.eu:f11ab6c1168399bc6f062d043c3c97f6ch693a
-        # which handle is http://hdl.handle.net/21.12145/V6CkywE
-        commands:
-        - 'curl -H ''Content-Type: application/json'' -X POST 
-          -d ''{"id": "f11ab6c1168399bc6f062d043c3c97f6ch693a",
-          "repo": "oai-pmh", "oai_base": "http://datahub.egi.eu/oai_pmh"}''
-          http://localhost:9090/v1.0/rda/rda_all'
-      FAIR_UJI:
-        container: fair_uji
-        commands:
-        - 'curl -H ''Accept: application/json'' -H ''Content-Type: application/json''
-          -H ''Authorization: Basic bWFydmVsOndvbmRlcndvbWFu'' -X POST 
-          -d ''{"metadata_service_endpoint":"http://datahub.egi.eu/oai_pmh",
-          "metadata_service_type":"oai_pmh","object_identifier":"http://hdl.handle.net/21.12145/V6CkywE",
-          "test_debug":true,"use_datacite":false}''
-          http://localhost:1071/fuji/api/v1/evaluate'
-
-timeout: 900
+#  currently deactivated for S1 building (not planified during EOSC-Synergy) 
+#  qc_doc:
+#    repos:
+#      FAIR_EVAL:
+#        container: fair_eva
+#        commands:
+#      FAIR_UJI:
+#        container: fair_uji
+#        commands:
+#timeout: 900
