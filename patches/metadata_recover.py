@@ -21,7 +21,7 @@ def patch(only_test, folder_name, folder_id, folder_where_md_hidden, host, token
     print(folder_name)
     print('\n')
 
-    new_json = mdaux.get_latest_file_in_hidden_metadata_folder(folder_name + '.jsonld', folder_where_md_hidden, host, token)
+    new_json = mdaux.get_latest_file_in_hidden_metadata_folder(folder_name, folder_where_md_hidden, host, token)
     
     if not only_test:
         # careful!!! modifiying metadata

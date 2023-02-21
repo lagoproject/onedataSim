@@ -17,7 +17,7 @@ import sys
 from yattag import Doc, indent
 
 import mdUtils
-from builtins import None
+
 
 
 def create_dublincore_xml_file(all_level1):
@@ -205,18 +205,21 @@ def get_latest_file_in_hidden_metadata_folder(filename, folder_id, host, token):
 
     hiden_metadata_folder_id = None
     for p in all_level1['children']:
+        print(p)
         if p['name'] == ".metadata":
             hiden_metadata_folder_id = p['id']
             break
     if hiden_metadata_folder_id is None:
+        print("without .metadata folder")
         return None
 
     all_level1 = folder0_content(hiden_metadata_folder_id, host, token)
     d_aux = {}
     for p in all_level1['children']:
-        if p['name'].startwith("."+filename):
+        if p['name'].startswith("."+filename+'.jsonld'):
             d_aux[p['name']] = p['id']
     if d_aux == {}: 
+        print("without backup file for metadata")
         return None
 
     l_aux = list(d_aux.keys())
@@ -230,9 +233,13 @@ def get_latest_file_in_hidden_metadata_folder(filename, folder_id, host, token):
     OneData_urlgetcontent = "https://" + host + '/api/v3/oneprovider/data/' + latest_filename_id + '/content'
     request_param = {'X-Auth-Token': token, "Content-Type": OneData_Header}
     r = requests.get(OneData_urlgetcontent, headers=request_param)
-
-    r_json = json.loads(r.text)
-    print(r_json)
+    #print(r)
+    # the file can be corrupt, empty or with json errors
+    try: 
+        r_json = json.loads(r.text)
+    except:
+        return None
+    #print(r_json)
     return r_json
 
 def create_file_in_hidden_metadata_folder(content, filename, folder_id, host, token):
