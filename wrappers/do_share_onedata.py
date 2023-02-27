@@ -267,7 +267,21 @@ def create_file_in_hidden_metadata_folder(content, filename, folder_id, host, to
     print(r_json)
 
 
+def _folder0_content_aux(folder0_id, offset, host, token):
+
+    # Only gets 1000 children by default, usually you must use offset
+    # https://onedata.org/#/home/api/stable/oneprovider?anchor=operation/list_children
+
+    OneData_urlchildren = "https://" + host + '/api/v3/oneprovider/data/' + folder0_id + "/children?offset=" + str(offset)
+    request_param = {'X-Auth-Token': token}
+    r_level0 = requests.get(OneData_urlchildren, headers=request_param)
+    partial_level0 = json.loads(r_level0.text)
+
+    return partial_level0
+
+
 def folder0_content(folder0_id, host, token):
+    
     """
     Modules
     -------
@@ -283,13 +297,20 @@ def folder0_content(folder0_id, host, token):
     -------
     all_level0: "name" and "id" of the folders contained in the folder defined by "folder0_id"
     """
+    
+    all_level0 = {}
+    all_level0['children'] = []
+    
+    partial = _folder0_content_aux(folder0_id, 0, host, token)
+    all_level0['children'] = partial['children']
+    while not partial['isLast'] :
+        partial = _folder0_content_aux(folder0_id, 1000, host, token)
+        all_level0['children'].extend(partial['children'])
+    
+    all_level0['isLast'] = True
 
-    OneData_urlchildren = "https://" + host + '/api/v3/oneprovider/data/' + folder0_id + "/children"
-    request_param = {'X-Auth-Token': token}
-    r_level0 = requests.get(OneData_urlchildren, headers=request_param)
-    all_level0 = json.loads(r_level0.text)
-
-    return (all_level0)
+    return (all_level0)    
+    
 
 
 def get_folder_id(myspace_path, host, token):

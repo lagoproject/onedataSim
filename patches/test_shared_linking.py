@@ -17,6 +17,13 @@ import do_share_onedata as mdaux
 import osUtils
 
 
+def def_all_shares_from_spaceid(spaceid, token):
+    
+    #curl -H x-auth-token:$ONECLIENT_ACCESS_TOKEN https://datahub.egi.eu/api/v3/onezone/spaces/538dae593d8f52ce53ceb768a122b365cha1f4/shares
+    OneData_urlgetShareinfo = 'https://datahub.egi.eu/api/v3/onezone/spaces/' + spaceid + '/shares'
+    request_param = {'X-Auth-Token': token}
+    shareinfo = requests.get(OneData_urlgetShareinfo, headers=request_param)
+    return json.loads(shareinfo.text)
 
 # You need Ozone admin privilege oz_shares_list, it do not will work for users
 def get_all_shares(token):
@@ -37,8 +44,9 @@ def main():
     # External arguments for command line use
     parser = argparse.ArgumentParser(description='Arguments to testing linking between shares and data')
     parser.add_argument('--token', help='')
-    parser.add_argument('--host', help='')  # OneData Provider !!!
-    parser.add_argument('--myspace_path', help='Only Primary Catalgues, i.e. LAGOsim, LAGOraw...')
+    parser.add_argument('--host', help='Oneprovider where the DATA is now!!!')  # OneData Provider !!!
+    parser.add_argument('--myspace_path', help='Where the DATA is now!!! Only Primary Catalgues, i.e. LAGOsim, LAGOraw...')
+    parser.add_argument('--sharespace_id', help='OPTIONAL (addtional testing). Space ID where the SHARES are registered, it can be the one of the --myspace_path or an old space that should be migrated')
 
 
 
@@ -61,7 +69,12 @@ def main():
     dict_share_file_ids = {}
     dict_share_file_ids_extended = {}
     dict_file_id_tests = {}    
-    folder_id = mdaux.get_folder_id(args.myspace_path, args.host, args.token)    
+    folder_id = mdaux.get_folder_id(args.myspace_path, args.host, args.token)  
+    shares_in_folder = None 
+    if args.sharespace_id != None: 
+        shares_in_folder = def_all_shares_from_spaceid(args.sharespace_id, args.token)
+        print(shares_in_folder)
+        
     all_level0 = mdaux.folder0_content(folder_id, args.host, args.token)
     
     for p in all_level0['children']:
@@ -124,6 +137,16 @@ def main():
     #print (dict_share_file_ids)
     osUtils._write_file('.dict_share_file_ids_extended.json', json.dumps(dict_share_file_ids_extended))
     
-
+    if shares_in_folder != None :
+        s_shares_backed = set(dict_share_file_ids_extended.keys())
+        s_shares_registered = set(shares_in_folder['shares'])
+        diff_reg_over_backed = list(s_shares_registered - s_shares_backed) 
+        diff_backed_over_reg = list(s_shares_backed - s_shares_registered)
+        osUtils._write_file('.diff_reg_over_backed.txt', str(diff_reg_over_backed))
+        osUtils._write_file('.diff_backed_over_reg.txt', str(diff_backed_over_reg))
+        if len(diff_reg_over_backed)>0 or len(diff_backed_over_reg)>0:
+            print("CAREFUL: shares registered and backed do not match.")
+        
+        
 if __name__ == '__main__':
     sys.exit(main())
