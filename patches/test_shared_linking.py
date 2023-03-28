@@ -107,11 +107,12 @@ def main():
                     #dict_share_file_ids_extended[shareid]['spaceId'] = {} 
                     #dict_share_file_ids_extended[shareid]['spaceId']['current'] =  shared_info['spaceId']
                     #dict_share_file_ids_extended[shareid]['spaceId']['actual'] = XXXX! 
-                    #dict_share_file_ids_extended[shareid]['spaceId']['match'] = (shared_info['spaceId'] == XXX!)                 
-                    dict_share_file_ids_extended[shareid]['rootFileId'] = {} 
-                    dict_share_file_ids_extended[shareid]['rootFileId']['current'] =  shared_info['rootFileId']
-                    dict_share_file_ids_extended[shareid]['rootFileId']['actual'] =  fileid
-                    dict_share_file_ids_extended[shareid]['rootFileId']['match'] = (shared_info['rootFileId'] == fileid)
+                    #dict_share_file_ids_extended[shareid]['spaceId']['match'] = (shared_info['spaceId'] == XXX!)                  
+                    # unfortunately rootFileID is an extended GUID not equal to the FileID used in dir/files  
+                    #dict_share_file_ids_extended[shareid]['rootFileId'] = {}
+                    #dict_share_file_ids_extended[shareid]['rootFileId']['current'] =  shared_info['rootFileId']
+                    #dict_share_file_ids_extended[shareid]['rootFileId']['actual'] =  fileid
+                    #dict_share_file_ids_extended[shareid]['rootFileId']['match'] = (shared_info['rootFileId'] == fileid)
                     dict_share_file_ids_extended[shareid]['name'] = {}
                     dict_share_file_ids_extended[shareid]['name']['current'] =  shared_info['name'] 
                     dict_share_file_ids_extended[shareid]['name']['actual'] = p['name']

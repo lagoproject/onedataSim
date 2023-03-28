@@ -551,7 +551,14 @@ def get_json_metadata(onedata_id, host, token):
 
     OneData_urljson = "https://" + host + '/api/v3/oneprovider/data/' + onedata_id + "/metadata/json"
     r_json = requests.get(OneData_urljson, headers={'X-Auth-Token': token})
-    return json.loads(r_json.text)
+    # careful always returns a JSON, but it could be the JSON text of an error, for example:
+    # {'error': {'id': 'posix', 'details': {'errno': 'enodata'}, 'description': 'Operation failed with POSIX error: enodata.'}}
+    j = json.loads(r_json.text)
+    if 'error' in j.keys():
+        print(j)
+        return None
+    
+    return j 
 
 
 def put_json_metadata(new_json, onedata_id, host, token):
